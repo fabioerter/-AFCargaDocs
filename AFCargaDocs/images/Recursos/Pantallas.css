@@ -1,0 +1,129 @@
+@charset "utf-8";
+	.image
+{
+	background-image : url(image.png);
+	background-repeat : no-repeat;
+	width : 194px;
+	height : 189px;
+}
+.image16
+{
+	background-image : url(image16.png);
+	background-repeat : no-repeat;
+	width : 106px;
+	height : 106px;
+}
+.image17
+{
+	background-image : url(image17.png);
+	background-repeat : no-repeat;
+	width : 198px;
+	height : 14px;
+}
+.image12
+{
+	background-image : url(image12.png);
+	background-repeat : no-repeat;
+	width : 88px;
+	height : 88px;
+}
+.image14
+{
+	background-image : url(image14.png);
+	background-repeat : no-repeat;
+	opacity : 0.12;
+	width : 71px;
+	height : 70px;
+	filter: alpha(opacity=12) progid:DXImageTransform.Microsoft.Alpha(opacity=12) ;
+}
+.image15
+{
+	background-image : url(image15.png);
+	background-repeat : no-repeat;
+	width : 84px;
+	height : 68px;
+}
+.image5
+{
+	background-image : url(image5.png);
+	background-repeat : no-repeat;
+	width : 325px;
+	height : 63px;
+}
+.image11
+{
+	background-image : url(image11.png);
+	background-repeat : no-repeat;
+	width : 89px;
+	height : 89px;
+}
+.image4
+{
+	background-image : url(image4.png);
+	background-repeat : no-repeat;
+	width : 325px;
+	height : 63px;
+}
+.image3
+{
+	background-image : url(image3.png);
+	background-repeat : no-repeat;
+	width : 325px;
+	height : 63px;
+}
+.image9
+{
+	background-image : url(image9.png);
+	background-repeat : no-repeat;
+	width : 88px;
+	height : 88px;
+}
+.image6
+{
+	background-image : url(image6.png);
+	background-repeat : no-repeat;
+	width : 238px;
+	height : 185px;
+}
+.image1
+{
+	background-image : url(image1.png);
+	background-repeat : no-repeat;
+	width : 325px;
+	height : 63px;
+}
+.image10
+{
+	background-image : url(image10.png);
+	background-repeat : no-repeat;
+	width : 88px;
+	height : 88px;
+}
+.image13
+{
+	background-image : url(image13.png);
+	background-repeat : no-repeat;
+	width : 71px;
+	height : 70px;
+}
+.image2
+{
+	background-image : url(image2.png);
+	background-repeat : no-repeat;
+	width : 222px;
+	height : 217px;
+}
+.image8
+{
+	background-image : url(image8.png);
+	background-repeat : no-repeat;
+	width : 58px;
+	height : 66px;
+}
+.image7
+{
+	background-image : url(image7.png);
+	background-repeat : no-repeat;
+	width : 58px;
+	height : 66px;
+}

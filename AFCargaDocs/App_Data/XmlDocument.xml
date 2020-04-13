@@ -1,0 +1,2395 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Residencias.API</name>
+    </assembly>
+    <members>
+        <member name="M:Residencias.API.Areas.HelpPage.ApiDescriptionExtensions.GetFriendlyId(System.Web.Http.Description.ApiDescription)">
+            <summary>
+            Generates an URI-friendly ID for the <see cref="T:System.Web.Http.Description.ApiDescription"/>. E.g. "Get-Values-id_name" instead of "GetValues/{id}?name={name}"
+            </summary>
+            <param name="description">The <see cref="T:System.Web.Http.Description.ApiDescription"/>.</param>
+            <returns>The ID as a string.</returns>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.HelpPageConfig">
+            <summary>
+            Use this class to customize the Help Page.
+            For example you can set a custom <see cref="T:System.Web.Http.Description.IDocumentationProvider"/> to supply the documentation
+            or you can provide the samples for the requests/responses.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.Controllers.HelpController">
+            <summary>
+            The controller that will handle requests for the help page.
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetDocumentationProvider(System.Web.Http.HttpConfiguration,System.Web.Http.Description.IDocumentationProvider)">
+            <summary>
+            Sets the documentation provider for help page.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="documentationProvider">The documentation provider.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleObjects(System.Web.Http.HttpConfiguration,System.Collections.Generic.IDictionary{System.Type,System.Object})">
+            <summary>
+            Sets the objects that will be used by the formatters to produce sample requests/responses.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sampleObjects">The sample objects.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleRequest(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.String,System.String)">
+            <summary>
+            Sets the sample request directly for the specified media type and action.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sample">The sample request.</param>
+            <param name="mediaType">The media type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleRequest(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.String,System.String,System.String[])">
+            <summary>
+            Sets the sample request directly for the specified media type and action with parameters.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sample">The sample request.</param>
+            <param name="mediaType">The media type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleResponse(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.String,System.String)">
+            <summary>
+            Sets the sample request directly for the specified media type of the action.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sample">The sample response.</param>
+            <param name="mediaType">The media type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleResponse(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.String,System.String,System.String[])">
+            <summary>
+            Sets the sample response directly for the specified media type of the action with specific parameters.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sample">The sample response.</param>
+            <param name="mediaType">The media type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleForMediaType(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue)">
+            <summary>
+            Sets the sample directly for all actions with the specified media type.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sample">The sample.</param>
+            <param name="mediaType">The media type.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetSampleForType(System.Web.Http.HttpConfiguration,System.Object,System.Net.Http.Headers.MediaTypeHeaderValue,System.Type)">
+            <summary>
+            Sets the sample directly for all actions with the specified type and media type.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sample">The sample.</param>
+            <param name="mediaType">The media type.</param>
+            <param name="type">The parameter type or return type of an action.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetActualRequestType(System.Web.Http.HttpConfiguration,System.Type,System.String,System.String)">
+            <summary>
+            Specifies the actual type of <see cref="T:System.Net.Http.ObjectContent`1"/> passed to the <see cref="T:System.Net.Http.HttpRequestMessage"/> in an action.
+            The help page will use this information to produce more accurate request samples.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="type">The type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetActualRequestType(System.Web.Http.HttpConfiguration,System.Type,System.String,System.String,System.String[])">
+            <summary>
+            Specifies the actual type of <see cref="T:System.Net.Http.ObjectContent`1"/> passed to the <see cref="T:System.Net.Http.HttpRequestMessage"/> in an action.
+            The help page will use this information to produce more accurate request samples.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="type">The type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetActualResponseType(System.Web.Http.HttpConfiguration,System.Type,System.String,System.String)">
+            <summary>
+            Specifies the actual type of <see cref="T:System.Net.Http.ObjectContent`1"/> returned as part of the <see cref="T:System.Net.Http.HttpRequestMessage"/> in an action.
+            The help page will use this information to produce more accurate response samples.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="type">The type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetActualResponseType(System.Web.Http.HttpConfiguration,System.Type,System.String,System.String,System.String[])">
+            <summary>
+            Specifies the actual type of <see cref="T:System.Net.Http.ObjectContent`1"/> returned as part of the <see cref="T:System.Net.Http.HttpRequestMessage"/> in an action.
+            The help page will use this information to produce more accurate response samples.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="type">The type.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.GetHelpPageSampleGenerator(System.Web.Http.HttpConfiguration)">
+            <summary>
+            Gets the help page sample generator.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <returns>The help page sample generator.</returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.SetHelpPageSampleGenerator(System.Web.Http.HttpConfiguration,Residencias.API.Areas.HelpPage.HelpPageSampleGenerator)">
+            <summary>
+            Sets the help page sample generator.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="sampleGenerator">The help page sample generator.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.GetModelDescriptionGenerator(System.Web.Http.HttpConfiguration)">
+            <summary>
+            Gets the model description generator.
+            </summary>
+            <param name="config">The configuration.</param>
+            <returns>The <see cref="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ModelDescriptionGenerator"/></returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageConfigurationExtensions.GetHelpPageApiModel(System.Web.Http.HttpConfiguration,System.String)">
+            <summary>
+            Gets the model that represents an API displayed on the help page. The model is initialized on the first call and cached for subsequent calls.
+            </summary>
+            <param name="config">The <see cref="T:System.Web.Http.HttpConfiguration"/>.</param>
+            <param name="apiDescriptionId">The <see cref="T:System.Web.Http.Description.ApiDescription"/> ID.</param>
+            <returns>
+            An <see cref="T:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel"/>
+            </returns>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ModelDescription">
+            <summary>
+            Describes a type model.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ModelDescriptionGenerator">
+            <summary>
+            Generates model descriptions for given types.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ModelNameAttribute">
+            <summary>
+            Use this attribute to change the name of the <see cref="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ModelDescription"/> generated for a type.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel">
+            <summary>
+            The model that represents an API displayed on the help page.
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel"/> class.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.ApiDescription">
+            <summary>
+            Gets or sets the <see cref="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.ApiDescription"/> that describes the API.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.UriParameters">
+            <summary>
+            Gets or sets the <see cref="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ParameterDescription"/> collection that describes the URI parameters for the API.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.RequestDocumentation">
+            <summary>
+            Gets or sets the documentation for the request.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.RequestModelDescription">
+            <summary>
+            Gets or sets the <see cref="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ModelDescription"/> that describes the request body.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.RequestBodyParameters">
+            <summary>
+            Gets the request body parameter descriptions.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.ResourceDescription">
+            <summary>
+            Gets or sets the <see cref="T:Residencias.API.Areas.HelpPage.ModelDescriptions.ModelDescription"/> that describes the resource.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.ResourceProperties">
+            <summary>
+            Gets the resource property descriptions.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.SampleRequests">
+            <summary>
+            Gets the sample requests associated with the API.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.SampleResponses">
+            <summary>
+            Gets the sample responses associated with the API.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.Models.HelpPageApiModel.ErrorMessages">
+            <summary>
+            Gets the error messages associated with this model.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator">
+            <summary>
+            This class will generate the samples for the help page.
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator"/> class.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.ActualHttpMessageTypes">
+            <summary>
+            Gets CLR types that are used as the content of <see cref="T:System.Net.Http.HttpRequestMessage"/> or <see cref="T:System.Net.Http.HttpResponseMessage"/>.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.ActionSamples">
+            <summary>
+            Gets the objects that are used directly as samples for certain actions.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.SampleObjects">
+            <summary>
+            Gets the objects that are serialized as samples by the supported formatters.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.SampleObjectFactories">
+            <summary>
+            Gets factories for the objects that the supported formatters will serialize as samples. Processed in order,
+            stopping when the factory successfully returns a non-<see langref="null"/> object.
+            </summary>
+            <remarks>
+            Collection includes just <see cref="M:Residencias.API.Areas.HelpPage.ObjectGenerator.GenerateObject(System.Type)"/> initially. Use
+            <code>SampleObjectFactories.Insert(0, func)</code> to provide an override and
+            <code>SampleObjectFactories.Add(func)</code> to provide a fallback.</remarks>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.GetSampleRequests(System.Web.Http.Description.ApiDescription)">
+            <summary>
+            Gets the request body samples for a given <see cref="T:System.Web.Http.Description.ApiDescription"/>.
+            </summary>
+            <param name="api">The <see cref="T:System.Web.Http.Description.ApiDescription"/>.</param>
+            <returns>The samples keyed by media type.</returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.GetSampleResponses(System.Web.Http.Description.ApiDescription)">
+            <summary>
+            Gets the response body samples for a given <see cref="T:System.Web.Http.Description.ApiDescription"/>.
+            </summary>
+            <param name="api">The <see cref="T:System.Web.Http.Description.ApiDescription"/>.</param>
+            <returns>The samples keyed by media type.</returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.GetSample(System.Web.Http.Description.ApiDescription,Residencias.API.Areas.HelpPage.SampleDirection)">
+            <summary>
+            Gets the request or response body samples.
+            </summary>
+            <param name="api">The <see cref="T:System.Web.Http.Description.ApiDescription"/>.</param>
+            <param name="sampleDirection">The value indicating whether the sample is for a request or for a response.</param>
+            <returns>The samples keyed by media type.</returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.GetActionSample(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Type,System.Net.Http.Formatting.MediaTypeFormatter,System.Net.Http.Headers.MediaTypeHeaderValue,Residencias.API.Areas.HelpPage.SampleDirection)">
+            <summary>
+            Search for samples that are provided directly through <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.ActionSamples"/>.
+            </summary>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+            <param name="type">The CLR type.</param>
+            <param name="formatter">The formatter.</param>
+            <param name="mediaType">The media type.</param>
+            <param name="sampleDirection">The value indicating whether the sample is for a request or for a response.</param>
+            <returns>The sample that matches the parameters.</returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.GetSampleObject(System.Type)">
+            <summary>
+            Gets the sample object that will be serialized by the formatters. 
+            First, it will look at the <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.SampleObjects"/>. If no sample object is found, it will try to create
+            one using <see cref="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.DefaultSampleObjectFactory(Residencias.API.Areas.HelpPage.HelpPageSampleGenerator,System.Type)"/> (which wraps an <see cref="T:Residencias.API.Areas.HelpPage.ObjectGenerator"/>) and other
+            factories in <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.SampleObjectFactories"/>.
+            </summary>
+            <param name="type">The type.</param>
+            <returns>The sample object.</returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.ResolveHttpRequestMessageType(System.Web.Http.Description.ApiDescription)">
+            <summary>
+            Resolves the actual type of <see cref="T:System.Net.Http.ObjectContent`1"/> passed to the <see cref="T:System.Net.Http.HttpRequestMessage"/> in an action.
+            </summary>
+            <param name="api">The <see cref="T:System.Web.Http.Description.ApiDescription"/>.</param>
+            <returns>The type.</returns>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.ResolveType(System.Web.Http.Description.ApiDescription,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},Residencias.API.Areas.HelpPage.SampleDirection,System.Collections.ObjectModel.Collection{System.Net.Http.Formatting.MediaTypeFormatter}@)">
+            <summary>
+            Resolves the type of the action parameter or return value when <see cref="T:System.Net.Http.HttpRequestMessage"/> or <see cref="T:System.Net.Http.HttpResponseMessage"/> is used.
+            </summary>
+            <param name="api">The <see cref="T:System.Web.Http.Description.ApiDescription"/>.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+            <param name="sampleDirection">The value indicating whether the sample is for a request or a response.</param>
+            <param name="formatters">The formatters.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleGenerator.WriteSampleObjectUsingFormatter(System.Net.Http.Formatting.MediaTypeFormatter,System.Object,System.Type,System.Net.Http.Headers.MediaTypeHeaderValue)">
+            <summary>
+            Writes the sample object using formatter.
+            </summary>
+            <param name="formatter">The formatter.</param>
+            <param name="value">The value.</param>
+            <param name="type">The type.</param>
+            <param name="mediaType">Type of the media.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.HelpPageSampleKey">
+            <summary>
+            This is used to identify the place where the sample should be applied.
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleKey.#ctor(System.Net.Http.Headers.MediaTypeHeaderValue)">
+            <summary>
+            Creates a new <see cref="T:Residencias.API.Areas.HelpPage.HelpPageSampleKey"/> based on media type.
+            </summary>
+            <param name="mediaType">The media type.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleKey.#ctor(System.Net.Http.Headers.MediaTypeHeaderValue,System.Type)">
+            <summary>
+            Creates a new <see cref="T:Residencias.API.Areas.HelpPage.HelpPageSampleKey"/> based on media type and CLR type.
+            </summary>
+            <param name="mediaType">The media type.</param>
+            <param name="type">The CLR type.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleKey.#ctor(Residencias.API.Areas.HelpPage.SampleDirection,System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a new <see cref="T:Residencias.API.Areas.HelpPage.HelpPageSampleKey"/> based on <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.SampleDirection"/>, controller name, action name and parameter names.
+            </summary>
+            <param name="sampleDirection">The <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.SampleDirection"/>.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.HelpPageSampleKey.#ctor(System.Net.Http.Headers.MediaTypeHeaderValue,Residencias.API.Areas.HelpPage.SampleDirection,System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a new <see cref="T:Residencias.API.Areas.HelpPage.HelpPageSampleKey"/> based on media type, <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.SampleDirection"/>, controller name, action name and parameter names.
+            </summary>
+            <param name="mediaType">The media type.</param>
+            <param name="sampleDirection">The <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.SampleDirection"/>.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="actionName">Name of the action.</param>
+            <param name="parameterNames">The parameter names.</param>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.ControllerName">
+            <summary>
+            Gets the name of the controller.
+            </summary>
+            <value>
+            The name of the controller.
+            </value>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.ActionName">
+            <summary>
+            Gets the name of the action.
+            </summary>
+            <value>
+            The name of the action.
+            </value>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.MediaType">
+            <summary>
+            Gets the media type.
+            </summary>
+            <value>
+            The media type.
+            </value>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.ParameterNames">
+            <summary>
+            Gets the parameter names.
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.SampleDirection">
+            <summary>
+            Gets the <see cref="P:Residencias.API.Areas.HelpPage.HelpPageSampleKey.SampleDirection"/>.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.ImageSample">
+            <summary>
+            This represents an image sample on the help page. There's a display template named ImageSample associated with this class.
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.ImageSample.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Residencias.API.Areas.HelpPage.ImageSample"/> class.
+            </summary>
+            <param name="src">The URL of an image.</param>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.InvalidSample">
+            <summary>
+            This represents an invalid sample on the help page. There's a display template named InvalidSample associated with this class.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.ObjectGenerator">
+            <summary>
+            This class will create an object of a given type and populate it with sample data.
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.ObjectGenerator.GenerateObject(System.Type)">
+            <summary>
+            Generates an object for a given type. The type needs to be public, have a public default constructor and settable public properties/fields. Currently it supports the following types:
+            Simple types: <see cref="T:System.Int32"/>, <see cref="T:System.String"/>, <see cref="T:System.Enum"/>, <see cref="T:System.DateTime"/>, <see cref="T:System.Uri"/>, etc.
+            Complex types: POCO types.
+            Nullables: <see cref="T:System.Nullable`1"/>.
+            Arrays: arrays of simple types or complex types.
+            Key value pairs: <see cref="T:System.Collections.Generic.KeyValuePair`2"/>
+            Tuples: <see cref="T:System.Tuple`1"/>, <see cref="T:System.Tuple`2"/>, etc
+            Dictionaries: <see cref="T:System.Collections.Generic.IDictionary`2"/> or anything deriving from <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            Collections: <see cref="T:System.Collections.Generic.IList`1"/>, <see cref="T:System.Collections.Generic.IEnumerable`1"/>, <see cref="T:System.Collections.Generic.ICollection`1"/>, <see cref="T:System.Collections.IList"/>, <see cref="T:System.Collections.IEnumerable"/>, <see cref="T:System.Collections.ICollection"/> or anything deriving from <see cref="T:System.Collections.Generic.ICollection`1"/> or <see cref="T:System.Collections.IList"/>.
+            Queryables: <see cref="T:System.Linq.IQueryable"/>, <see cref="T:System.Linq.IQueryable`1"/>.
+            </summary>
+            <param name="type">The type.</param>
+            <returns>An object of the given type.</returns>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.SampleDirection">
+            <summary>
+            Indicates whether the sample is used for request or response
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.TextSample">
+            <summary>
+            This represents a preformatted text sample on the help page. There's a display template named TextSample associated with this class.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Areas.HelpPage.XmlDocumentationProvider">
+            <summary>
+            A custom <see cref="T:System.Web.Http.Description.IDocumentationProvider"/> that reads the API documentation from an XML documentation file.
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Areas.HelpPage.XmlDocumentationProvider.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Residencias.API.Areas.HelpPage.XmlDocumentationProvider"/> class.
+            </summary>
+            <param name="documentPath">The physical path to XML document.</param>
+        </member>
+        <member name="T:Residencias.API.Code.CompressionUtil">
+            <summary>
+            Utileria para comprimir y descomprimir archivos y cadenas de texto
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Code.CompressionUtil.Compress7ZipFile(System.Byte[])">
+            <summary>
+            Método que comprime archivos
+            </summary>
+            <param name="input">Arreglo de bytes que representa un archivo</param>
+            <returns>Arreglo de bytes que representa el archivo comprimido</returns>
+        </member>
+        <member name="M:Residencias.API.Code.CompressionUtil.Decompress7ZipFile(System.Byte[])">
+            <summary>
+            Método que descomprime un archivo
+            </summary>
+            <param name="buffer">Bytes que representan un archivo comprimido</param>
+            <returns>Bytes que representan el archivo descomprimido</returns>
+        </member>
+        <member name="M:Residencias.API.Code.CompressionUtil.Compress7ZipString(System.Byte[])">
+            <summary>
+            Método que comprime archivos y los convierte a cadena de texto
+            </summary>
+            <param name="bytes">Bytes que represetan un archivo</param>
+            <returns>Cadena de texto que representa el archivo comprimido en una cadena de texto</returns>
+        </member>
+        <member name="M:Residencias.API.Code.CompressionUtil.Decompress7ZipString(System.String)">
+            <summary>
+            Método que descomprime un archivo que fue convertido a cadena de texto
+            </summary>
+            <param name="cadena">Cadena de texto que representa un archivo comprimido</param>
+            <returns>Bytes que representan el archivo descomprimido</returns>
+        </member>
+        <member name="T:Residencias.API.Code.TokenAuthorizeAttribute">
+            <summary>
+            Atributo que permite validar autorización en base a un token de sesión en la petición HTTP
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Code.TokenAuthorizeAttribute.IsAuthorized(System.Web.Http.Controllers.HttpActionContext)">
+            <summary>
+            Método que valida la autorización del usuario
+            </summary>
+            <param name="actionContext">Contexto de HTTP de la petición</param>
+            <returns>Verdadero cuando la petición esta autorizada</returns>
+        </member>
+        <member name="T:Residencias.API.Code.ClavesTokenizador">
+            <summary>
+            Clase estatica para inicializar variables de encriptación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Code.ClavesTokenizador.EncriptIV">
+            <summary>
+            Valor de clave IV para encriptar
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Code.ClavesTokenizador.EncriptKey">
+            <summary>
+            Valor de clave Key para encriptar
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Code.ClavesTokenizador.Init">
+            <summary>
+            Método que iniciliza los valores de las claves de encriptación
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Code.TokenUtil">
+            <summary>
+            Clase que permite generar y desencriptar tokens en formato reducido.
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Controllers.ContactosController">
+            <summary>
+            Controlador con métodos para obtener y modificar los contactos de emergencia de un alumno
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.ContactosController.Get">
+            <summary>
+            Método que regresa todos los contactos de emergencias para el usuario conectado
+            </summary>
+            <returns>Arreglo con los contactos de emergencia</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.ContactosController.Get(System.String)">
+            <summary>
+            Método que regresa los contactos de emergencias para el usuario especificado como parámetro de entrada
+            </summary>
+            <param name="id">Matricula del usuario del que se quieren obtener los contactos</param>
+            <returns>Datos del contacto de emergencia</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.ContactosController.GetContactos(System.String)">
+            <summary>
+            Método que regresa los contactos adicionales  para el usuario especificado como parámetro de entrada
+            </summary>
+            <param name="matricula">Matricula del usuario del que se quieren obtener los contactos</param>
+            <returns>Datos del contacto de emergencia</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.ContactosController.Get(System.String,System.String)">
+            <summary>
+            Método que regresa la persona con el tipo de relación identificada por el tipo para el alumno especificado
+            </summary>
+            <param name="matricula">Matricula para la cual quieren obtenerse los contactos</param>
+            <param name="tipo">Clave de la relación que se desea obtener</param>
+            <returns>Datos del contacto de emergencia</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.ContactosController.Post(System.String,Residencias.API.Models.Entidades.Contacto)">
+            <summary>
+            Método que permite actualizar los datos de un contacto de emergencia
+            </summary>
+            <param name="id">Clave de tipo de relación que se desea actualizar</param>
+            <param name="datos">Datos del contacto de emergencia</param>
+        </member>
+        <member name="T:Residencias.API.Controllers.DatosPersonalesController">
+            <summary>
+            Controlador con las acciones para manipular los datos personales del alumno
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.DatosPersonalesController.Get(System.String,System.String)">
+            <summary>
+            Acción que nos permite obtener los datos personales de un alumno
+            </summary>
+            <param name="matricula">Matricula del usuario que queremos consultar</param>
+            <param name="periodo">Periodo de la consulta</param>
+            <returns></returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.DatosPersonalesController.GetCorreos(System.String)">
+            <summary>
+            Método que regresa los correos para el usuario especificado como parámetro de entrada
+            </summary>
+            <param name="matricula">Matricula del usuario del que se quieren obtener los contactos</param>
+            <returns>Datos del contacto de emergencia</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.DatosPersonalesController.Post(Residencias.API.Models.Entidades.Domicilio)">
+            <summary>
+            Acción que nos permite modificar los datos personales del alumno conectado
+            </summary>
+            <param name="datos">Domicilio del alumno</param>
+        </member>
+        <member name="M:Residencias.API.Controllers.DatosPersonalesController.ValidaCodigoPostal(System.String)">
+            <summary>
+            Acción que nos permite validar un código postal
+            </summary>
+            <param name="codigo">Código postal a validar</param>
+            <returns>Indicador de si el código postal es válido o no</returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.DocumentosController">
+            <summary>
+            Controlador que contiene los métodos para interactuar con documentos asociados a la solicitud de reserva del alumno
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.DocumentosController.Get(System.String,System.String)">
+            <summary>
+            Acción que obtiene la lista de documentos del alumno
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo</param>
+            <returns>Listado de Documentos del alumno conectado con sus estatus de entrega</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.DocumentosController.GetDocumentos(System.String,System.String,System.String)">
+            <summary>
+            Acción que descarga un documento
+            </summary>
+            <param name="periodo">Periodo</param>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="tipo">Código de tipo de documento</param>
+            <returns>Estructura de datos que representa a un documento, incluyendo su contenido en bytes</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.DocumentosController.Post(Residencias.API.Models.Entidades.Documento,System.String,System.String)">
+            <summary>
+            Acción que permite subir un documento nuevo para un tipo de documento
+            </summary>
+            <param name="datos"></param>
+            /// <param name="periodo"></param>
+            /// /// <param name="matricula"></param>
+        </member>
+        <member name="M:Residencias.API.Controllers.DocumentosController.Post(System.String,System.String,System.String,System.String)">
+            <summary>
+            Acción que permite cambiar el estatus de un documento
+            </summary>
+            <param name="periodo">Periodo en el que deseas actualizar</param>
+            <param name="matricula">Matricula del alumno al que deseas actualizar</param>
+            <param name="tipo">Tipo de documento a actualizar</param>
+            <param name="estatus">Estatus al que deseas cambiar el documento</param>
+        </member>
+        <member name="T:Residencias.API.Controllers.FichaMedicaController">
+            <summary>
+            Controlador que contiene los métodos para interactuar con la ficha médica de un alumno
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.FichaMedicaController.Post(System.String,Residencias.API.Models.Entidades.FichaMedica)">
+            <summary>
+            Método que permite actualizar los datos de ficha médica del alumno
+            </summary>
+            <param name="matricula">Matricula del alumno que se desea actualizar</param>
+            <param name="datos">Datos de la ficha médica</param>
+            <returns>Indicador de si se pudo realizar la actualización</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.FichaMedicaController.Get(System.String)">
+            <summary>
+            Método que regresa la ficha médica para el alumno conectado
+            </summary>
+            <param name="matricula">Matricula para la cual quiere obtenerse la ficha medica</param>
+            <returns>Datos de ficha medica</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.FichaMedicaController.ObtieneComentario(System.String)">
+            <summary>
+            Método que regresa los comentarios de seguimiento de la ficha médica para el alumno solicitado
+            </summary>
+            <param name="matricula">Matricula para la cual quiere obtenerse los comentarios de la ficha medica</param>
+            <returns>Texto del comentario</returns>
+            <remarks>Este método es solo para uso de administradores</remarks>
+        </member>
+        <member name="M:Residencias.API.Controllers.FichaMedicaController.ActualizaComentario(System.String,System.String)">
+            <summary>
+            Método que actualiza el comentario de seguimiento de ficha médica
+            </summary>
+            <param name="matricula">Matricula para la cual quiere obtenerse los comentarios de la ficha medica</param>
+            <param name="comentario">Comentario a actualizar</param>
+            <returns>Indicador de exito o error en la actualización</returns>
+            <remarks>Este método es solo para uso de administradores</remarks>
+        </member>
+        <member name="T:Residencias.API.Controllers.HabitacionController">
+            <summary>
+            Controlador que expone los servicios para consulta y reservación de habitaciones
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.Get(System.String,System.String)">
+            <summary>
+            Acción que permite obtener la habitación asignada a un alumno en un periodo
+            </summary>
+            <param name="matricula">Matricula que esta consultando la habitación</param>
+            <param name="periodo">Periodo de la consulta</param>
+            <returns>Habitación asignada al alumno</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.GetConteo(System.String,System.String)">
+            <summary>
+            Acción que permite obtener el total de camas disponibles
+            </summary>
+            <param name="matricula">Matricula para la cual se consulta la disponibilidad</param>
+            <param name="periodo">Periodo de la consulta</param>
+            <returns>Cantidad de camas disponibles</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.GetDisponibles(System.String,System.String)">
+            <summary>
+            Acción que permite obtener las habitaciones disponibles para un alumno en un periodo
+            </summary>
+            <param name="matricula">Matricula que esta consultando las habitaciones</param>
+            <param name="periodo">Periodo de la consulta</param>
+            <returns>Arreglo con habitaciones incluyendo información de disponibilidad</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.GetSugerencias(System.String,System.String)">
+            <summary>
+            Acción que permite obtener las habitaciones sugeridas para un alumno en un periodo
+            </summary>
+            <param name="matricula">Matricula que esta consultando las habitaciones</param>
+            <param name="periodo">Periodo de la consulta</param>
+            <returns>Arreglo con habitaciones sugeridas</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.Post(Residencias.API.Models.Entidades.HabitacionReserva,System.String,System.String)">
+            <summary>
+            Método que reserva una habitación para una persona
+            </summary>
+            <param name="habitacion">Información de la habitación a reservar</param>
+            <param name="matricula">Matricula del alumno que reserva la habitación</param>
+            <param name="periodo">Periodo en el cual se desea realizar la reservación</param>
+            <returns>Verdadero o Falso dependiendo si se pudo realizar la reservación</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.GetDisponibles(System.String,System.String,System.String)">
+            <summary>
+            Acción que permite obtener las habitaciones disponibles en un periodo, por edificio y piso
+            </summary>
+            <param name="periodo">Periodo de la consulta</param>
+            <param name="edificio">Periodo de la consulta</param>
+            <param name="piso">Periodo de la consulta</param>
+            <returns>Arreglo con habitaciones incluyendo información de disponibilidad</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.BloqueaHabitacion(System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            Método que permite bloquear o desbloquear una habitación para un periodo
+            </summary>
+            <param name="periodo">Periodo en el que desea modificar el bloqueo</param>
+            <param name="edificio">Edificio al que pertence la habitación</param>
+            <param name="numero">Número de habitació a bloquear</param>
+            <param name="bloqueada">Indica si se desea bloquear o desbloquear. True para bloquear.</param>
+            <returns>Verdadero cuando se pudo realizar la modificación</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.HabitacionController.ConsultaOcupacion(System.String)">
+            <summary>
+            Acción que permite obtener la información de habitaciones y disponibilidad para un periodo
+            </summary>
+            <param name="periodo">Periodo de la consulta</param>
+            <returns>Arreglo con habitaciones incluyendo información de disponibilidad</returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.HomeController">
+            <summary>
+            Controlador con la pantalla informativa del API
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.HomeController.Index">
+            <summary>
+            Página de inicio de la aplicación
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.PagosController">
+            <summary>
+            Controlador con los métodos para poder realizar una solicitud de pago y revisar su estatus
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.PagosController.Get(System.String,System.String)">
+            <summary>
+            Acción que permite obtener la información del requisito de pago para un alumno en un periodo especifico
+            </summary>
+            <param name="matricula">Matricula del alumno que realizará el pago</param>
+            <param name="periodo">Periodo donde se queire revisar el pago</param>
+            <returns>Estructura de datos con la información del pago del alumno</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.PagosController.MontoTotal(System.String,System.String)">
+            <summary>
+            Acción que permite obtener el monto total de pago para un alumno en un periodo especifico
+            </summary>
+            <param name="matricula">Matricula del alumno que realizará el pago</param>
+            <param name="periodo">Periodo donde se queire revisar el pago</param>
+            <returns>Cantidad que deberá pagar el alumno para el total de residencias</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.PagosController.Post(System.String,System.String,System.String)">
+            <summary>
+            Metodo que permite elegir el esquema de pago de reservación para un alumno en un determinado periodo
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo en el que se desea elegir el esquema</param>
+            <param name="codigo">Código del esquema de pago elegido</param>
+            <returns>Retorna un booleando indicando si se guardó la selección o no</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.PagosController.Post(System.String,System.String,System.Boolean)">
+            <summary>
+            Metodo que permite exentar el pago de una reservación a un alumno para un determinado periodo
+            </summary>
+            <param name="matricula">Matricula del alumno al que se le exentará el pago</param>
+            <param name="periodo">Periodo en el que se desea exentar el pago</param>
+            <param name="exento">Indica si se debe exentar o no a la persona</param>
+            <returns></returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.PagosController.UrlBloqueos">
+            <summary>
+            Acción que permite obtener la URL para bloqueos
+            </summary>
+            <returns>URL de la consulta de bloqueos</returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.PeriodosController">
+            <summary>
+            Controlador con métodos para obtener y modificara la información de los periodos
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.PeriodosController.Get">
+            <summary>
+            Método que regresa todos los periodos
+            </summary>
+            <returns>Arreglo de Periodos</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.PeriodosController.Activos">
+            <summary>
+            Método que regresa los periodos activos
+            </summary>
+            <returns>Arreglo de Periodos activos</returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.ReservacionesController">
+            <summary>
+            Controlador con métodos para obtener y modificar las Reservaciones
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.ReservacionesController.Get(System.String,System.String)">
+            <summary>
+            Método que regresa la reservación de un alumno para un periodo
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo de la solictud a consultar</param>
+            <returns>Estructura de datos con la información de la solicitud</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.ReservacionesController.Post(System.String,System.String,System.String)">
+            <summary>
+            Acción que permite actualizar la fecha de fin de apartado en una reservación
+            </summary>
+            <param name="periodo">Periodo en el que deseas actualizar</param>
+            <param name="matricula">Matricula del alumno al que deseas actualizar</param>
+            <param name="fecha">Nueva fecha de fin de apartado</param>
+        </member>
+        <member name="T:Residencias.API.Controllers.RoommateController">
+            <summary>
+            Controlador que expone los servicios para consulta de compañeros de cuarto
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.RoommateController.Post(System.String,System.String)">
+            <summary>
+            Acción que permite obtener una lista de personas que pueden ser elegidas como compañeros de cuarto
+            </summary>
+            <param name="busqueda">Matricula o nombre a buscar</param>
+            <param name="id">Matricula de la persona que esta buscando</param>
+            <returns>Listado de personas (matricula y nombre)</returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.SeguimientoController">
+            <summary>
+            Controlador con metodos para obtener y modificara la información de las solicitudes
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.SeguimientoController.Get(System.String)">
+            <summary>
+            Método que regresa todas las solicitudes para un periodo
+            </summary>
+            <param name="id">Periodo del cual se quiere consultar las solicitudes</param>
+            <returns>Arreglo con las solicitudes</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.SeguimientoController.Get(System.String,System.Boolean)">
+            <summary>
+            Método que regresa todas las solicitudes de un periodo para exportar
+            </summary>
+            <param name="periodo">Periodo del cual se quiere consultar las solicitudes</param>
+            <returns>String con las solicitudes</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.SeguimientoController.Get(System.String,System.String)">
+            <summary>
+            Método que regresa la solicitud de un alumno para un periodo
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo de la solictud a consultar</param>
+            <returns>Estructura de datos con la información de la solicitud</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.SeguimientoController.AceptaPrivacidad(System.String,System.String)">
+            <summary>
+            Método que permite aceptar el aviso de privacidad para el periodo seleccionado
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo en el cual quiere realizar la aceptación de aviso de privacidad</param>
+            <returns>Estructura de datos con la información de la solicitud</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.SeguimientoController.CancelaSolicitud(System.String,System.String)">
+            <summary>
+            Metodo que permite Cancelar el segumiento de una reservación a un alumno de un periodo
+            </summary>
+            <param name="matricula">Matricula del alumno al que se le exentará el pago</param>
+            <param name="periodo">Periodo en el que se desea exentar el pago</param>
+            <returns></returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.SesionController">
+            <summary>
+            Controlador con métodos para validar la sesión de un usuario
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.SesionController.Post(Residencias.API.Models.Entidades.AuthRequest)">
+            <summary>
+            Método que permite obtener un Token de Sesión en base a los datos recibidos por el portal
+            </summary>
+            <param name="value">Estructura de petición de sesión que incluye matricula, usuario y PIN</param>
+        </member>
+        <member name="M:Residencias.API.Controllers.SesionController.Get">
+            <summary>
+            Método que permite obtener la información del usuario conectado
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Residencias.API.Controllers.UbicacionesController">
+            <summary>
+            Controlador con métodos que permiten obtener y modificar información acerca de ubicaciones geográficas de Banner
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Controllers.UbicacionesController.Paises">
+            <summary>
+            Método que permite obtener la lista de paises
+            </summary>
+            <returns>Arreglo con los paises</returns>
+        </member>
+        <member name="M:Residencias.API.Controllers.UbicacionesController.Estados">
+            <summary>
+            Método que permite obtener la lista de estados méxicanos
+            </summary>
+            <returns>Arreglo con los estados de la república méxicana</returns>
+        </member>
+        <member name="T:Residencias.API.WebApiApplication">
+            <summary>
+            Clase base de nuestra aplicación
+            </summary>
+        </member>
+        <member name="M:Residencias.API.WebApiApplication.Application_Start">
+            <summary>
+            Método que inicializa la aplicación
+            </summary>
+        </member>
+        <member name="M:Residencias.API.WebApiApplication.Application_AuthenticateRequest(System.Object,System.EventArgs)">
+            <summary>
+            Evento donde inyectamos los roles almacenados en la sesión al contexto
+            </summary>
+            <param name="sender">Objeto que inicializa el método</param>
+            <param name="e">Argumentos del evento que dispara este método</param>
+        </member>
+        <member name="T:Residencias.API.Models.ContactosService">
+            <summary>
+            Servicio para obtener y modificar información de contactos de emergencias de un alumno
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.ContactosService.ObtenerConctactos(System.String)">
+            <summary>
+            Método que obtiene los contactos de una persona
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <returns>Arreglo con los contactos que le corresponden a la matricula</returns>
+        </member>
+        <member name="M:Residencias.API.Models.ContactosService.ObtenerConctactosAdicionales(System.String)">
+            <summary>
+            Método que obtiene los contactos adicionales de una persona
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <returns>Arreglo con los contactos que le corresponden a la matricula</returns>
+        </member>
+        <member name="M:Residencias.API.Models.ContactosService.ActualizaContacto(System.String,Residencias.API.Models.Entidades.Contacto)">
+            <summary>
+            Función que actualiza el telefono de un contacto de emergencia
+            </summary>
+            <param name="matricula">Matricula del alumno que tiene la persona relacionada</param>
+            <param name="datos">Datos de la persona relacioanda al alumno</param>
+            <returns>Verdadero o falso, dependiendo de si se pudo realizar la actualización</returns>
+        </member>
+        <member name="T:Residencias.API.Models.DatosService">
+            <summary>
+            Servicio con los mátodos para obtener y modificar los datos generales de los solicitantes de residencias
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.DatosService.ObtenerDatos(System.String,System.String)">
+            <summary>
+            Método que nos permite obtener los datos personales de un alumno
+            </summary>
+            <param name="matricula">Matricula a consultar</param>
+            <param name="periodo">Periodo de la consulta</param>
+            <returns>Estrcutura de datos con los datos personales del usuario</returns>
+        </member>
+        <member name="M:Residencias.API.Models.DatosService.ObtenerCorreos(System.String)">
+            <summary>
+            Método que obtiene los correos adicionales de una persona
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <returns>Arreglo con los contactos que le corresponden a la matricula</returns>
+        </member>
+        <member name="M:Residencias.API.Models.DatosService.ActualizaDatos(System.String,Residencias.API.Models.Entidades.Domicilio)">
+            <summary>
+            Función que actualiza la direccion de residencia de un alumno
+            </summary>
+            <param name="matricula">Matricula del alumno que tiene la persona relacionada</param>
+            <param name="datos">Datos de la persona relacioanda al alumno</param>
+            <returns>Verdadero o falso, dependiendo de si se pudo realizar la actualización</returns>
+        </member>
+        <member name="M:Residencias.API.Models.DatosService.ValidaCodigoPostal(System.String)">
+            <summary>
+            Función que nos permite validar un código postal
+            </summary>
+            <param name="codigo">Código postal a validar</param>
+            <returns>Indicador de si el código postal es válido o no</returns>
+        </member>
+        <member name="T:Residencias.API.Models.DocumentosService">
+            <summary>
+            Servicio que permite interactuar con los documentos de un alumno
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.DocumentosService.ObtenerDocumentos(System.String,System.String)">
+            <summary>
+            Función que obtiene un listado de documentos de un alumno, incluyendo el estatus de entregado, pero sin el contenido binario
+            </summary>
+            <param name="matricula">Matricula del alumno cuyos documento que se desea obtener</param>
+            /// <param name="periodo">Periodo en curso</param>
+            <returns>Listado de documentos</returns>
+        </member>
+        <member name="M:Residencias.API.Models.DocumentosService.ObtenerUltimoDocumentoTipo(System.String,System.String,System.String)">
+            <summary>
+            Función que obtiene el último documento entregado por un alumno para un tipo, incluyendo su contenido binario
+            </summary>
+            <param name="periodo">Periodo</param>
+            <param name="matricula">Matricula del alumno que subió el documento</param>
+            <param name="tipo_documento">Tipo de documento que se desea obtener</param>
+            <returns>Documento, incluyendo su contenido binario</returns>
+        </member>
+        <member name="M:Residencias.API.Models.DocumentosService.GuardarDocumento(System.String,Residencias.API.Models.Entidades.Documento,System.String)">
+            <summary>
+            Método utilizado para comprimir archivos
+            </summary>
+            <param name="matricula">Matricula del alumno que subió el documento</param>
+            <param name="periodo">Periodo en curso</param>
+            <param name="documento">el nombre con el que se desea que se guarde el archivo generado. Sin la extension</param>
+            <returns>Indicador si se pudo realizar el guardado o no</returns>
+        </member>
+        <member name="M:Residencias.API.Models.DocumentosService.ActualizaEstatus(System.String,System.String,System.String,System.String,System.String@)">
+            <summary>
+            Método que actualiza el estatus del último documento de un tipo para un alumno
+            </summary>
+            <param name="matricula">Matricula del alumno dueño del documento</param>
+            <param name="tipo">Tipo de documento a actualizar</param>
+            <param name="periodo">Periodo en el que se desea actualizar el documento</param>
+            <param name="estatus">Estatus que se desea agregar al documento</param>
+            <param name="estatus_desc">Descripción del estatus actualizado</param>
+            <returns>Indicador de si se pudo realizar la actualización o no</returns>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Alergias.Clave">
+            <summary>
+            Clave de alergia
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Alergias.Descripcion">
+            <summary>
+            Descripcion alergia
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Alergias.Comentarios">
+            <summary>
+            Descripcion alergia
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Alergias.Fecha">
+            <summary>
+             Indica el año en que el alumno inicio con el padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Alergias.Seleccionado">
+            <summary>
+             Indica si el alumno tiene ese padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Cirugias.Clave">
+            <summary>
+            Clave de cirugias
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Cirugias.Descripcion">
+            <summary>
+            Descripcion cirugias
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Cirugias.Comentarios">
+            <summary>
+            Descripcion alergia
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Cirugias.Fecha">
+            <summary>
+             Indica el año en que el alumno se realizo la cirugia
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Cirugias.Seleccionado">
+            <summary>
+             Indica si el alumno tiene ese padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Doctor.Nombre">
+            <summary>
+             Nombre del doctor
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Doctor.Telefono">
+            <summary>
+             Telefono del doctor
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Doctor.Correo">
+            <summary>
+             Correo del doctor
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.DocumentoActualizacion">
+            <summary>
+            Estructura que representa la respuesta de actualización de un estatus de documentos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DocumentoActualizacion.Respuesta">
+            <summary>
+            Indicador de si se pudo realizar o no la actualización
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DocumentoActualizacion.Estatus">
+            <summary>
+            Descripción del estatus aplicado al documento
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Estado">
+            <summary>
+            Estructura de datos que representa un estado (geográfico)
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Estado.Clave">
+            <summary>
+            Código del Estado
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Estado.Nombre">
+            <summary>
+            Nombre del Estado
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FactorRh.Clave">
+            <summary>
+            Clave de factor rh
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FactorRh.Descripcion">
+            <summary>
+            Descripcion de factor rh
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FichaMedica.SeguroUdem">
+            <summary>
+            Indica si el alumno cuenta con seguro udem
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FichaMedica.TipoSangre">
+            <summary>
+            Tipo de sangre
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FichaMedica.Padecimientos">
+            <summary>
+             Padecimientos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FichaMedica.Alergias">
+            <summary>
+            Alergias
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FichaMedica.Cirugias">
+            <summary>
+            Cirugias
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FichaMedica.Tratamiento">
+            <summary>
+             Atencion especial
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.FichaMedica.GastosMedicos">
+            <summary>
+             Gastos Médicos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.GastosMedicos.Existe">
+            <summary>
+             Indica si el alumno tiene gastos medicos mayores
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.GastosMedicos.Aseguradora">
+            <summary>
+             Nnombre de aseguradora 
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.GastosMedicos.Poliza">
+            <summary>
+             Numero de poliza
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.GastosMedicos.fecha_vencimiento">
+            <summary>
+             Fecha de vencimiento
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.HabitacionOcupacion">
+            <summary>
+            Estructura de datos que representa una habitación incluyendo su ocupación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionOcupacion.Ocupantes">
+            <summary>
+            Ocupantes de la habitación
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.HabitacionBloqueo">
+            <summary>
+            Estructura de datos que representa una habitación y un indicador que indica si está bloquedada o no
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionBloqueo.habitacion">
+            <summary>
+            Estructura de una habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionBloqueo.bloqueada">
+            <summary>
+            Indica si la habitación esta bloqueada o no
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.HabitacionReserva">
+            <summary>
+            Estructura de datos que representa una solicitud de reservación de habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionReserva.Edificio">
+            <summary>
+            Código de Edificio
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionReserva.Numero">
+            <summary>
+            Número de habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionReserva.MatriculaRoommate">
+            <summary>
+            Matricula del compañero de cuarto solicitado
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.HabitacionSugerida">
+            <summary>
+            Estructura de datos que representa una habitación sugerida
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionSugerida.Edificio">
+            <summary>
+            Código de Edificio
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionSugerida.Numero">
+            <summary>
+            Número de habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionSugerida.EsPrevia">
+            <summary>
+            Indica si esta sugerencia es por habitación previa o por compañero de cuarto
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionSugerida.OcupanteMatricula">
+            <summary>
+            Matricula de la persona que ocupa esta habitación
+            </summary>
+            <remarks>Solo aplica para sugerencias por compañero de cuarto</remarks>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionSugerida.OcupanteNombre">
+            <summary>
+            Nombre de la persona que ocupa esta habitación
+            </summary>
+            <remarks>Solo aplica para sugerencias por compañero de cuarto</remarks>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.HabitacionSugerida.Vigencia">
+            <summary>
+            Fecha hasta la cual es vigente esta sugerencia
+            </summary>
+            <remarks>Solo aplica para sugerencias por compañero de cuarto</remarks>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PadecimientoCongenito.Existe">
+            <summary>
+            Indica si el alumno ha tenido algún padecimieto congénito
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PadecimientoCongenito.Nombre">
+            <summary>
+            Nombre del padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PadecimientoCongenito.Descripcion">
+            <summary>
+             Tipo de atenciónes para el padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PadecimientoCongenito.Doctor">
+            <summary>
+             Datos del doctor que atiende el padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Padecimientos.Clave">
+            <summary>
+            Clave de padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Padecimientos.Descripcion">
+            <summary>
+            Descripcion padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Padecimientos.Comentarios">
+            <summary>
+            Descripcion alergia
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Padecimientos.Fecha">
+            <summary>
+             Indica el año en que el alumno inicio con el padecimiento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Padecimientos.Seleccionado">
+            <summary>
+             Indica si el alumno tiene ese padecimiento
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Habitacion">
+            <summary>
+            Estructura de datos que representa una habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Edificio">
+            <summary>
+            Código del edificio al que pertenece la habitacion
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Piso">
+            <summary>
+            Código de piso en el que se encuentra la habtiación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Numero">
+            <summary>
+            Número de habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Capacidad">
+            <summary>
+            Número de camas en la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Ocupacion">
+            <summary>
+            Número de personas en la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Disponibildad">
+            <summary>
+            Número de lugares disponibles en la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Carreras">
+            <summary>
+            Listado de códigos de carrera preferidos para la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Genero">
+            <summary>
+            Código de genero (sexo) para el cual esta definida la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.Mapa">
+            <summary>
+            Mapa de coordenadas de la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Habitacion.EsSugeridaDiscapacidad">
+            <summary>
+            Indica si la habitación cuenta con facilidades para discapacidades
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Pago">
+            <summary>
+            Estructura de datos que representa la información del pago de un alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.Periodo">
+            <summary>
+            Código del periodo al que pertence el pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.EsCubierto">
+            <summary>
+            Indica si el alumno requiere realizar un pago o ya fue cubierto 
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.EsExento">
+            <summary>
+            Indica si el alumno requiere esta exento de pago o no
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.TieneBloqueo">
+            <summary>
+            Indica si el alumno tiene bloqueos que no le permitan realizar el pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.FechaLimite">
+            <summary>
+            Fecha limite para realizar pago de reservación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.EsquemaElegido">
+            <summary>
+            Indica si el alumno ya eligió un esquema de pago para su residencia
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.CodigoTotal">
+            <summary>
+            Codigo del esquema elegido para el pago total
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.MontoTotal">
+            <summary>
+            Cantidad del pago a realizar
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.MontoReserva">
+            <summary>
+            Cantidad del pago a realizar para la reserva
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.Esquemas">
+            <summary>
+            Esquemas de pago disponibles para el periodo
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.URL">
+            <summary>
+            Dirección URL a la que se envía al alumno para realizar el pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Pago.Token">
+            <summary>
+            Token a enviar para realizar el pago en el portal
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.PagoDetalle">
+            <summary>
+            Estructura de datos que representa un concepto de pago asociado un esquema de pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoDetalle.Codigo">
+            <summary>
+            Código del cocepto de pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoDetalle.Descripcion">
+            <summary>
+            Descripción del concepto de pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoDetalle.Fecha">
+            <summary>
+            Fecha de vencimiento del pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoDetalle.Costo">
+            <summary>
+            Monto a pagar por este concepto de pago
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.PagoEsquema">
+            <summary>
+            Estructura que representa un esquema de pagos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoEsquema.Codigo">
+            <summary>
+            Código de detalle del concepto de pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoEsquema.Descripcion">
+            <summary>
+            Descripción del esquema de pagos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoEsquema.Costo">
+            <summary>
+            Monto por el pago inicial de este esquema de pagos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PagoEsquema.Detalle">
+            <summary>
+            Conceptos de pago adicionales asociados a este esquema de pago
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.PasoSolicitud">
+            <summary>
+            Estructura que representa el paso de una solicitud
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PasoSolicitud.EsCompleto">
+            <summary>
+            Indica si el paso es completo o no
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PasoSolicitud.Descripcion">
+            <summary>
+            Pequeña descripción del estatus del paso de la solicitud
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Periodo">
+            <summary>
+            Estructura de datos que representa un periodo
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Periodo.Clave">
+            <summary>
+            Código del Periodo
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Periodo.Descripcion">
+            <summary>
+            Descripción del Periodo
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Periodo.Estatus">
+            <summary>
+            Estatus del Periodo
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Roommate">
+            <summary>
+            Estructura que representa un compañero de cuarto
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Roommate.Matricula">
+            <summary>
+            Matricula de la persona
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Roommate.Nombre">
+            <summary>
+            Nombre completo de la persona
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PrescripcionMedica.Existe">
+            <summary>
+             Indica si el alumno tiene medicamento de preescripción controlada
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PrescripcionMedica.Medicamento">
+            <summary>
+             Nombre y descripcion del medicamento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PrescripcionMedica.fecha_inicio">
+            <summary>
+             Indica la fecha de inicio del tratamiento (preescripción controlada)
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PrescripcionMedica.fecha_fin">
+            <summary>
+             Indica la fecha de fin del tratamiento (preescripción controlada)
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.PrescripcionMedica.Doctor">
+            <summary> 
+             Datos del doctor que atiende el tratamiento (preescripción controlada)
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.RestriccionFisica.Existe">
+            <summary>
+             Indica si el alumno tiene actividad fisica restringida
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.RestriccionFisica.Descripcion">
+            <summary>
+             Razones de la restricción de antividad fisica para el alumno
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Telefonos">
+            <summary>
+            Estructura de datos que representa el telefono
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Telefonos.Secuencia">
+            <summary>
+            Secuencia Telefono
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Telefonos.Descripcion">
+            <summary>
+            Descripcion Telefono
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Telefonos.Numero">
+            <summary>
+            Numero  Telefono
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.TipoSangre.Clave">
+            <summary>
+            Clave de tipo de sangre
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.TipoSangre.Descripcion">
+            <summary>
+            Descripcion de tipo de sangre
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.TipoSangre.FactorRh">
+            <summary>
+             Facotr RH
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.TratamientosEspeciales.padecimientoCongenito">
+            <summary>
+             Contiene los datos del padecimiento congenito del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.TratamientosEspeciales.prescripcionMedica">
+            <summary>
+            Contiene los datos de la preescripcion medica del alumno 
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.TratamientosEspeciales.restriccionFisica">
+            <summary>
+            Contiene los datos de una restriccion medica
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.AuthRequest">
+            <summary>
+            Estructura que representa una petición de un token de sesión
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.AuthRequest.Matricula">
+            <summary>
+            Matricula del alumno que se desea autenticar
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.AuthRequest.PIN">
+            <summary>
+            PIN del usuario en el AD del alumno que se desea autenticar
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Contacto">
+            <summary>
+            Estructura de datos que representa una persona de Contacto
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Contacto.Secuencia">
+            <summary>
+            Secuencia de contacto de emergencia en la base de datos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Contacto.Relacion">
+            <summary>
+            Tipo de Relación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Contacto.Nombre">
+            <summary>
+            Nombre(s) de la persona
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Contacto.Apellidos">
+            <summary>
+            Apellidos paterno y materno de la persona
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Contacto.NombreCompleto">
+            <summary>
+            Nombre completo en formato NOMBRE APELLIDOS
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Contacto.Direccion">
+            <summary>
+            Dirección de la persona
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Contacto.Correo">
+            <summary>
+            Correo electrónico de la persona de contacto
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.DatosPersonales">
+            <summary>
+            Estructura de datos que representa los datos personales de un alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Matricula">
+            <summary>
+            Matricula del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Nombre">
+            <summary>
+            Nombre(s) del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Apellidos">
+            <summary>
+            Apellidos paterno y materno del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.NombreCompleto">
+            <summary>
+            Nombre completo en formato NOMBRE APELLIDOS
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Genero">
+            <summary>
+            Genero del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.FechaNacimiento">
+            <summary>
+            Fecha de nacimiento del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Nacionalidad">
+            <summary>
+            Nacionalidad del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Estatus">
+            <summary>
+            Estatus académico del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Carrera">
+            <summary>
+            Carrera de alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.College">
+            <summary>
+            College del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Direccion">
+            <summary>
+            Dirección en Monterrey del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Correo">
+            <summary>
+            Correo electrónico institucional del alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Editable">
+            <summary>
+            Indica si la dirección es editable
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.DatosPersonales.Nivel">
+            <summary>
+            Código de nivel del alumno
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Documento">
+            <summary>
+            Estructura de datos que representa un documento de un alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Codigo">
+            <summary>
+            Código de tipo de documento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Nombre">
+            <summary>
+            Nombre de tipo de documento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Descripcion">
+            <summary>
+            Descripción del tipo de documento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Archivo">
+            <summary>
+            Nombre original del archivo del documento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Contenido">
+            <summary>
+            Contenido del archivo del documento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Entregado">
+            <summary>
+            Indicador de si el documento se enceuntra entregado o no
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Size">
+            <summary>
+            Tamaño de documento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Type">
+            <summary>
+            Formato documento
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Documento.Status">
+            <summary>
+            Descripción del status del documento
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Domicilio">
+            <summary>
+            Estructura de datos que representa una dirección
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.Calle">
+            <summary>
+            Calle y número
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.Colonia">
+            <summary>
+            Colonia del domicilio
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.CodigoPostal">
+            <summary>
+            Código postal del domiclio
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.Ciudad">
+            <summary>
+            Ciudad o municipio
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.Estado">
+            <summary>
+            Estado o delegación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.Pais">
+            <summary>
+            País de la dirección
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.Area">
+            <summary>
+            Código de área telefónica asociada a esta dirección
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Domicilio.Telefono">
+            <summary>
+            Teléfono asociado a esta dirección
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Relacion">
+            <summary>
+            Estructura de datos que representa una relación entre personas
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Relacion.Clave">
+            <summary>
+            Clave del tipo de relación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Relacion.Descripcion">
+            <summary>
+            Descripción del tipo de relación
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Reservacion">
+            <summary>
+            Estructura de datos que representa una Reservación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.Matricula">
+            <summary>
+            Matricula del alumno que hace la reservación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.Periodo">
+            <summary>
+            Periodo en el que se hace la reservación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.Numero">
+            <summary>
+            Número de la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.Piso">
+            <summary>
+            Codigo del piso donde se encuentra la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.Edificio">
+            <summary>
+            Codigo del edificio donde se encuentra la habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.FechaReservacion">
+            <summary>
+            Fecha en que se hace la reservación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.SolicitoRoommie">
+            <summary>
+            Indica si solicitó Roommie o no
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.FechaFinApartado">
+            <summary>
+            Fecha en que termina el apartado de la habitación para el roommiw
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Reservacion.ConfirmoRoommie">
+            <summary>
+            Indica si el Roommie confirmó
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Sesion">
+            <summary>
+            Estructura que representa los datos de una sesión de usuario
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Sesion.Matricula">
+            <summary>
+            Matricula del usuario
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Sesion.Pidm">
+            <summary>
+            Pidm del usuario
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Sesion.Usuario">
+            <summary>
+            Usuario de directorio de la persona
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Sesion.Expira">
+            <summary>
+            Fecha en la que este token de sesión expira
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Sesion.Roles">
+            <summary>
+            Roles del usuario
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.Entidades.Solicitud">
+            <summary>
+            Estructura de datos que representa una solicitud de reservación de residencias para un alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Matricula">
+            <summary>
+            Matricula del alumno que hace la solicitud
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Nombre">
+            <summary>
+            Nombre del alumno que hace la solicitud
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Periodo">
+            <summary>
+            Periodo escolar para el cual aplica la solictud
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.AceptoPrivacidad">
+            <summary>
+            Indicador de si el alumno ya acepto el aviso de privacidad para esta solicitud
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.FechaPrivacidad">
+            <summary>
+            Fecha en que el alumno aceptó el aviso de privacidad para esta solicitud
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.FechaElaboracion">
+            <summary>
+            Fecha en que segenero esta solicitud
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Datos">
+            <summary>
+            Indica si el alumno ya completó su Datos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Contactos">
+            <summary>0
+            Indica si el alumno ya completó sus Contactos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.FichaMedica">
+            <summary>
+            Indica si el alumno ya completó su Ficha Médica
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.AlertaMedica">
+            <summary>
+            Indicador para verificar que hay algo que revisar en la ficha médica
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Documentos">
+            <summary>
+            Indica si el alumno ya completó sus Documentos
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Pago">
+            <summary>
+            Indica si el alumno ya completó su Pago
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.FechaPagoInscripcion">
+            <summary>
+            Fecha en la que el alumno hizo su pago de inscripción
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Reservacion">
+            <summary>
+            Indica si el alumno ya completó la Reservación de su Habitación
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.TipoAlumno">
+            <summary>
+            Describe si el alumno es de nuevo ingreso o no al sistema de reservación de habitaciones
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.TipoAlumnoClave">
+            <summary>
+            Clave del tipo de alumno
+            </summary>
+        </member>
+        <member name="P:Residencias.API.Models.Entidades.Solicitud.Estatus">
+            <summary>
+            Estatus de la Solicitud 
+            </summary>
+        </member>
+        <member name="T:Residencias.API.Models.FichaMedicaService">
+            <summary>
+            Servicio para obtener y modificar información de ficha medica del alumno
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.FichaMedicaService.ObtieneFichaMedica(System.String,System.String)">
+            <summary>
+            Método que obtiene la ficha medica de un alumno
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="idioma">Paramétro de idioma (opcional)</param>
+            <returns>p_tipo_sangre: Arreglo con tipo de sangre y factor rh del alumno</returns>
+            <returns>p_alergias: Arreglo con las alergias del alumno</returns>
+            <returns>p_padecimientos: Arreglo con enfermedades y padecimientos del alumno</returns>
+            <returns>p_cirugias: Arreglo con las cirugias del alumno</returns>
+            <returns>p_tratamiento: Arreglo con comentarios sobre otros padecimientos del alumno</returns>
+        </member>
+        <member name="M:Residencias.API.Models.FichaMedicaService.ActualizaFichaMedica(System.String,Residencias.API.Models.Entidades.FichaMedica)">
+            <summary>
+            Función que actualiza el ficha medica del alumno
+            </summary>
+            <param name="matricula">Matricula del alumno </param>
+            <param name="datos">Datos de la ficha medica</param>
+            <returns>Verdadero o falso, dependiendo de si se pudo realizar la actualización</returns>
+        </member>
+        <member name="M:Residencias.API.Models.FichaMedicaService.ObtieneComentario(System.String)">
+            <summary>
+            Función que obtiene los comentarios asociados a esta persona en su ficha médica.
+            </summary>
+            <param name="matricula">Matricula del alumno del que se buscará el comentario</param>
+            <returns>Texto del comentario</returns>
+        </member>
+        <member name="M:Residencias.API.Models.FichaMedicaService.ActualizaComentario(System.String,System.String)">
+            <summary>
+            Función que actualiza el comentario de seguimiento de ficha médica
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="comentario">Comentario a actualizar</param>
+            <returns>Indicador de si se pudo realizar o no la actualización</returns>
+        </member>
+        <member name="T:Residencias.API.Models.HabitacionesService">
+            <summary>
+            Servicio que tiene los métodos para consultar y asignar habitaciones
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.ObtenerNumLugaresDisponibles(System.String,System.String)">
+            <summary>
+            Método que obtiene el número de camas disponibles para una persona en un periodo
+            </summary>
+            <param name="matricula">Matricula del alumno. Se utiliza para determinar el sexo y buscar habitaciones solo para su genero.</param>
+            <param name="periodo">Periodo en el que desea consultar la disponibilidad</param>
+            <returns>Número de camas disponibles</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.ObtenerHabitaciones(System.String,System.String)">
+            <summary>
+            Método que obtiene las habitaciones en un periodo (filtradas por el genero del alumno)
+            </summary>
+            <param name="matricula">Matricula del alumno. Se utiliza para determinar el sexo y buscar habitaciones solo para su genero.</param>
+            <param name="periodo">Periodo en el que desea consultar las habitaciones</param>
+            <returns>Listado de habitaciones disponibles</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.ObtenerSugerencias(System.String,System.String)">
+            <summary>
+            Método que obtiene las habitaciones sugeridas para un alumno en un periodo
+            </summary>
+            <param name="matricula">Matricula del alumno.</param>
+            <param name="periodo">Periodo en el que desea consultar las habitaciones sugeridas</param>
+            <returns>Sugerencias de habitación</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.ReservaHabitacion(System.String,System.String,Residencias.API.Models.Entidades.HabitacionReserva)">
+            <summary>
+            Método que permite realizar una reserva de habitación
+            </summary>
+            <param name="matricula">Matricula del alumno que realiza la reserva</param>
+            <param name="periodo">Periodo en el cual quiere realizar la reservación</param>
+            <param name="habitacion">Información de la habitación a reservar (edificio, habitación y roommate)</param>
+            <returns>Verdadero o falso, dependiendo si se pudo realizar la reserva</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.ObtenerReservada(System.String,System.String)">
+            <summary>
+            Método que permite obtener la información de la reservación de un alumno
+            </summary>
+            <param name="matricula">Matricula del alumno que realiza la reserva</param>
+            <param name="periodo">Periodo en el cual quiere realizar la reservación</param>
+            <returns>Estructura de datos con la información de la reservación. Null si no hay una reservación</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.BuscarRoommates(System.String,System.String)">
+            <summary>
+            Método que permite obtener buscar personas para elegir como compañeros de cuarto
+            </summary>
+            <param name="matricula">Matricula de la persona que realiza la búsqueda</param>
+            <param name="busqueda">Matricula o nombre que se esta búscando</param>
+            <returns>Arreglo con un listado de personas</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.ObtenerHabitacionesPorPiso(System.String,System.String,System.String)">
+            <summary>
+            Método que obtiene las habitaciones en un periodo (filtradas por el genero del alumno)
+            </summary>
+            <param name="periodo">Periodo en el que desea consultar las habitaciones</param>
+            <param name="edificio">Edificio en el que desea consultar las habitaciones</param>
+            <param name="piso">Piso en el que desea consultar las habitaciones</param>
+            <returns>Listado de habitaciones disponibles</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.BloqueaHabitacion(System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            Método que altera el estatus de bloqueo para una habitación en un periodo
+            </summary>
+            <param name="periodo">Periodo en el que desea modificar el bloqueo</param>
+            <param name="edificio">Edificio al que pertence la habitación</param>
+            <param name="numero">Número de habitació a bloquear</param>
+            <param name="bloqueada">Indica si se desea bloquear o desbloquear. True para bloquear.</param>
+            <returns>Verdadero cuando se pudo realizar la modificación</returns>
+        </member>
+        <member name="M:Residencias.API.Models.HabitacionesService.ConsultaOcupacion(System.String)">
+            <summary>
+            Método que obtiene las habitaciones en un periodo incluyendo información de su ocupación
+            </summary>
+            <param name="periodo">Periodo en el que desea consultar las habitaciones</param>
+            <returns>Listado de habitaciones</returns>
+        </member>
+        <member name="T:Residencias.API.Models.PagosService">
+            <summary>
+            Servicio con los métodos para manipular pagos de los alumnos
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.PagosService.ObtenerPago(System.String,System.String)">
+            <summary>
+            Método que permite obtener la información de pago para un alumno en un periodo
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo para el cálculo</param>
+            <returns>Estructura de datos con la información del pago del alumno</returns>
+        </member>
+        <member name="M:Residencias.API.Models.PagosService.ObtenerUrlBloqueos">
+            <summary>
+            Método que permite obtener la URL de Bloqueos
+            </summary>
+            <returns>URL para consultar los bloqueos</returns>
+        </member>
+        <member name="M:Residencias.API.Models.PagosService.ObtenerMontoTotal(System.String,System.String)">
+            <summary>
+            Método que permite obtener el monto total para un alumno 
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo para el cálculo</param>
+            <returns>Estructura de datos con la información del pago del alumno</returns>
+        </member>
+        <member name="M:Residencias.API.Models.PagosService.ExentaPago(System.String,System.String,System.Boolean)">
+            <summary>
+            Metodo que exenta el pago de una reservación
+            </summary>
+            <param name="matricula">Matricula del alumno al que se le exentará el pago</param>
+            <param name="periodo">Periodo en el que se desea excentar el pago</param>
+            <param name="exento">Indica si se debe exentar o no a la persona</param>
+            <returns></returns>
+        </member>
+        <member name="M:Residencias.API.Models.PagosService.ElegirEsquema(System.String,System.String,System.String)">
+            <summary>
+            Metodo que permite elegir el esquema de pago de reservación para un alumno en un determinado periodo
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo en el que se desea elegir el esquema</param>
+            <param name="codigo">Código del esquema de pago elegido</param>
+            <returns>Retorna un booleando indicando si se guardó la selección o no</returns>
+        </member>
+        <member name="T:Residencias.API.Models.PeriodosService">
+             <summary>
+            Servicio que permite obtener la informacion de los periodos
+             </summary>
+        </member>
+        <member name="M:Residencias.API.Models.PeriodosService.ObtenerPeriodos">
+            <summary>
+            Método que permite obtener los Periodos
+            </summary>
+            <returns>Arreglo de Periodos </returns>
+        </member>
+        <member name="M:Residencias.API.Models.PeriodosService.ObtenerPeriodosActivos">
+            <summary>
+            Método que permite obtener los Periodos Activos
+            </summary>
+            <returns>Arreglo de Periodos </returns>
+        </member>
+        <member name="T:Residencias.API.Models.SeguimientoService">
+             <summary>
+            Servicio que permite obtener la informacion de las solicitudes
+             </summary>
+        </member>
+        <member name="M:Residencias.API.Models.SeguimientoService.ObtenerSolicitudes(System.String)">
+            <summary>
+            Método que permite obtener los registros de las solicitudes
+            </summary>
+            <returns>Arreglo de solicitudes </returns>
+        </member>
+        <member name="M:Residencias.API.Models.SeguimientoService.ObtenerSolicitudesExportar(System.String)">
+            <summary>
+            Método que permite obtener los registros de las solicitudes para exportar
+            </summary>
+            <returns>Arreglo de solicitudes </returns>
+        </member>
+        <member name="M:Residencias.API.Models.SeguimientoService.ObtenerSolicitud(System.String,System.String)">
+            <summary>
+            Método que permite obtener una solicitud para un alumno
+            </summary>
+            <returns>Solicitud del alumno en caso de existir</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SeguimientoService.ExtenderBloqueoRoomate(System.String,System.String,System.DateTime)">
+            <summary>
+            Método que permite realizar extender el bloqueo de reserva de compañero de cuarto
+            </summary>
+            <param name="matricula">Matricula del alumno que extender el bloquedo de la reserva de compañero de cuarto</param>
+            <param name="periodo">Periodo en el cual quiere extender el bloquedo de la reserva de compañero de cuarto</param>
+            <param name="fecha">Fecha hasta la que se quiere extender</param>
+            <returns>Verdadero o falso, dependiendo si se pudo realizar la extensión</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SeguimientoService.AceptaPrivacidad(System.String,System.String)">
+            <summary>
+            Función que permite aceptar el aviso de privacidad para el periodo seleccionado
+            </summary>
+            <param name="matricula">Matricula del alumno</param>
+            <param name="periodo">Periodo en el cual quiere realizar la aceptación de aviso de privacidad</param>
+            <returns>Verdadero o falso, dependiendo si se pudo realizar la aceptación</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SeguimientoService.CancelaSolicitud(System.String,System.String)">
+            <summary>
+            Metodo que cancela la solicitud
+            </summary>
+            <param name="matricula">Matricula del alumno al que se le exentará el pago</param>
+            <param name="periodo">Periodo en el que se desea excentar el pago</param>
+            <returns></returns>
+        </member>
+        <member name="T:Residencias.API.Models.SesionService">
+            <summary>
+            Servicio que contiene las funciones para validar y generar datos de sesión
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.ValidaSesion(Residencias.API.Models.Entidades.AuthRequest)">
+            <summary>
+            Método que permite validar una sesión de usuario, regresando un token en caso de que sea válida
+            </summary>
+            <param name="consulta">Datos del usuario a validar</param>
+            <returns>Estructura de datos con al respuesta, y el token de sesión en caso de que sea válida.</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.ExisteAlumno(System.String)">
+            <summary>
+            Función que válida que la matricula que tenemos de sesión exista en Banner
+            </summary>
+            <param name="matricula">Matricula a revisar</param>
+            <returns>True si el alumno existe en Banner</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.ObtienePidm(System.String)">
+            <summary>
+            Función que obtiene el pidm de una matricula
+            </summary>
+            <param name="matricula">Matricula del alumno a buscar</param>
+            <returns>Regresa el pidm en caso de encontrarlo o -1 si no existe</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.ObtieneRoles(System.String)">
+            <summary>
+            Función que obtiene los roles asignados a la persona
+            </summary>
+            <param name="matricula">Matricula de la persona a buscar</param>
+            <returns>Regresa un arreglo de cadenas de texto con los roles de la persona</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.ValidaUsuario(System.String,System.String)">
+            <summary>
+            Función que valida una matricula y PIN contra Banner, regresando el usuario externo en caso de ser correctos los valores
+            </summary>
+            <param name="matricula">Matricula del alumno a validar</param>
+            <param name="pin">pin del alumno a validar</param>
+            <returns>Regresa el usuario externo de Banner, en caso de no encontrarlo o no ser valido, regresa NULL</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.GeneraToken(System.String,System.String,System.String)">
+            <summary>
+            Función que genera un token para un usuario
+            </summary>
+            <param name="matricula">Matricula para el cual se quiere generar un token</param>
+            <param name="pidm">Pidm para el cual se quiere generar un token</param>
+            <param name="usuario">Usuario para el cual se quiere generar un token</param>
+            <returns>Token con los datos de sesión del usuario</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.DescifraToken(System.String)">
+            <summary>
+            Función que descifra un token y obtiene los datos de sesión almacenados en el
+            </summary>
+            <param name="token">Token a descifrar</param>
+            <returns>Objeto con valores de sesión. Null si no se pudo descifrar</returns>
+        </member>
+        <member name="M:Residencias.API.Models.SesionService.ValidaToken(System.String)">
+            <summary>
+            Función que valida un token de usuario
+            </summary>
+            <param name="token">Valor del token a validar</param>
+            <returns>Booleano con True si el token es valido para la fecha actual. False cuando el token no es válido o ha expirado.</returns>
+        </member>
+        <member name="T:Residencias.API.Models.UbicacionesService">
+            <summary>
+            Servicio que permite obtener información de ubicaciones geográficas
+            </summary>
+        </member>
+        <member name="M:Residencias.API.Models.UbicacionesService.ObtenerPaises">
+            <summary>
+            Función que obtiene la lista de paises
+            </summary>
+            <returns>Arreglo de paises</returns>
+        </member>
+        <member name="M:Residencias.API.Models.UbicacionesService.ObtenerEstados">
+            <summary>
+            Función que obtiene la lista de estados existentes en la república méxicana
+            </summary>
+            <returns>Arreglo de estados de México</returns>
+        </member>
+    </members>
+</doc>

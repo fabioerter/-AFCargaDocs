@@ -1,0 +1,66 @@
+﻿
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('Montserrat-Bold.ttf') format('truetype');
+}
+
+h2, th, td {
+    font-family: Montserrat-Bold;
+   
+}
+
+table th {
+    text-align: 'center';
+    width:8%;
+}
+
+.odd th, .odd td {
+    background: #eee;
+}
+
+input {
+    width:45px; 
+    height:45px;
+}
+.mainiconos {
+    width: 60px;
+}
+
+.custom-file-upload {
+    /*border: 1px solid #ccc;*/
+    /*display: inline-block;*/
+    /*padding: 6px 12px;*/
+    cursor: pointer;
+    /*background-image: url(../images/Recursos/image5.png);
+    background-repeat: no-repeat;*/
+}
+
+.custom-file{
+    /*width:50%;*/
+}
+
+
+/*table {
+    width: 100%;
+    border: 1px solid #000;
+}
+
+th, td {
+    width: 25%;
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    padding: 0.3em;
+    caption-side: bottom;
+}
+
+caption {
+    padding: 0.3em;
+    color: #fff;
+    background: #000;
+}
+
+th {
+    background: #eee;
+}*/
