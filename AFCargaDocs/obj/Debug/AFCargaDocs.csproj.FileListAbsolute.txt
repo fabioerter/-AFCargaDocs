@@ -39,3 +39,7 @@ C:\Users\anaq8\source\repos\AFCargaDocs\AFCargaDocs\bin\es\System.Web.WebPages.R
 C:\Users\anaq8\source\repos\AFCargaDocs\AFCargaDocs\obj\Debug\AFCargaDocs.csproj.CopyComplete
 C:\Users\anaq8\source\repos\AFCargaDocs\AFCargaDocs\obj\Debug\AFCargaDocs.dll
 C:\Users\anaq8\source\repos\AFCargaDocs\AFCargaDocs\obj\Debug\AFCargaDocs.pdb
+C:\Projetos\AFCargaDocs\AFCargaDocs\obj\Debug\AFCargaDocs.csprojAssemblyReference.cache
+C:\Projetos\AFCargaDocs\AFCargaDocs\obj\Debug\AFCargaDocs.csproj.CoreCompileInputs.cache
+C:\Projetos\AFCargaDocs\AFCargaDocs\obj\Debug\AFCargaDocs.dll
+C:\Projetos\AFCargaDocs\AFCargaDocs\obj\Debug\AFCargaDocs.pdb
