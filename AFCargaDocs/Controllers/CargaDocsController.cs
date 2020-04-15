@@ -1,4 +1,4 @@
-﻿using AFCargaDocs.M;
+﻿using AFCargaDocs.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace AFCargaDocs.Controllers
 
         public ActionResult CargaDocs(string nombre)
         {
-            
+            CargaDocsService.ObtenerDocumentos("5111111");
             ViewBag.Nombre = nombre;
             return View();
         }

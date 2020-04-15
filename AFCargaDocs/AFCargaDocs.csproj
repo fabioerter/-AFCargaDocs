@@ -38,8 +38,15 @@
         <ObjectGroup Name="Banner-Deployment" Order="1">
           <Destination Path="" />
           <Object Type="DbFullSql">
-            <PreSource Path="user id=RESUSER%3bpassword=u_pick_it%3bdata source=BannerDataSource" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
-            <Source Path="obj\Debug\AutoScripts\Banner-Deployment_SchemaOnly.sql" Transacted="True" />
+            <PreSource Path="user id=RESUSER%3bpassword=u_pick_it%3bdata source=BannerDataSource" ScriptSchema="True" ScriptData="True" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Debug\AutoScripts\Banner-Deployment_SchemaAndData.sql" Transacted="True" />
+          </Object>
+        </ObjectGroup>
+        <ObjectGroup Name="OracleDbContext-Deployment" Order="2" Enabled="True" xmlns="">
+          <Destination Path="" />
+          <Object Type="DbFullSql">
+            <PreSource Path="User Id=oracle_user%3bPassword=oracle_user_password%3bData Source=oracle" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Debug\AutoScripts\OracleDbContext-Deployment_SchemaOnly.sql" Transacted="True" />
           </Object>
         </ObjectGroup>
       </Objects>
@@ -86,6 +93,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -166,6 +174,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CargaDocsService.cs" />
+    <Compile Include="Models\Entidades\DataBase.cs" />
     <Compile Include="Models\Entidades\Document.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />

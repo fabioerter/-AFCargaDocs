@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Residencias.API.Models.Entidades
+namespace AFCargaDocs.Models.Entidades
 {
     /// <summary>
     /// Estructura que representa una petición de un token de sesión
