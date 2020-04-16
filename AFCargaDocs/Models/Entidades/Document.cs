@@ -11,6 +11,10 @@ namespace AFCargaDocs.Models.Entidades
     public class Document
     {
         /// <summary>
+        /// Clabe del archivo
+        /// </summary>
+        public string Clave { get; set; }
+        /// <summary>
         /// Nome del archivo
         /// </summary>
         public string Name { get; set; }
@@ -18,5 +22,9 @@ namespace AFCargaDocs.Models.Entidades
         /// Status del archivo (NR = no revisado o PENDIENTE POR REVIAR)
         /// </summary>
         public string Status { get; set; }
+        /// <summary>
+        /// Fecha del archivo
+        /// </summary>
+        public string Fecha { get; set; }
     }
 }

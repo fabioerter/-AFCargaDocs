@@ -8,9 +8,24 @@ using System.Web;
 
 namespace AFCargaDocs.Models.Entidades
 {
-    public static class DataBase
+    public class DataBase
     {
-        public static DataTable ExecuteQuery(String query)
+        String query;
+
+        Dictionary<String, String> filters;
+
+        public DataBase()
+        {
+            this.query = query;
+            filters = new Dictionary<string, string>();
+        }
+
+        public void AddFilter(String name, String value)
+        {
+            filters.Add(name, value);
+        }
+
+        public DataTable ExecuteQuery(String query)
         {
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
@@ -23,6 +38,13 @@ namespace AFCargaDocs.Models.Entidades
                     try
                     {
                         cnx.Open();
+                        if (filters.Count() > 0)
+                        {
+                            foreach (String name in filters.Keys)
+                            {
+                                cmd.Parameters.Add(":" + name, filters[name]);
+                            }
+                        }
                         dataAdapter.SelectCommand = cmd;
                         dataAdapter.Fill(dataSet);
                     }
