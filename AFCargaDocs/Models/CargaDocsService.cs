@@ -12,6 +12,7 @@ using Oracle.ManagedDataAccess.Types;
 using System.Web.Http;
 using System.Net.Http;
 using System.Data;
+using System.Text;
 
 namespace AFCargaDocs.Models
 {
@@ -26,12 +27,42 @@ namespace AFCargaDocs.Models
         /// </summary>
         /// <param name="matricula">Matricula del alumno</param>
         /// <returns>Arreglo con los contactos que le corresponden a la matricula</returns>
-        public static List<Document> ObtenerDocumentos(string matricula)
+        public static Document[] ObtenerDocumentos(string matricula)
         {
             DataTable dataTable;
+            StringBuilder query = new StringBuilder();
+            query.Append(" SELECT KVRTRFN_TREQ_CODE,KVVTREQ_DESC, KVRTRFN_ACTIVITY_DATE, ");
+            query.Append("       NVL((SELECT KVRAREQ_TRST_CODE");
+            query.Append("                                FROM KVRAREQ");
+            query.Append("                                WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
+            query.Append("                                  AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            query.Append("                                  AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            query.Append("                                  AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
+            query.Append("                                  ),'PS') STATUS");
+            query.Append(" FROM KVRTRFN,");
+            query.Append("     KVVTREQ");
+            query.Append(" WHERE KVRTRFN_FNDC_CODE = :fndcCode ");
+            query.Append("  AND KVRTRFN_AIDY_CODE = :aidyCode ");
+            query.Append("  AND KVRTRFN_AIDP_CODE = :aidpCode ");
+            query.Append("  AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
+            query.Append("  AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
+            query.Append("                                FROM KVRAREQ ");
+            query.Append("                                WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
+            query.Append("                                  AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            query.Append("                                  AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            query.Append("                                  AND KVRAREQ_TRST_CODE = 'NQ')");
+            query.Append("");
+
             try
             {
-                dataTable = DataBase.ExecuteQuery("SELECT * FROM KVRTRFN");
+                DataBase dataBase = new DataBase();
+                dataBase.AddFilter("matricula", matricula);
+                dataBase.AddFilter("fndcCode", "PBUPNI");
+                dataBase.AddFilter("aidyCode", "2111");
+                dataBase.AddFilter("aidpCode", "PR");
+
+
+                dataTable = dataBase.ExecuteQuery(query.ToString());
             }
             catch (Exception ex)
             {
@@ -44,12 +75,14 @@ namespace AFCargaDocs.Models
             {
                 Document document = new Document()
                 {
-                    Name = dr[0].ToString(),
-                    Status = dr[1].ToString()
+                    Clave = dr[0].ToString(),
+                    Name = dr[1].ToString(),
+                    Fecha = Convert.ToDateTime(dr[2].ToString()).ToShortDateString(),
+                    Status = dr[3].ToString()
                 };
                 documentList.Add(document);
             }
-            return documentList;
+            return documentList.ToArray();
             //using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             //{
             //    cnx.Open();
