@@ -16,7 +16,6 @@ namespace AFCargaDocs.Models.Entidades
 
         public DataBase()
         {
-            this.query = query;
             filters = new Dictionary<string, string>();
         }
 
