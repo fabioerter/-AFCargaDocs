@@ -30,7 +30,6 @@ namespace AFCargaDocs.Models.Entidades
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
                 DataSet dataSet = new DataSet();
-
                 OracleCommand cmd = new OracleCommand(query, cnx);
 
                 using (OracleDataAdapter dataAdapter = new OracleDataAdapter())
@@ -42,7 +41,8 @@ namespace AFCargaDocs.Models.Entidades
                         {
                             foreach (String name in filters.Keys)
                             {
-                                cmd.Parameters.Add(":" + name, filters[name]);
+                                OracleParameter parameter = new OracleParameter(":" + name,filters[name]);
+                                cmd.Parameters.Add(parameter);
                             }
                         }
                         dataAdapter.SelectCommand = cmd;

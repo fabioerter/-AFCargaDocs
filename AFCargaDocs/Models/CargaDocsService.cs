@@ -31,26 +31,36 @@ namespace AFCargaDocs.Models
         {
             DataTable dataTable;
             StringBuilder query = new StringBuilder();
-            query.Append("SELECT KVRTRFN_TREQ_CODE, KVVTREQ_DESC, KVRTRFN_ACTIVITY_DATE, KVRTRFN_AIDP_CODE ");
-            query.Append("FROM KVRTRFN, KVVTREQ ");
-            query.Append("WHERE KVRTRFN_FNDC_CODE = :fndcCode ");
+            query.Append(" SELECT KVRTRFN_TREQ_CODE,KVVTREQ_DESC, KVRTRFN_ACTIVITY_DATE, ");
+            query.Append("       NVL((SELECT KVRAREQ_TRST_CODE");
+            query.Append("                                FROM KVRAREQ");
+            query.Append("                                WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
+            query.Append("                                  AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            query.Append("                                  AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            query.Append("                                  AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
+            query.Append("                                  ),'PS') STATUS");
+            query.Append(" FROM KVRTRFN,");
+            query.Append("     KVVTREQ");
+            query.Append(" WHERE KVRTRFN_FNDC_CODE = :fndcCode ");
             query.Append("  AND KVRTRFN_AIDY_CODE = :aidyCode ");
             query.Append("  AND KVRTRFN_AIDP_CODE = :aidpCode ");
             query.Append("  AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
-            query.Append("  AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE ");
-            query.Append("FROM KVRAREQ ");
-            query.Append("WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
-            query.Append("  AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("  AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE)");
+            query.Append("  AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
+            query.Append("                                FROM KVRAREQ ");
+            query.Append("                                WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
+            query.Append("                                  AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            query.Append("                                  AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            query.Append("                                  AND KVRAREQ_TRST_CODE = 'NQ')");
             query.Append("");
 
             try
             {
                 DataBase dataBase = new DataBase();
+                dataBase.AddFilter("matricula", matricula);
                 dataBase.AddFilter("fndcCode", "PBUPNI");
                 dataBase.AddFilter("aidyCode", "2111");
                 dataBase.AddFilter("aidpCode", "PR");
-                dataBase.AddFilter("matricula", matricula);
+
 
                 dataTable = dataBase.ExecuteQuery(query.ToString());
             }
