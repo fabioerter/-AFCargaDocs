@@ -13,21 +13,35 @@ using System.Web.Services;
 using System.Web.Http;
 using System.Configuration;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
-
+using System.Text;
 
 namespace AFCargaDocs.Controllers
 {
     public class CargaDocsController : Controller
     {
+
         // GET: CargaDocs
         public ActionResult Index()
         {
+            //?token=bWF0cmljdWxhPTAwMDI2ODQxMSZmbmRjPVBCVVBOSSZhaWR5PTIxMTEmYWlkcD1QUg==
+            string encodedValues = Request.Params["token"];
+            byte[] data = Convert.FromBase64String(encodedValues);
+            string decodedValues = Encoding.UTF8.GetString(data);
+            var parsedValues = HttpUtility.ParseQueryString(decodedValues);
+            string matricula = parsedValues["matricula"];
+            string fndc = parsedValues["fndc"];
+            string aidy = parsedValues["aidy"];
+            string aidp = parsedValues["aidp"];
+            string token = encodedValues;
+            ViewBag.Matricula = matricula;
+            ViewBag.fndc = fndc;
+            ViewBag.aidy = aidy;
+            ViewBag.aidp = aidp;
             return View();
         }
 
-        public String ObtenerDocumentos(string nombre)
+        public String ObtenerDocumentos()
         {
-            ViewBag.Nombre = nombre;
             return JsonConvert.SerializeObject(CargaDocsService.ObtenerDocumentos("000549681"));
         }
 

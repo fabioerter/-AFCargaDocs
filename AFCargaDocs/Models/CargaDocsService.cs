@@ -31,7 +31,7 @@ namespace AFCargaDocs.Models
         {
             DataTable dataTable;
             StringBuilder query = new StringBuilder();
-            query.Append(" SELECT KVRTRFN_TREQ_CODE,KVVTREQ_DESC, KVRTRFN_ACTIVITY_DATE, ");
+            query.Append(" SELECT KVRTRFN_TREQ_CODE,KVVTREQ_DESC, NVL(KVRTRFN_ACTIVITY_DATE, '01/01/1900') , ");
             query.Append("       NVL((SELECT KVRAREQ_TRST_CODE");
             query.Append("                                FROM KVRAREQ");
             query.Append("                                WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
