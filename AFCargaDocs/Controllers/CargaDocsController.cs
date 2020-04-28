@@ -14,6 +14,8 @@ using System.Web.Http;
 using System.Configuration;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 using System.Text;
+using System.ServiceModel;
+using AFCargaDocs.AxServiceInterface;
 
 namespace AFCargaDocs.Controllers
 {
@@ -47,6 +49,7 @@ namespace AFCargaDocs.Controllers
             ViewBag.aidp = GlobalVariables.Aidp;
             return View();
         }
+
         [HttpPost]
         public JsonResult ObtenerDocumentos()
         {
@@ -58,7 +61,13 @@ namespace AFCargaDocs.Controllers
                 JsonRequestBehavior.AllowGet);
 
         }
-
+        public string teste()
+        {
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", "DOCIDX", "di12345678!", 0);
+            axServicesInterface.Logout(sessionTicket);
+            return "sucesso";
+        }
         public JsonResult guardarDocumento()
         {
             string clave = "FIRMA";
