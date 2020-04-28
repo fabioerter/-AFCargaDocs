@@ -39,6 +39,10 @@ namespace AFCargaDocs.Controllers
 
 
             HttpContext Contexto = System.Web.HttpContext.Current;
+            string claveDoc = Contexto.Request.Form.ToString().Substring(6);
+
+            
+
             HttpFileCollection ColeccionArchivos = Contexto.Request.Files;// Context.Request.Files;
             string NombreArchivo = "";
             for (int ArchivoActual = 0; ArchivoActual < ColeccionArchivos.Count; ArchivoActual++)
