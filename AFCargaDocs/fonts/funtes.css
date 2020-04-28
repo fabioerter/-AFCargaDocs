@@ -48,10 +48,15 @@ input {
     cursor: pointer;
 }
 
+
+
 .modal-content {
-    background-color: #f7f7f7;
+   background-color: #f7f7f7
 }
 
+.modal-body, modal-content {
+    background-color: #f7f7f7
+}
 .container {
     text-align: center;
 }
