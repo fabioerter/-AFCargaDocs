@@ -59,11 +59,17 @@ namespace AFCargaDocs.Controllers
 
         }
 
-        public JsonResult guardarDocumento(string clave)
+        public JsonResult guardarDocumento()
         {
-
-            return Json( CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
-                GlobalVariables.Aidy, GlobalVariables.Aidp), JsonRequestBehavior.AllowGet);
+            string clave = "FIRMA";
+            HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+            if (clave == null)
+            {
+                throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest),
+                        "No se puede encontrar su documento, espere un momento e intente nuevamente");
+            }
+            return Json(CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
+                GlobalVariables.Aidy, GlobalVariables.Aidp, file), JsonRequestBehavior.AllowGet);
         }
 
         [System.ComponentModel.ToolboxItem(false)]

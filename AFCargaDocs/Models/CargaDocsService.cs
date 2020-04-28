@@ -13,6 +13,7 @@ using System.Web.Http;
 using System.Net.Http;
 using System.Data;
 using System.Text;
+using System.IO;
 
 namespace AFCargaDocs.Models
 {
@@ -33,13 +34,65 @@ namespace AFCargaDocs.Models
             DocumentList documentList = new DocumentList(matricula, fndcCode, aidyCode, aidpCode);
             return documentList.GetDocumentList().ToArray();
         }
-        public static Document ObtenerDatosDocumento(string matricula, string clave, string fndcCode, string aidyCode, string aidpCode)
+        public static Document ObtenerDatosDocumento(string matricula, string clave,
+                                                string fndcCode, string aidyCode, string aidpCode)
         {
             return new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
 
         }
-        public static Document insertDocument(string matricula, string clave, string fndcCode, string aidyCode, string aidpCode)
+        public static bool DisplayFileFromServer(Uri serverUri)
         {
+            // The serverUri parameter should start with the ftp:// scheme.
+            if (serverUri.Scheme != Uri.UriSchemeFtp)
+            {
+                return false;
+            }
+            // Get the object used to communicate with the server.
+            WebClient request = new WebClient();
+
+            // This example assumes the FTP site uses anonymous logon.
+            request.Credentials = new NetworkCredential("anonymous", "janeDoe@contoso.com");
+            try
+            {
+                byte[] newFileData = request.DownloadData(serverUri.ToString());
+                string fileString = System.Text.Encoding.UTF8.GetString(newFileData);
+                Console.WriteLine(fileString);
+            }
+            catch (WebException e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            return true;
+        }
+        public static Document insertDocument(string matricula, string clave, string fndcCode,
+                                            string aidyCode, string aidpCode, HttpPostedFile file)
+        {
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://148.238.49.217/" + file.FileName);
+
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+
+            // This example assumes the FTP site uses anonymous logon.
+            request.Credentials = new NetworkCredential("ftpDevlAyudaFN", "Rep0AyudaFnD3vl$");
+
+            // Copy the contents of the file to the request stream.
+            string fileStream = new StreamReader( file.InputStream).ReadToEnd();
+            byte[] fileContents = Encoding.UTF8.GetBytes(fileStream);
+
+            request.ContentLength = fileContents.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(fileContents, 0, fileContents.Length);
+            }
+
+            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            {
+                Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+            }
+
+
+
             Document document = new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
             if (document.status != "PS")
             {
@@ -127,17 +180,18 @@ namespace AFCargaDocs.Models
 
 
                     comando.ExecuteNonQuery();
-
                     string lector = (comando.Parameters["p_rowid_out"].Value).ToString();
-
+                    document = new Document(GlobalVariables.Matricula, document.clave,
+                                document.fndcCode, document.aidyCode, document.aidpCode);
+                    oracleTransaction.Commit();
                 }
                 catch (Exception ex)
                 {
+                    oracleTransaction.Rollback();
                     throw new HttpException(Convert.ToInt32(HttpStatusCode.InternalServerError), ex.Message);
                 }
                 finally
                 {
-                    oracleTransaction.Rollback();
                     cnx.Close();
                 }
                 return document;

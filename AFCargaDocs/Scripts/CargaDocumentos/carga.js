@@ -1,13 +1,22 @@
-﻿$(document).ready(function () {
+﻿//$('#myModal').on('shown.bs.modal', function () {
+//    $('#myInput').focus()
+//})
+
+
+//$(".custom-file-input").on("change", function () {
+//    var fileName = $(this).val().split("\\").pop();
+//    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+//});
+
+jQuery(document).ready(function () {
     $('#file-upload').change(function () {
         $('#ModalError').modal('hide');
         var i = $(this).prev('label').clone();
         var file = $('#file-upload')[0].files[0].name;
         //$(this).prev('#fileName').text(file);
-
         document.getElementById("fileName").innerHTML = file;
         //if (file.)
-        //guardar();
+        guardar();
         //$("#SubirArchivo").prop("disabled", false);
         //$("notFound").css()
 
@@ -69,7 +78,7 @@ function guardar() {
             //Detectamos si el usuario acepto el mensaje
             if (mensaje) {
                 $.ajax({
-                    url: 'cargaDocs/Guardar',
+                        url: 'CargaDocs/guardarDocumento',
                     data: fd,
                     processData: false,
                     contentType: false,
