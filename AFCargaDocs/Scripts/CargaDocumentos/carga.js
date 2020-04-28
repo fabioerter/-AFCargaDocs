@@ -8,16 +8,15 @@
 //    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 //});
 
-$(document).ready(function () {
+jQuery(document).ready(function () {
     $('#file-upload').change(function () {
         $('#ModalError').modal('hide');
         var i = $(this).prev('label').clone();
         var file = $('#file-upload')[0].files[0].name;
         //$(this).prev('#fileName').text(file);
-
         document.getElementById("fileName").innerHTML = file;
         //if (file.)
-        //guardar();
+        guardar();
         //$("#SubirArchivo").prop("disabled", false);
         //$("notFound").css()
 
@@ -55,12 +54,13 @@ function guardar()
 
                 var fd = new FormData();
                 fd.append('file', $('#file-upload')[0].files[0]);
+                fd.append('clave', 'FIRMA')
                 //Ingresamos un mensaje a mostrar
                 var mensaje = confirm("Acepta cargar el archivo?");
                 //Detectamos si el usuario acepto el mensaje
                 if (mensaje) {
                     $.ajax({
-                        url: 'Guardar',
+                        url: 'CargaDocs/guardarDocumento',
                         data: fd,
                         processData: false,
                         contentType: false,
