@@ -27,90 +27,123 @@ namespace AFCargaDocs.Models
         /// </summary>
         /// <param name="matricula">Matricula del alumno</param>
         /// <returns>Arreglo con los contactos que le corresponden a la matricula</returns>
-        public static Document[] ObtenerDocumentos(string matricula)
+        public static Document[] ObtenerDocumentos(
+            string matricula, string fndcCode, string aidyCode, string aidpCode)
         {
-            DataTable dataTable;
-            StringBuilder query = new StringBuilder();
-            query.Append(" SELECT KVRTRFN_TREQ_CODE,KVVTREQ_DESC, KVRTRFN_ACTIVITY_DATE, ");
-            query.Append("       NVL((SELECT KVRAREQ_TRST_CODE");
-            query.Append("                                FROM KVRAREQ");
-            query.Append("                                WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
-            query.Append("                                  AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("                                  AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("                                  AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("                                  ),'PS') STATUS");
-            query.Append(" FROM KVRTRFN,");
-            query.Append("     KVVTREQ");
-            query.Append(" WHERE KVRTRFN_FNDC_CODE = :fndcCode ");
-            query.Append("  AND KVRTRFN_AIDY_CODE = :aidyCode ");
-            query.Append("  AND KVRTRFN_AIDP_CODE = :aidpCode ");
-            query.Append("  AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
-            query.Append("  AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
-            query.Append("                                FROM KVRAREQ ");
-            query.Append("                                WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
-            query.Append("                                  AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("                                  AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("                                  AND KVRAREQ_TRST_CODE = 'NQ')");
-            query.Append("");
+            DocumentList documentList = new DocumentList(matricula, fndcCode, aidyCode, aidpCode);
+            return documentList.GetDocumentList().ToArray();
+        }
+        public static Document ObtenerDatosDocumento(string matricula, string clave, string fndcCode, string aidyCode, string aidpCode)
+        {
+            return new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
 
-            try
+        }
+        public static Document insertDocument(string matricula, string clave, string fndcCode, string aidyCode, string aidpCode)
+        {
+            Document document = new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
+            if (document.status != "PS")
             {
-                DataBase dataBase = new DataBase();
-                dataBase.AddFilter("matricula", matricula);
-                dataBase.AddFilter("fndcCode", "PBUPNI");
-                dataBase.AddFilter("aidyCode", "2111");
-                dataBase.AddFilter("aidpCode", "PR");
-
-
-                dataTable = dataBase.ExecuteQuery(query.ToString());
+                throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest), "El Documento ya esta en nuestro servidor");
             }
-            catch (Exception ex)
+            using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
-                throw new HttpException(ex.ToString(), Convert.ToInt32(HttpStatusCode.BadRequest));
-                //throw new HttpResponseException(HttpStatusCode.BadRequest);
-            }
+                cnx.Open();
+                OracleTransaction oracleTransaction = cnx.BeginTransaction();
+                OracleCommand comando = new OracleCommand();
+                comando.Connection = cnx;
+                comando.CommandText = @"KV_APPLICANT_TRK_REQT.P_CREATE";
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.Transaction = oracleTransaction;
 
-            List<Document> documentList = new List<Document>();
-            foreach (DataRow dr in dataTable.Rows)
-            {
-                Document document = new Document()
+
+                comando.Parameters.Add(new OracleParameter("p_pidm", OracleDbType.Int16)
                 {
-                    Clave = dr[0].ToString(),
-                    Name = dr[1].ToString(),
-                    Fecha = Convert.ToDateTime(dr[2].ToString()).ToShortDateString(),
-                    Status = dr[3].ToString()
-                };
-                documentList.Add(document);
-            }
-            return documentList.ToArray();
-            //using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
-            //{
-            //    cnx.Open();
+                    Value = GlobalVariables.getPdim(matricula),
+                    Size = 8
+                });
+                comando.Parameters.Add(new OracleParameter("p_aidy_code", OracleDbType.Varchar2)
+                {
+                    Value = document.aidyCode,
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_aidp_code", OracleDbType.Varchar2)
+                {
+                    Value = document.aidpCode,
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_treq_code", OracleDbType.Varchar2)
+                {
+                    Value = document.clave,
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_trst_code", OracleDbType.Varchar2)
+                {
+                    Value = "NR",
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_trst_date", OracleDbType.Varchar2)
+                {
+                    Value = Convert.ToDateTime(document.fecha).ToString("dd-MMM-yyyy")
+                                                                .Replace(".", "").ToUpper(),
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_establish_date", OracleDbType.Varchar2)
+                {
+                    Value = DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_comment", OracleDbType.Varchar2)
+                {
+                    Value = "teste",
+                    Size = 9
+                });
+                comando.Parameters.Add(new OracleParameter("p_data_origin", OracleDbType.Varchar2)
+                {
+                    Value = null,
+                    Size = 9
+                });
+                comando.Parameters.Add(new OracleParameter("p_create_user_id", OracleDbType.Varchar2)
+                {
+                    Value = "cargaDocsWeb",
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_create_date", OracleDbType.Varchar2)
+                {
+                    Value = DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+                    Size = 20
+                }); ;
+                comando.Parameters.Add(new OracleParameter("p_user_id", OracleDbType.Varchar2)
+                {
+                    Value = "cargaDocsWeb",
+                    Size = 20
+                });
+                comando.Parameters.Add(new OracleParameter("p_rowid_out", OracleDbType.Varchar2)
+                {
+                    Direction = System.Data.ParameterDirection.Output,
+                    Size = 18
+                }); ;
+                try
+                {
 
-            //    // Preparamos la consulta
-            //    OracleDataReader reader = new OracleCommand("SELECT * FROM KVRTRFN", cnx).ExecuteReader();
-            //    List<Document> documentList = new List<Document>();
-            //    try
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            Console.WriteLine(reader.GetString(0) + ", " + reader.GetString(1));
-            //            String teste = reader.GetString(1);
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        throw new HttpException(ex.ToString(), Convert.ToInt32(HttpStatusCode.BadRequest));
-            //        /*throw new HttpResponseException(HttpStatusCode.BadRequest);*/
-            //    }
-            //    return documentList;
-            //}
+
+                    comando.ExecuteNonQuery();
+
+                    string lector = (comando.Parameters["p_rowid_out"].Value).ToString();
+
+                }
+                catch (Exception ex)
+                {
+                    throw new HttpException(Convert.ToInt32(HttpStatusCode.InternalServerError), ex.Message);
+                }
+                finally
+                {
+                    oracleTransaction.Rollback();
+                    cnx.Close();
+                }
+                return document;
+
+            }
+
         }
     }
-
-
-
-
-
-
 }

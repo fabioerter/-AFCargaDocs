@@ -13,22 +13,66 @@ using System.Web.Services;
 using System.Web.Http;
 using System.Configuration;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
-
+using System.Text;
 
 namespace AFCargaDocs.Controllers
 {
     public class CargaDocsController : Controller
     {
+
         // GET: CargaDocs
         public ActionResult Index()
         {
+            //?token=bWF0cmljdWxhPTAwMDU0OTY4MSZmbmRjPVBCVVBOSSZhaWR5PTIxMTEmYWlkcD1QUg==
+            string encodedValues = Request.Params["token"];
+            if (User != null && User.Identity.IsAuthenticated && string.IsNullOrEmpty(encodedValues))
+            {
+                return RedirectToAction("RecuperaAvance");
+            }
+            if (string.IsNullOrEmpty(encodedValues))
+            {
+                return RedirectToAction("NoLogin");
+            }
+            byte[] data = Convert.FromBase64String(encodedValues);
+            string decodedValues = Encoding.UTF8.GetString(data);
+            var parsedValues = HttpUtility.ParseQueryString(decodedValues);
+            GlobalVariables.Matricula = parsedValues["matricula"];
+            GlobalVariables.Fndc = parsedValues["fndc"];
+            GlobalVariables.Aidy = parsedValues["aidy"];
+            GlobalVariables.Aidp = parsedValues["aidp"];
+            string token = encodedValues;
+            ViewBag.Matricula = GlobalVariables.Matricula;
+            ViewBag.fndc = GlobalVariables.Fndc;
+            ViewBag.aidy = GlobalVariables.Aidy;
+            ViewBag.aidp = GlobalVariables.Aidp;
             return View();
         }
-
-        public String ObtenerDocumentos(string nombre)
+        [HttpPost]
+        public JsonResult ObtenerDocumentos()
         {
-            ViewBag.Nombre = nombre;
-            return JsonConvert.SerializeObject(CargaDocsService.ObtenerDocumentos("000549681"));
+            return Json(CargaDocsService.ObtenerDocumentos(
+                GlobalVariables.Matricula,
+                GlobalVariables.Fndc,
+                GlobalVariables.Aidy,
+                GlobalVariables.Aidp),
+                JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult guardarDocumento(string clave)
+        {
+
+            return Json( CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
+                GlobalVariables.Aidy, GlobalVariables.Aidp), JsonRequestBehavior.AllowGet);
+        }
+
+        [System.ComponentModel.ToolboxItem(false)]
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public String ObtenerDatosDocumento()
+        {
+            return JsonConvert.SerializeObject(CargaDocsService.ObtenerDatosDocumento(
+                GlobalVariables.Matricula, "AFCD", GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp));
         }
 
         [System.ComponentModel.ToolboxItem(false)]
