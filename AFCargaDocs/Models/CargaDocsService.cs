@@ -136,8 +136,7 @@ namespace AFCargaDocs.Models
                 });
                 comando.Parameters.Add(new OracleParameter("p_trst_date", OracleDbType.Varchar2)
                 {
-                    Value = Convert.ToDateTime(document.fecha).ToString("dd-MMM-yyyy")
-                                                                .Replace(".", "").ToUpper(),
+                    Value = DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
                     Size = 20
                 });
                 comando.Parameters.Add(new OracleParameter("p_establish_date", OracleDbType.Varchar2)
