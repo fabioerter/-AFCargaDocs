@@ -16,7 +16,7 @@ jQuery(document).ready(function () {
         //$(this).prev('#fileName').text(file);
         document.getElementById("fileName").innerHTML = file;
         //if (file.)
-        guardar();
+        
         //$("#SubirArchivo").prop("disabled", false);
         //$("notFound").css()
 
@@ -146,7 +146,7 @@ function createRows(data) {
 
     for (var i = 0; i < data.length; i++) {
         //se les asigna una imagen segun case
-        switch (data[i].Status) {
+        switch (data[i].status) {
             case "PS": //pendiente x subir
                 status = "../images/Recursos/image9.png";
                 PS++;
@@ -166,8 +166,10 @@ function createRows(data) {
             //default:
 
         }
+
+        fechas = data[i].fecha.split("/");
+
         //case para el mes en letras
-        fechas = data[i].Fecha.split("/");
         switch (fechas[1]) {
             case "01":
                 mes = "ENE";
@@ -216,7 +218,7 @@ function createRows(data) {
         var cdhabit = "../images/Recursos/image18.png"
 
         var cargadisabled = false;
-        switch (data[i].Status) {//Status
+        switch (data[i].status) {//Status
             case "PS": //pendiente x subir
                 CargaM = "../images/Recursos/image15.png";
                 cargadisabled = true;
@@ -238,42 +240,42 @@ function createRows(data) {
         //Case para el boton de vista previa
 
         var vistadisabled = false;
-        switch (data[i].Status) {//Status
+        switch (data[i].status) {//Status
             case "PS"://Faltan de Subir
                 VisP = "../images/Recursos/image14.png";
                 vistadisabled = false;
                 break;
             case "NR"://Pendientes por ser aprobados
-                VisP = "../images/Recursos/image13.png";
-                vistadisabled = true;
+                VisP = "../images/Recursos/image14.png";
+                vistadisabled = false;//true;
                 break;
             case "IV"://Rechazados
                 VisP = "../images/Recursos/image14.png";
                 vistadisabled = false;
                 break;
             case "CM"://Validados y Aceptados
-                VisP = "../images/Recursos/image13.png";
-                vistadisabled = true;
+                VisP = "../images/Recursos/image14.png";
+                vistadisabled = false;//true;
                 break;
         }
 
         //trabajar con la validacion de los casos
 
-        rows += '<tr name="clave" id="' + data[i].Clave + '">' +
+        rows += '<tr name="clave" id="' + data[i].clave + '">' +
             '<td style="width:11%">' +
             '<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center">' +
             '<div>' +
             '<img class="mainiconos" src="../images/Recursos/image16.png" />' +
             '</div>&nbsp' +
             '<div style=padding: 20px;">' +
-            data[i].Name +
+            data[i].name +
             '' +
             '</div>' +
             '</div>' +
             '</td>' +
             '<td>' +
             '<div align="center">' +
-            '<input onclick="obtener(' + data[i].Clave + ',' + cargadisabled + ')"  data-target="#myModalCarga" type=image src="' + CargaM + '">' +
+            '<input onclick="obtener(' + data[i].clave + ',' + cargadisabled + ')"  data-target="#myModalCarga" type=image src="' + CargaM + '">' +
             '</div>' +
             '</td>' +
             '<td>' +
