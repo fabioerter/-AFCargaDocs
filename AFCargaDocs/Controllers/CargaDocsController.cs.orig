@@ -14,10 +14,14 @@ using System.Web.Http;
 using System.Configuration;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 using System.Text;
+<<<<<<< Updated upstream
 //using System.ServiceModel;
 //using AFCargaDocs.AxServiceInterface;
-using AFCargaDocs.Models.Entidades.Enum;
+=======
+using System.ServiceModel;
 using AFCargaDocs.AxServiceInterface;
+>>>>>>> Stashed changes
+using AFCargaDocs.Models.Entidades.Enum;
 
 namespace AFCargaDocs.Controllers
 {
@@ -31,11 +35,10 @@ namespace AFCargaDocs.Controllers
             string encodedValues = Request.Params["token"];
             if (User != null && User.Identity.IsAuthenticated && string.IsNullOrEmpty(encodedValues))
             {
-                Console.WriteLine($"(\"RecuperaAvance\")");
+                return RedirectToAction("RecuperaAvance");
             }
             if (string.IsNullOrEmpty(encodedValues))
             {
-                Console.WriteLine($"NoLogin");
                 return RedirectToAction("NoLogin");
             }
             byte[] data = Convert.FromBase64String(encodedValues);
@@ -64,8 +67,16 @@ namespace AFCargaDocs.Controllers
                 JsonRequestBehavior.AllowGet);
 
         }
+<<<<<<< Updated upstream
 
-        public string teste(string clave)
+        public JsonResult guardarDocumento(string clave)
+
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", "DOCIDX", "di12345678!",
+                                                                Convert.ToInt32(EAxType.AxFeature_Basic));
+            string result = axServicesInterface.GetApplicationList(sessionTicket, "BANPROD");
+            return result;
+=======
+        public string teste()
         {
             AxServicesInterface axServicesInterface = new AxServicesInterface();
             string sessionTicket = axServicesInterface.Login("", "BANPROD", "DOCIDX", "di12345678!",
@@ -74,6 +85,7 @@ namespace AFCargaDocs.Controllers
             axServicesInterface.Logout(sessionTicket);
             return result;
         }
+>>>>>>> Stashed changes
         public JsonResult guardarDocumento(string clave)
         {
             HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
@@ -84,23 +96,6 @@ namespace AFCargaDocs.Controllers
             }
             return Json(CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
                 GlobalVariables.Aidy, GlobalVariables.Aidp, file), JsonRequestBehavior.AllowGet);
-        }
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public ActionResult FileDisplay(string treqCode)
-        {
-            return View(CargaDocsService.DisplayFileFromServer(GlobalVariables.Matricula, treqCode, GlobalVariables.Fndc,
-                GlobalVariables.Aidy, GlobalVariables.Aidp));
-        }
-
-        public ActionResult DownLoad()
-
-        {
-            byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Images/image11.png"));
-
-            //File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "filename"+file.Type); 
-
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "test.xlsx");
         }
 
         [System.ComponentModel.ToolboxItem(false)]
@@ -122,7 +117,7 @@ namespace AFCargaDocs.Controllers
             HttpContext Contexto = System.Web.HttpContext.Current;
             string claveDoc = Contexto.Request.Form.ToString().Substring(6);
 
-
+            
 
             HttpFileCollection ColeccionArchivos = Contexto.Request.Files;// Context.Request.Files;
             string NombreArchivo = "";
