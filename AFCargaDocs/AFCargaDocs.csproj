@@ -175,10 +175,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CargaDocsService.cs" />
+    <Compile Include="Models\Entidades\AxDocument.cs" />
+    <Compile Include="Models\Entidades\AxDocumentIndex.cs" />
+    <Compile Include="Models\Entidades\AxDocumentPointer.cs" />
     <Compile Include="Models\Entidades\DataBase.cs" />
     <Compile Include="Models\Entidades\Document.cs" />
     <Compile Include="Models\Entidades\DocumentList.cs" />
+    <Compile Include="Models\Entidades\Enum\EAxType.cs" />
     <Compile Include="Models\Entidades\GlobalVariables.cs" />
+    <Compile Include="Models\Entidades\FileInfoFtp.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
@@ -240,6 +245,7 @@
     <Content Include="fonts\funtes.css" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\Recursos\image - Copy.png" />
     <Content Include="images\Recursos\image.png" />
     <Content Include="images\Recursos\image1.png" />
     <Content Include="images\Recursos\image10.png" />
@@ -381,6 +387,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Views\CargaDocs\FileDisplay.cshtml" />
     <None Include="Web References\AxServiceInterface\axservicesinterface.disco" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

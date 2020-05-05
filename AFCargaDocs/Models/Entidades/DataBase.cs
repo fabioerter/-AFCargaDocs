@@ -52,6 +52,10 @@ namespace AFCargaDocs.Models.Entidades
                 {
                     cnx.Close();
                 }
+                if (dataSet.Tables.Count == 0)
+                {
+                    return null;
+                }
                 return dataSet.Tables[0];
 
 

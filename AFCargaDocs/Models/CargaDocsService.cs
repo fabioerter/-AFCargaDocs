@@ -40,44 +40,58 @@ namespace AFCargaDocs.Models
             return new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
 
         }
-        public static bool DisplayFileFromServer(Uri serverUri)
+        public static FileInfoFtp DisplayFileFromServer(string matricula, string clave,
+                                                string fndcCode, string aidyCode, string aidpCode)
         {
-            // The serverUri parameter should start with the ftp:// scheme.
-            if (serverUri.Scheme != Uri.UriSchemeFtp)
+            Document document = new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
+            if (document.status == "PS")
             {
-                return false;
+                Console.WriteLine($"Su documento no esta en nuestro sistema!");
+                throw new HttpException((int)HttpStatusCode.InternalServerError,
+                                    "Su documento no esta en nuestro sistema!");
             }
-            // Get the object used to communicate with the server.
+            FileInfoFtp file = new FileInfoFtp(clave);
             WebClient request = new WebClient();
 
-            // This example assumes the FTP site uses anonymous logon.
-            request.Credentials = new NetworkCredential("anonymous", "janeDoe@contoso.com");
+
+            request.Credentials = new NetworkCredential("ftpDevlAyudaFN", "Rep0AyudaFnD3vl$");
+
             try
             {
-                byte[] newFileData = request.DownloadData(serverUri.ToString());
-                string fileString = System.Text.Encoding.UTF8.GetString(newFileData);
-                Console.WriteLine(fileString);
+                byte[] newFileData = request.DownloadData(new Uri("ftp://148.238.49.217/") + file.FileId + file.FileName);
+                file.FileContent = Convert.ToBase64String(newFileData);
             }
-            catch (WebException e)
+            catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine($"{1}", e.Message);
             }
-            return true;
+
+            return file;
         }
         public static Document insertDocument(string matricula, string clave, string fndcCode,
                                             string aidyCode, string aidpCode, HttpPostedFile file)
         {
+            
+            Document document = new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
+            byte[] fileContents = new byte[file.ContentLength];
+            if (document.status != "PS")
+            {
+                throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest), "El Documento ya esta en nuestro servidor");
+            }
+
+            string id = KzrldocInsert(document, file);
+
+
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://148.238.49.217/" + file.FileName);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://148.238.49.217/"  + id + file.FileName);
 
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
             // This example assumes the FTP site uses anonymous logon.
             request.Credentials = new NetworkCredential("ftpDevlAyudaFN", "Rep0AyudaFnD3vl$");
-
+            request.UseBinary = true;
+            fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
             // Copy the contents of the file to the request stream.
-            string fileStream = new StreamReader( file.InputStream).ReadToEnd();
-            byte[] fileContents = Encoding.UTF8.GetBytes(fileStream);
 
             request.ContentLength = fileContents.Length;
 
@@ -93,11 +107,10 @@ namespace AFCargaDocs.Models
 
 
 
-            Document document = new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
-            if (document.status != "PS")
-            {
-                throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest), "El Documento ya esta en nuestro servidor");
-            }
+
+
+
+            // insert en tabla 
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
                 cnx.Open();
@@ -193,10 +206,50 @@ namespace AFCargaDocs.Models
                 {
                     cnx.Close();
                 }
+
+
                 return document;
 
             }
 
+        }
+
+
+        private static string KzrldocInsert(Document document, HttpPostedFile file)
+        {
+
+            DataBase dataBase = new DataBase();
+            StringBuilder query = new StringBuilder();
+            query.Append(" SELECT NVL((SELECT MAX(KZRLDOC_ID) + 1 ");
+            query.Append("             FROM KZRLDOC), 1) ID ");
+            query.Append(" FROM DUAL ");
+            String id = (dataBase.ExecuteQuery(query.ToString()).Rows[0][0]).ToString();
+
+            query.Clear();
+            query.Append(" INSERT INTO KZRLDOC (KZRLDOC_PIDM, KZRLDOC_ID, KZRLDOC_AIDY_CODE, KZRLDOC_AIDP_CODE, KZRLDOC_FNDC_CODE,");
+            query.Append("                      KZRLDOC_TREQ_CODE, KZRLDOC_TRST_CODE, KZRLDOC_TRST_DATE, KZRLDOC_FILE_NAME, KZRLDOC_FILE_TYPE,");
+            query.Append("                      KZRLDOC_COMMENT, KZRLDOC_ACTIVITY_DATE, KZRLDOC_SURROGATE_ID, KZRLDOC_VERSION, KZRLDOC_USER_ID,");
+            query.Append("                      KZRLDOC_VPDI_CODE)");
+            query.Append(" VALUES (F_UDEM_STU_PIDM(:matricula),");
+            query.Append("         (NVL((SELECT MAX(KZRLDOC_ID) + 1");
+            query.Append("          FROM KZRLDOC),1)),");
+            query.Append("         :aidyCode, :aidpCod, :fndcCode,");
+            query.Append("         :treqCode, :trstCode,");
+            query.Append("         SYSDATE, :fileName, :fileType, :comments,");
+            query.Append("         SYSDATE, null, null, 'BANINST1', null) ");
+
+            dataBase = new DataBase();
+            dataBase.AddFilter("matricula", GlobalVariables.Matricula);
+            dataBase.AddFilter("aidyCode", GlobalVariables.Aidy);
+            dataBase.AddFilter("aidpCod", GlobalVariables.Aidp);
+            dataBase.AddFilter("fndcCode", document.fndcCode);
+            dataBase.AddFilter("treqCode", document.clave);
+            dataBase.AddFilter("trstCode", document.status);
+            dataBase.AddFilter("fileName", file.FileName);
+            dataBase.AddFilter("fileType", file.ContentType);
+            dataBase.AddFilter("comments", "Posted by WebApp");
+            dataBase.ExecuteQuery(query.ToString());
+            return id;
         }
     }
 }
