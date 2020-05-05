@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -107,8 +108,11 @@ namespace AFCargaDocs.Models.Entidades
         /// Fecha del archivo
         /// </summary>
         public string fecha { get; set; }
+        [JsonIgnore]
         public string fndcCode { get; set; }
+        [JsonIgnore]
         public string aidyCode { get; set; }
+        [JsonIgnore]
         public string aidpCode { get; set; }
     }
 }
