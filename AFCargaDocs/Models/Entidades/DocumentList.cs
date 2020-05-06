@@ -38,17 +38,18 @@ namespace AFCargaDocs.Models.Entidades
             query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
             query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
             query.Append("            ), 'PS')                  STATUS,");
-            query.Append("        NVL((SELECT KVRAREQ_TRST_DATE");
+            query.Append("        (SELECT KVRAREQ_TRST_DATE");
             query.Append("             FROM KVRAREQ ");
             query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula1)");
             query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
             query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
             query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ), to_date('01-01-1900')) ACTIVITY_DATE");
+            query.Append("            ) ACTIVITY_DATE");
             query.Append(" FROM KVRTRFN,");
             query.Append("      KVVTREQ");
             query.Append(" WHERE KVRTRFN_AIDY_CODE = :aidyCode");
             query.Append("   AND KVRTRFN_AIDP_CODE = :aidpCode");
+            query.Append("   AND KVRTRFN_FNDC_CODE = :fndcCode");
             query.Append("   AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
             query.Append("   AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
             query.Append("                                 FROM KVRAREQ ");
@@ -65,6 +66,7 @@ namespace AFCargaDocs.Models.Entidades
                 dataBase.AddFilter("matricula1", matricula);
                 dataBase.AddFilter("aidyCode", aidyCode);
                 dataBase.AddFilter("aidpCode", aidpCode);
+                dataBase.AddFilter("fndcCode", fndcCode);
                 dataBase.AddFilter("matricula", matricula);
 
                 dataTable = dataBase.ExecuteQuery(query.ToString());
@@ -82,10 +84,18 @@ namespace AFCargaDocs.Models.Entidades
                     {
                         clave = dr[0].ToString(),
                         name = dr[1].ToString(),
-                        fecha = Convert.ToDateTime(dr[3].ToString())
-                                .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
                         status = dr[2].ToString()
                     };
+                    if (dr[3] == System.DBNull.Value)
+                    {
+                        document.fecha = new DateTime(1900, 1, 1)
+                                    .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
+                    }
+                    else
+                    {
+                        document.fecha = Convert.ToDateTime(dr[3].ToString())
+                                    .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
+                    }
                     this.documents.Add(document);
                 }
             }
