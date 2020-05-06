@@ -3,25 +3,9 @@
 @{
     ViewBag.Title = "DisplayDocWithName";
 }
+<body style="padding-top:0px; padding-bottom:0px">
 
-<h2>DisplayDocWithName</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table>
+    <embed type="@Model.FileType" height="800px" width="100%" src="data:@Model.FileType;base64,@Model.FileContent" width="800px" />
 
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => Model.FileName)
-        </td>
-        <td>
-            <embed type="@Model.FileType" height="800px" width="100%" src="data:@Model.FileType;base64,@Model.FileContent"width="800px"/>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => Model.FileType)
-        </td>
-
-    </tr>
-
-</table>
+</body>
