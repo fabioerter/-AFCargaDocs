@@ -36,7 +36,8 @@ namespace AFCargaDocs.Controllers
             if (string.IsNullOrEmpty(encodedValues))
             {
                 Console.WriteLine($"NoLogin");
-                return RedirectToAction("NoLogin");
+                throw new HttpException(Convert.ToInt32(HttpStatusCode.Unauthorized),
+                        "Debes iniciar sesión para ingresar a la aplicación!");
             }
             byte[] data = Convert.FromBase64String(encodedValues);
             string decodedValues = Encoding.UTF8.GetString(data);
@@ -53,15 +54,22 @@ namespace AFCargaDocs.Controllers
             return View();
         }
 
-        [HttpPost]
-        public JsonResult ObtenerDocumentos()
+        public String ObtenerDocumentos()
         {
-            return Json(CargaDocsService.ObtenerDocumentos(
+            string result = "";
+            try
+            {
+                result = JsonConvert.SerializeObject(CargaDocsService.ObtenerDocumentos(
                 GlobalVariables.Matricula,
                 GlobalVariables.Fndc,
                 GlobalVariables.Aidy,
-                GlobalVariables.Aidp),
-                JsonRequestBehavior.AllowGet);
+                GlobalVariables.Aidp));
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message);
+            }
+            return result;
 
         }
 
