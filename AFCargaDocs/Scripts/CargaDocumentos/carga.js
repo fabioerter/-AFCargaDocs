@@ -246,16 +246,16 @@ function createRows(data) {
                 vistadisabled = false;
                 break;
             case "NR"://Pendientes por ser aprobados
-                VisP = "../images/Recursos/image14.png";
-                vistadisabled = false;//true;
+                VisP = "../images/Recursos/image13.png";
+                vistadisabled = true;
                 break;
             case "IV"://Rechazados
                 VisP = "../images/Recursos/image14.png";
                 vistadisabled = false;
                 break;
             case "CM"://Validados y Aceptados
-                VisP = "../images/Recursos/image14.png";
-                vistadisabled = false;//true;
+                VisP = "../images/Recursos/image13.png";
+                vistadisabled = true;
                 break;
         }
 
@@ -280,7 +280,7 @@ function createRows(data) {
             '</td>' +
             '<td>' +
             '<div align="center">' +
-            '<input  onclick="vistap(' + vistadisabled + ')" type=image src="' + VisP + '">'//<input type=image src="' + VisP +'"> 
+            '<input  target="_blank" onclick="vistap(' + data[i].clave + ',' + vistadisabled + ')" type=image src="' + VisP + '">'//<input type=image src="' + VisP +'"> 
             +
             '</div>' +
             '</td>' +
@@ -322,8 +322,26 @@ obtener = function (clave, cargadisabled) {
 
 };
 
-vistap = function (vistadisabled) {
+vistap = function (clave, vistadisabled) {
     if (vistadisabled) {
-        window.open("http://localhost:57705/CargaDocs/Archivos/IMSS.jpeg", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=200,left=500,width=400,height=400");
+        var clave = clave.id;//document.getElementById("clave").innerHTML
+        document.getElementById("clave").innerHTML = clave;
+
+        //$.ajax({
+        //    url: 'CargaDocs/FileDisplay',
+        //    data: { "treqCode": clave },
+        //    datatype: 'json',
+        //    type: 'POST',
+        //    success: function (data) {
+        //        //$('#ModalExito').modal('show');
+        //        $("#modal_contrato .modal-body").html(data);
+        //    },
+        //    error: function (errormessage) {
+        //        name = "";
+        //        $('#ModalError').modal('show');
+        //    }
+        //});
+        window.open('/CargaDocs/FileDisplay/?treqCode=' + clave, '_blank', 'top=100,left=400,width=600px,height=500px,toolbar=1,resizable=0');
+        //window.open("http://localhost:57705/CargaDocs/FileDisplay/?treqCode=" + clave, "_blank", "top=100,left=400,width=600px,height=500px");
     }
 };
