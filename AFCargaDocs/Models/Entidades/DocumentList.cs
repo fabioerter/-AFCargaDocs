@@ -47,8 +47,7 @@ namespace AFCargaDocs.Models.Entidades
             query.Append("            ), to_date('01-01-1900')) ACTIVITY_DATE");
             query.Append(" FROM KVRTRFN,");
             query.Append("      KVVTREQ");
-            query.Append(" WHERE KVRTRFN_FNDC_CODE = :fndcCode");
-            query.Append("   AND KVRTRFN_AIDY_CODE = :aidyCode");
+            query.Append(" WHERE KVRTRFN_AIDY_CODE = :aidyCode");
             query.Append("   AND KVRTRFN_AIDP_CODE = :aidpCode");
             query.Append("   AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
             query.Append("   AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
@@ -64,12 +63,9 @@ namespace AFCargaDocs.Models.Entidades
                 DataBase dataBase = new DataBase();
                 dataBase.AddFilter("matricula2", matricula);
                 dataBase.AddFilter("matricula1", matricula);
-                dataBase.AddFilter("fndcCode", fndcCode);
                 dataBase.AddFilter("aidyCode", aidyCode);
                 dataBase.AddFilter("aidpCode", aidpCode);
                 dataBase.AddFilter("matricula", matricula);
-
-
 
                 dataTable = dataBase.ExecuteQuery(query.ToString());
             }
@@ -78,16 +74,20 @@ namespace AFCargaDocs.Models.Entidades
                 throw new HttpException(ex.ToString(), Convert.ToInt32(HttpStatusCode.BadRequest));
                 //throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
-            foreach (DataRow dr in dataTable.Rows)
+            if (dataTable.Rows.Count > 0)
             {
-                Document document = new Document()
+                foreach (DataRow dr in dataTable.Rows)
                 {
-                    clave = dr[0].ToString(),
-                    name = dr[1].ToString(),
-                    fecha = Convert.ToDateTime(dr[3].ToString()).ToShortDateString(),
-                    status = dr[2].ToString()
-                };
-                this.documents.Add(document);
+                    Document document = new Document()
+                    {
+                        clave = dr[0].ToString(),
+                        name = dr[1].ToString(),
+                        fecha = Convert.ToDateTime(dr[3].ToString())
+                                .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+                        status = dr[2].ToString()
+                    };
+                    this.documents.Add(document);
+                }
             }
             return this.documents;
         }
