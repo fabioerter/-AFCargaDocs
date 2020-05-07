@@ -26,8 +26,10 @@ jQuery(document).ready(function () {
     $('#myModalCarga').on('hidden.bs.modal', function () {
         //debugger;
         document.getElementById("fileName").innerHTML = "";
+        //$('#file-upload').val('')
+        //name.length = "";
         $('#notFound').css("display", "none");
-        //document.getElementById("#textoAdvertencia").innerHTML = "";
+        //window.location.reload();
     });
 
     var docsalumn;
@@ -57,12 +59,9 @@ function escapeTags(str) {
 function borrar() {
     $('#notFound').css("display", "none");
 }
+
 function guardar() {
-    //var contactoObj = {
-    //    TREQ_CODE: "AFCD",
-    //    DOCUMENTO: "nombredoc.pdf"
-    //};
- 
+
     try {
 
         let name = $('#file-upload')[0].files[0].name;
@@ -72,19 +71,22 @@ function guardar() {
             var fd = new FormData();
             fd.append('file', $('#file-upload')[0].files[0]);
             fd.append('clave', document.getElementById("clave").innerHTML);// $('input[id="clave"]').val(clave)
-            //fd.append('clavee', texto);
-            //Ingresamos un mensaje a mostrar
-            var mensaje = confirm("Acepta cargar el archivo?");
-            //Detectamos si el usuario acepto el mensaje
-            if (mensaje) {
+
+            var mensaje = "quieres?"//$("#mi-modal").modal('show');
+            //parte de mensaje ana
+            $("#mi-modal").modal('show');
+
+            $("#modal-btn-si").on("click", function () {
+                $("#mi-modal").modal('hide');
                 $.ajax({
-                        url: 'CargaDocs/guardarDocumento',
+                    url: 'CargaDocs/guardarDocumento',
                     data: fd,
                     processData: false,
                     contentType: false,
                     type: 'POST',
                     success: function (data) {
                         document.getElementById("fileName").innerHTML = "";
+                        
                         name = "";
                         $('#myModalCarga').modal('hide');
                         $('#ModalExito').modal('show');
@@ -95,6 +97,13 @@ function guardar() {
                         $('#ModalError').modal('show');
                     }
                 });
+            });
+
+            $("#modal-btn-no").on("click", function () {
+                $("#mi-modal").modal('hide');
+            });
+
+            if (mensaje) {
             }
         }
     }
@@ -324,24 +333,10 @@ obtener = function (clave, cargadisabled) {
 
 vistap = function (clave, vistadisabled) {
     if (vistadisabled) {
-        var clave = clave.id;//document.getElementById("clave").innerHTML
+        var clave = clave.id;
         document.getElementById("clave").innerHTML = clave;
-
-        //$.ajax({
-        //    url: 'CargaDocs/FileDisplay',
-        //    data: { "treqCode": clave },
-        //    datatype: 'json',
-        //    type: 'POST',
-        //    success: function (data) {
-        //        //$('#ModalExito').modal('show');
-        //        $("#modal_contrato .modal-body").html(data);
-        //    },
-        //    error: function (errormessage) {
-        //        name = "";
-        //        $('#ModalError').modal('show');
-        //    }
-        //});
         window.open('/CargaDocs/FileDisplay/?treqCode=' + clave, '_blank', 'top=100,left=400,width=600px,height=500px,toolbar=1,resizable=0');
-        //window.open("http://localhost:57705/CargaDocs/FileDisplay/?treqCode=" + clave, "_blank", "top=100,left=400,width=600px,height=500px");
     }
 };
+
+
