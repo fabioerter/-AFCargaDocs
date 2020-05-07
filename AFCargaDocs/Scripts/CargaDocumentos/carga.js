@@ -109,7 +109,7 @@ function guardar() {
 function ObtenerDocumentos() {
     $.ajax({
         url: 'cargaDocs/ObtenerDocumentos',
-        type: 'GET',
+        type: 'POST',
         dataType: "json",
         success: function (data) {
             docsalumn = data;
@@ -167,52 +167,52 @@ function createRows(data) {
 
         }
 
-        fechas = data[i].fecha.split("/");
+        fechas = data[i].fecha;
 
-        //case para el mes en letras
-        switch (fechas[1]) {
-            case "01":
-                mes = "ENE";
-                break;
-            case "02":
-                mes = "FEB";
-                break;
-            case "03":
-                mes = "MAR";
-                break;
-            case "04":
-                mes = "ABR";
-                break;
-            case "05":
-                mes = "MAY";
-                break;
-            case "06":
-                mes = "JUN";
-                break;
-            case "07":
-                mes = "JUN";
-                break;
-            case "08":
-                mes = "JUL";
-                break;
-            case "09":
-                mes = "AGO";
-                break;
-            case "10":
-                mes = "SEP";
-                break;
-            case "11":
-                mes = "OCT";
-                break;
-            case "12":
-                mes = "NOV";
-                break;
-            case "13":
-                mes = "DIC";
-                break;
-            //default:
-            //    mes = "";
-        }
+        ////case para el mes en letras
+        //switch (fechas[1]) {
+        //    case "01":
+        //        mes = "ENE";
+        //        break;
+        //    case "02":
+        //        mes = "FEB";
+        //        break;
+        //    case "03":
+        //        mes = "MAR";
+        //        break;
+        //    case "04":
+        //        mes = "ABR";
+        //        break;
+        //    case "05":
+        //        mes = "MAY";
+        //        break;
+        //    case "06":
+        //        mes = "JUN";
+        //        break;
+        //    case "07":
+        //        mes = "JUN";
+        //        break;
+        //    case "08":
+        //        mes = "JUL";
+        //        break;
+        //    case "09":
+        //        mes = "AGO";
+        //        break;
+        //    case "10":
+        //        mes = "SEP";
+        //        break;
+        //    case "11":
+        //        mes = "OCT";
+        //        break;
+        //    case "12":
+        //        mes = "NOV";
+        //        break;
+        //    case "13":
+        //        mes = "DIC";
+        //        break;
+        //    //default:
+        //    //    mes = "";
+        //}
         //case para el boton de cargar document
         var chabit = "../images/Recursos/image15.png"
         var cdhabit = "../images/Recursos/image18.png"
@@ -287,7 +287,7 @@ function createRows(data) {
             '<td>' +
             '' +
             '<div align="center">' +
-            fechas[0] + '-' + mes + '-' + fechas[2] +
+            fechas +
             '</div>' +
             '</td>' +
             '<td>' +

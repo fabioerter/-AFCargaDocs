@@ -33,3 +33,4 @@ packages/
 *.dll
 /.vs/AFCargaDocs/v16/.suo
 /AFCargaDocs/obj/Debug/AFCargaDocs.csprojAssemblyReference.cache
+/AFCargaDocs/Properties/PublishProfiles/CustomProfile1.pubxml

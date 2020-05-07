@@ -18,7 +18,7 @@ namespace AFCargaDocs.Models.Entidades
         {
         }
 
-        public Document(string matricula,string clave, string fndcCode, string aidyCode, string aidpCode)
+        public Document(string matricula, string clave, string fndcCode, string aidyCode, string aidpCode)
         {
             DataTable dataTable;
             StringBuilder query = new StringBuilder();
@@ -35,13 +35,13 @@ namespace AFCargaDocs.Models.Entidades
             query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
             query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
             query.Append("            ), 'PS')                  STATUS,");
-            query.Append("        NVL((SELECT KVRAREQ_TRST_DATE");
+            query.Append("        (SELECT KVRAREQ_TRST_DATE");
             query.Append("             FROM KVRAREQ");
             query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula1)");
             query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
             query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
             query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ), to_date('01-01-1900')) ACTIVITY_DATE");
+            query.Append("            ) ACTIVITY_DATE");
             query.Append(" FROM KVRTRFN,");
             query.Append("      KVVTREQ");
             query.Append(" WHERE KVRTRFN_FNDC_CODE = :fndcCode");
@@ -88,7 +88,16 @@ namespace AFCargaDocs.Models.Entidades
             this.clave = dr[3].ToString();
             this.name = dr[4].ToString();
             this.status = dr[5].ToString();
-            this.fecha = Convert.ToDateTime( dr[6].ToString()).ToShortDateString();
+            if (dr[6] == System.DBNull.Value)
+            {
+                this.fecha = new DateTime(1900, 1, 1)
+                            .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
+            }
+            else
+            {
+                this.fecha = Convert.ToDateTime(dr[6].ToString())
+                            .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
+            }
         }
 
 
