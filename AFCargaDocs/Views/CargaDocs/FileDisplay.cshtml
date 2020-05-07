@@ -1,0 +1,11 @@
+﻿@model AFCargaDocs.Models.Entidades.FileInfoFtp
+
+@{
+    ViewBag.Title = "DisplayDocWithName";
+}
+<body style="padding-top:0px; padding-bottom:0px">
+
+
+    <embed type="@Model.FileType" height="800px" width="100%" src="data:@Model.FileType;base64,@Model.FileContent" width="800px" />
+
+</body>
