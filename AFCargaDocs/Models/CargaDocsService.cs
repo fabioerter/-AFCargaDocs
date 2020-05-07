@@ -54,11 +54,11 @@ namespace AFCargaDocs.Models
             WebClient request = new WebClient();
 
 
-            request.Credentials = new NetworkCredential("ftpDevlAyudaFN", "Rep0AyudaFnD3vl$");
+            request.Credentials = new NetworkCredential(GlobalVariables.FtpUser, GlobalVariables.FtpPassword);
 
             try
             {
-                byte[] newFileData = request.DownloadData(new Uri("ftp://148.238.49.217/") + file.FileId);
+                byte[] newFileData = request.DownloadData(new Uri(GlobalVariables.Ftpip) + file.FileId);
                 file.FileContent = Convert.ToBase64String(newFileData);
             }
             catch (Exception e)
@@ -83,12 +83,12 @@ namespace AFCargaDocs.Models
 
 
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://148.238.49.217/"  + id);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(GlobalVariables.Ftpip  + id);
 
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
             // This example assumes the FTP site uses anonymous logon.
-            request.Credentials = new NetworkCredential("ftpDevlAyudaFN", "Rep0AyudaFnD3vl$");
+            request.Credentials = new NetworkCredential(GlobalVariables.FtpUser, GlobalVariables.FtpPassword);
             request.UseBinary = true;
             fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
             // Copy the contents of the file to the request stream.
