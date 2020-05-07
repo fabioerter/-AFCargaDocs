@@ -14,9 +14,9 @@ namespace AFCargaDocs.Models.Entidades
         private static string fndc;
         private static string aidy;
         private static string aidp;
-        private static string ftpip = "ftp://148.238.49.217/";
-        private static string ftpUser = "ftpDevlAyudaFN";
-        private static string ftpPassword = "Rep0AyudaFnD3vl$";
+        private static string ftpip = "ftp://148.238.49.217";
+        private static string ftpUser = "ftpTstAyudaFN";
+        private static string ftpPassword = "Rep0AyudaFnT3t$";
 
 
 
