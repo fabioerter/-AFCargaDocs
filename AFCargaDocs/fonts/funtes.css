@@ -6,16 +6,24 @@
 
 h2, th, td {
     font-family: Montserrat-Bold;
-   
+    
 }
 
+td {
+    text-align: left;
+}
 table th {
-    text-align: 'center';
-    width:8%;
+    text-align: center;
+    width: 8%;
 }
 
 .odd th, .odd td {
     background: #eee;
+}
+
+.buttonCarga {
+    /*background-color: #25c155;*/
+    background-image: url(../images/Recursos/image5.png);
 }
 
 input {
@@ -35,10 +43,48 @@ input {
     background-repeat: no-repeat;*/
 }
 
-.custom-file{
+.custom-file {
     /*width:50%;*/
+    cursor: pointer;
 }
 
+
+
+.modal-content {
+   background-color: #f7f7f7
+}
+
+.modal-body, modal-content {
+    background-color: #f7f7f7
+}
+.container {
+    text-align: center;
+}
+
+.progress {
+    margin-bottom: 0;
+    margin-top: 6px;
+    margin-left: 10px;
+}
+
+.btn.focus {
+    outline: thin dotted #333;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+}
+
+.btn.hover {
+    color: #ffffff;
+    background-color: #3276b1;
+    border-color: #285e8e;
+}
+
+.centericon {
+    display:block;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+}
 
 /*table {
     width: 100%;
@@ -64,3 +110,4 @@ caption {
 th {
     background: #eee;
 }*/
+
