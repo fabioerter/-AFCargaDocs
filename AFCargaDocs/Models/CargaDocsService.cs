@@ -58,7 +58,7 @@ namespace AFCargaDocs.Models
 
             try
             {
-                byte[] newFileData = request.DownloadData(new Uri("ftp://148.238.49.217/") + file.FileId + file.FileName);
+                byte[] newFileData = request.DownloadData(new Uri("ftp://148.238.49.217/") + file.FileId);
                 file.FileContent = Convert.ToBase64String(newFileData);
             }
             catch (Exception e)
@@ -83,7 +83,7 @@ namespace AFCargaDocs.Models
 
 
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://148.238.49.217/"  + id + file.FileName);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://148.238.49.217/"  + id);
 
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
