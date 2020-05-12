@@ -54,7 +54,12 @@ function guardar() {
         let name = $('#file-upload')[0].files[0].name;
  
         if (name.length > 0) {
-
+            var lenght = $('#file-upload')[0].files[0].size;
+            if (lenght/1000 > 3000) {
+                //$('#ModalError').modal('show');
+                //return;
+                throw Error("Archivo excede el tamaño máximo permitido.");
+            }
             var fd = new FormData();
             fd.append('file', $('#file-upload')[0].files[0]);
             fd.append('clave', document.getElementById("clave").innerHTML);// $('input[id="clave"]').val(clave)
@@ -94,10 +99,23 @@ function guardar() {
             }
         }
     }
+    //catch (error) {
+    //    $('#notFound').css("display", "block");
+    //    //document.getElementById("#textoAdvertencia").innerHTML = "favor de seleccionar archivo";
+    //    if (error.type == 'TypeError') {
+    //        $("#textoAdvertencia").text("Favor de seleccionar un archivo");
+    //    }
+    //}
     catch (error) {
         $('#notFound').css("display", "block");
         //document.getElementById("#textoAdvertencia").innerHTML = "favor de seleccionar archivo";
-        $("#textoAdvertencia").text("Favor de seleccionar un archivo");
+        if (error.__proto__.name == "TypeError") {
+            $("#textoAdvertencia").text("Favor de seleccionar un archivo");
+        }
+        else {
+            $("#textoAdvertencia").text(error.message);
+        }
+
     }
 }
 
