@@ -6,7 +6,7 @@
         //$(this).prev('#fileName').text(file);
         document.getElementById("fileName").innerHTML = file;
         //if (file.)
-        
+
         //$("#SubirArchivo").prop("disabled", false);
         //$("notFound").css()
 
@@ -52,10 +52,10 @@ function guardar() {
     try {
 
         let name = $('#file-upload')[0].files[0].name;
- 
+
         if (name.length > 0) {
             var lenght = $('#file-upload')[0].files[0].size;
-            if (lenght/1000 > 3000) {
+            if (lenght / 1000 > 3000) {
                 //$('#ModalError').modal('show');
                 //return;
                 throw Error("Archivo excede el tamaño máximo permitido.");
@@ -78,7 +78,7 @@ function guardar() {
                     type: 'POST',
                     success: function (data) {
                         document.getElementById("fileName").innerHTML = "";
-                        
+
                         name = "";
                         $('#myModalCarga').modal('hide');
                         $('#ModalExito').modal('show');
@@ -183,8 +183,7 @@ function createRows(data) {
 
         fechas = data[i].fecha;
 
-        if (data[i].fecha == "01-ENE-1900")
-        {
+        if (fechas[7] == "1") {
             data[i].fecha = "";
         }
         //case para el boton de cargar document
@@ -298,8 +297,8 @@ obtener = function (clave, cargadisabled) {
         var clave = clave.id
         document.getElementById("clave").innerHTML = clave;
         $('input[name="clave"]').val(clave);
-        
-       
+
+
     }
     else {
         $('#myModalCarga').modal('hide');
