@@ -1,257 +1,274 @@
 ﻿
 @{
     ViewBag.Title = "CargaDocs";
+    Layout = null;
 }
-<h2 style="display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:center">Carga de Documentos</h2>
-<link href="~/fonts/funtes.css" rel="stylesheet" type="text/css" />
-<script src="~/Scripts/CargaDocumentos/carga.js"></script>
-<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-<script src="~/Scripts/SimpleAjaxUploader.js"></script>
-<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-<style>
-    /*.tamico{
-        width:5%;
-    }*/
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    @*@Styles.Render("~/Content/css")*@
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="~/fonts/funtes.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/CargaDocumentos/carga.js"></script>
+</head>
+@*<script src="~/Scripts/SimpleAjaxUploader.js"></script>*@
+<body>
+    @*<div class="header">
+            <div class="header1">
+                <img class="logopr" src="~/images/Recursos/LOCKUP_SELLOUDEM.png" />
+                <div style="float:right;font-family:'Montserrat-Bold'">Aplicación: <strong> @ViewBag.Aplicacion</strong>  | ID: <strong> @ViewBag.Matricula</strong>  |  Ald Year: <strong>@ViewBag.aidy</strong>  |  Ald Period: <strong>@ViewBag.aidp&nbsp;&nbsp;</strong></div>
+                <h1 style="display: inline-block;"></h1>
+            </div>
+        </div>*@
+    @RenderPage("~/Views/Shared/_Header.cshtml")
+    <div class="content">
+        <div class="container body-content">
+            <h2 style="display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:center">Carga de Documentos</h2>
+            <div class="container">
+                <div style="display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:center">
+                    <div>
+                        <table class="table table-striped">
+                            <thead class="titles">
+                                <tr style="background-color:#333333">
+                                    <th style=" vertical-align: middle; " width="150">Faltan de subir</th>
+                                    <th style=" vertical-align: middle;" width="150">Pendientes por ser aprobados</th>
+                                    <th style=" vertical-align: middle;" width="150">Rechazados</th>
+                                    <th style=" vertical-align: middle;" width="150">Validados y aceptados</th>
 
-    .titles {
-        background-color: black;
-        color: white;
-    }
-</style>
-<div class="container">
-    <div style="display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:center">
-        <div>
-            <table class="table table-striped">
-                <thead class="titles">
-                    <tr style="background-color:#333333">
-                        <th style=" vertical-align: middle; "width="150">Faltan de subir</th>
-                        <th style=" vertical-align: middle;" width="150">Pendientes por ser aprobados</th>
-                        <th style=" vertical-align: middle;" width="150">Rechazados</th>
-                        <th style=" vertical-align: middle;" width="150">Validados y aceptados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background-color:#f7f7f7">
+                                    <td>
+                                        <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
+                                            <div>
+                                                <img class="mainiconos" src="~/images/Recursos/image9.png" />
+                                            </div>
+                                            <div id="PS" style="padding-left: 15px;">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
+                                            <div>
+                                                <img class="mainiconos" src="~/images/Recursos/image10.png" />
+                                            </div>
+                                            <div id="NR" style="padding-left: 15px;">
 
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
+                                            <div>
+                                                <img class="mainiconos" src="~/images/Recursos/image12.png" />
+                                            </div>
+                                            <div id="IV" style="padding-left: 15px;">
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
+                                            <div>
+                                                <img class="mainiconos" src="~/images/Recursos/image11.png" />
+                                            </div>
+                                            <div id="CM" style="padding-left: 15px;">
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped" style="width:100%;height:100px">
+                <thead class="titles" style="border-collapse:collapse">
+                    <tr style="background-color:#333333;border: solid;">
+                        <th style="background-color:white;width:6%;border-color: white;"></th>
+                        <th>Cargar archivo</th>
+                        <th>Visualizar archivo</th>
+                        <th>Día</th>
+                        <th>Estatus</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr style="background-color:#f7f7f7">
-                        <td>
-                            <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
-                                <div>
-                                    <img class="mainiconos" src="~/images/Recursos/image9.png" />
-                                </div>
-                                <div id="PS" style="padding-left: 15px;">
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
-                                <div>
-                                    <img class="mainiconos" src="~/images/Recursos/image10.png" />
-                                </div>
-                                <div id="NR" style="padding-left: 15px;">
-                                    
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
-                                <div>
-                                    <img class="mainiconos" src="~/images/Recursos/image12.png" />
-                                </div>
-                                <div id="IV" style="padding-left: 15px;">
-                                    
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display:flex;flex-direction:row;justify-content:center;align-items:center">
-                                <div>
-                                    <img class="mainiconos" src="~/images/Recursos/image11.png" />
-                                </div>
-                                <div id="CM" style="padding-left: 15px;">
-                                    
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody id="tbodydocsalumn"></tbody>
             </table>
-        </div>
-    </div>
-</div>
 
-<table class="table table-striped" style="width:100%;height:100px">
-    <thead class="titles" style="border-collapse:collapse">
-        <tr style="background-color:#333333;border: solid;">
-            <th style="background-color:white;width:6%;border-color: white;"></th>
-            <th>Cargar archivo</th>
-            <th>Visualizar archivo</th>
-            <th>Día</th>
-            <th>Estatus</th>
-        </tr>
-    </thead>
-    <tbody id="tbodydocsalumn"></tbody>
-</table>
+            <!-- Modal -->
+            <div>
+                <div class="modal fade" id="myModalCarga">
 
-<!-- Modal -->
-<div>
-    <div class="modal fade" id="myModalCarga">
-        
-            <div class="modal-dialog" role="dialog" >
-                <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
+                    <div class="modal-dialog" role="dialog">
+                        <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
 
-                    <div>
-                        <div>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <div>
+                                <div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div style="display: flex;flex-direction: row;justify-content: center; padding-top: 1rem; padding-top: 1rem;padding-left: 2rem;">
+                                    <img style="width:50%" src="~/images/Recursos/image6.png" class="img-responsive" />
+                                </div>
+                                <br />
+                                <div class="modal-body">
+                                    <form>
+                                        <div style="display:flex;flex-direction:row;justify-content: space-around;">
+                                            <label type="text" id="clave" name="clave" style="display:none;"></label>
+                                            <div style="margin-right: 20px;" onclick="borrar()">
+                                                <label for="file-upload" class="custom-file-upload">
+                                                    <img style="width:225px" src="~/images/Recursos/image5.png" />
+                                                </label>
+                                                @*<button id="uploadBtn" style="background-image:url(../images/Recursos/image5.png)"></button>*@
+                                                <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
+                                            </div>
+                                            <div>
+                                                <label>
+                                                    <img onclick="guardar()" id="SubirArchivo" style="width:225px" src="~/images/Recursos/image4.png" />
+                                                </label>
+                                                @*<input  type="file" style="display:none;">*@
+                                            </div>
+
+                                        </div>
+
+                                        <div style="text-align:center">
+                                            <label id="fileName" style="color:#a1a0a1;font-family:'Montserrat-Bold'"></label>
+                                        </div>
+
+                                        <div class="alert alert-warning" id="notFound" style="display:none">
+                                            <strong id="textoAdvertencia"></strong>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div style="display: flex;flex-direction: row;justify-content: center; padding-top: 1rem; padding-top: 1rem;padding-left: 2rem;">
-                            <img style="width:50%" src="~/images/Recursos/image6.png" class="img-responsive" />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="modal fade" id="ModalExito">
+
+                    <div class="modal-dialog" role="dialog">
+                        <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
+
+                            <div>
+                                <br />
+                                <div class="modal-body">
+                                    <form>
+
+                                        <div style="display:flex;justify-content: space-around;">
+                                            <img style="width:225px" src="~/images/Recursos/image2.png" />
+                                        </div>
+
+                                        <h1></h1>
+                                        <div style="display:flex;justify-content: space-around;" onclick="refrescar()">
+                                            <label data-dismiss="modal" style="cursor:pointer"><img style="width:225px" src="~/images/Recursos/image3.png" /></label>
+                                            @*<img style="width:225px;align-content:center" src="~/images/Recursos/image3.png" />*@
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <br />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="modal fade" id="ModalError">
+
+                    <div class="modal-dialog" role="dialog">
+                        <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
+                            <div>
+                                <br />
+                                <div class="modal-body">
+                                    <form>
+                                        <div style="display:flex;justify-content: space-around;">
+                                            <img style="width:225px" src="~/images/Recursos/image.png" />
+                                        </div>
+
+                                        <h1></h1>
+                                        <div style="display:flex;justify-content: space-around;">
+                                            <label data-dismiss="modal" style="cursor:pointer"><img style="width:225px" src="~/images/Recursos/image1.png" /></label>
+
+                                            @*<img style="width:225px;align-content:center" src="~/images/Recursos/image3.png" />*@
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="ModalPrueba">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
                         <div class="modal-body">
                             <form>
-                                <div style="display:flex;flex-direction:row;justify-content: space-around;">
-                                    <label type="text" id="clave" name="clave" style="display:none;"></label>
-                                    <div style="margin-right: 20px;" onclick="borrar()">
-                                        <label for="file-upload" class="custom-file-upload">
-                                            <img style="width:225px" src="~/images/Recursos/image5.png" />
-                                        </label>
-                                        @*<button id="uploadBtn" style="background-image:url(../images/Recursos/image5.png)"></button>*@
-                                        <input id="file-upload" name='upload_cont_img' type="file" style="display:none;">
+                                <div id="progressOuter" class="progress progress-striped active hidden">
+                                    <div id="progressBar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
                                     </div>
-                                    <div>
-                                        <label>
-                                            <img onclick="guardar()" id="SubirArchivo" style="width:225px" src="~/images/Recursos/image4.png" />
-                                        </label>
-                                        @*<input  type="file" style="display:none;">*@
-                                    </div>
-
                                 </div>
 
-                                <div style="text-align:center">
-                                    <label id="fileName" style="color:#a1a0a1;font-family:'Montserrat-Bold'"></label>
+                                <div class="row" style="padding-top:10px;">
+                                    <div class="col-xs-12 text-center">
+                                        <!– Botón para adjuntar archivos –>
+                                        <button id="uploadBtn" class="btn btn-large btn-primary">Examinar</button>
+                                    </div>
                                 </div>
 
-                                <div class="alert alert-warning" id="notFound" style="display:none">
-                                    <strong id="textoAdvertencia"></strong>
+                                <div class="row" style="padding-top:10px;">
+                                    <div class="col-xs-12">
+                                        <!– div para mensajes de error y otros mensajes deseados –>
+                                        <div id="msgBox" style="display:none;" class="alert alert-success"></div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    </div>
-                </div>
-        </div>
-</div>
-<div>
-    <div class="modal fade" id="ModalExito">
-
-        <div class="modal-dialog" role="dialog">
-            <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
-
-                <div>
-                    <br />
-                    <div class="modal-body">
-                        <form>
-
-                            <div style="display:flex;justify-content: space-around;">
-                                <img style="width:225px" src="~/images/Recursos/image2.png" />
-                            </div>
-
-                            <h1></h1>
-                            <div style="display:flex;justify-content: space-around;" onclick="refrescar()">
-                                <label data-dismiss="modal" style="cursor:pointer"><img style="width:225px" src="~/images/Recursos/image3.png" /></label>
-                                @*<img style="width:225px;align-content:center" src="~/images/Recursos/image3.png" />*@
-                            </div>
-                        </form>
-                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<div>
-    <div class="modal fade" id="ModalError">
 
-        <div class="modal-dialog" role="dialog">
-            <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
-                <div>
-                    <br />
-                    <div class="modal-body">
-                        <form>
-                            <div style="display:flex;justify-content: space-around;">
-                                <img style="width:225px" src="~/images/Recursos/image.png" />
+            <div>
+                <div class="modal fade" id="ModalImagen">
+
+                    <div class="modal-dialog" role="dialog">
+                        <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
+
+                            <div>
+                                <br />
+                                <div class="modal-body">
+
+                                </div>
                             </div>
-
-                            <h1></h1>
-                            <div style="display:flex;justify-content: space-around;">
-                                <label data-dismiss="modal" style="cursor:pointer"><img style="width:225px" src="~/images/Recursos/image1.png" /></label>
-
-                                @*<img style="width:225px;align-content:center" src="~/images/Recursos/image3.png" />*@
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="ModalPrueba">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <form>
-                    <div id="progressOuter" class="progress progress-striped active hidden">
-                        <div id="progressBar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
                         </div>
                     </div>
-
-                    <div class="row" style="padding-top:10px;">
-                        <div class="col-xs-12 text-center">
-                            <!– Botón para adjuntar archivos –>
-                            <button id="uploadBtn" class="btn btn-large btn-primary">Examinar</button>
-                        </div>
-                    </div>
-
-                    <div class="row" style="padding-top:10px;">
-                        <div class="col-xs-12">
-                            <!– div para mensajes de error y otros mensajes deseados –>
-                            <div id="msgBox" style="display:none;" class="alert alert-success"></div>
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
 
-<div>
-    <div class="modal fade" id="ModalImagen">
-
-        <div class="modal-dialog" role="dialog">
-            <div class="modal-content" style="padding: 1rem 1rem;background-color: #f7f7f7">
-
-                <div>
-                    <br />
-                    <div class="modal-body">
-                        
+            <div class="modal fade" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <label style="font-family:'Montserrat-Bold'">¿Acepta continuar con la carga del archivo?</label>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" id="modal-btn-si">Si</button>
+                            <button type="button" class="btn btn-primary" id="modal-btn-no">No</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="modal fade" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <label style="font-family:'Montserrat-Bold'">¿Acepta continuar con la carga del archivo?</label>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="modal-btn-si">Si</button>
-                    <button type="button" class="btn btn-primary" id="modal-btn-no">No</button>
-                </div>
-            </div>
-        </div>
-</div>
-
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderPage("~/Views/Shared/_Footer.cshtml")
+</body>
+</html>

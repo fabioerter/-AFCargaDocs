@@ -57,6 +57,7 @@ namespace AFCargaDocs.Models.Entidades
             query.Append("                                   AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
             query.Append("                                   AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
             query.Append("                                   AND KVRAREQ_TRST_CODE = 'NQ')");
+            query.Append(" ORDER BY KVVTREQ_DESC");
             query.Append("");
 
             try
