@@ -1,14 +1,4 @@
-﻿//$('#myModal').on('shown.bs.modal', function () {
-//    $('#myInput').focus()
-//})
-
-
-//$(".custom-file-input").on("change", function () {
-//    var fileName = $(this).val().split("\\").pop();
-//    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-//});
-
-jQuery(document).ready(function () {
+﻿jQuery(document).ready(function () {
     $('#file-upload').change(function () {
         $('#ModalError').modal('hide');
         var i = $(this).prev('label').clone();
@@ -42,9 +32,6 @@ jQuery(document).ready(function () {
 });
 
 //funciones de jquery, javascript
-function ejemplo() {
-    //alert("ejemplo");
-}
 function refrescar() {
     window.location.reload();
 }
@@ -196,93 +183,64 @@ function createRows(data) {
 
         fechas = data[i].fecha;
 
-        ////case para el mes en letras
-        //switch (fechas[1]) {
-        //    case "01":
-        //        mes = "ENE";
-        //        break;
-        //    case "02":
-        //        mes = "FEB";
-        //        break;
-        //    case "03":
-        //        mes = "MAR";
-        //        break;
-        //    case "04":
-        //        mes = "ABR";
-        //        break;
-        //    case "05":
-        //        mes = "MAY";
-        //        break;
-        //    case "06":
-        //        mes = "JUN";
-        //        break;
-        //    case "07":
-        //        mes = "JUN";
-        //        break;
-        //    case "08":
-        //        mes = "JUL";
-        //        break;
-        //    case "09":
-        //        mes = "AGO";
-        //        break;
-        //    case "10":
-        //        mes = "SEP";
-        //        break;
-        //    case "11":
-        //        mes = "OCT";
-        //        break;
-        //    case "12":
-        //        mes = "NOV";
-        //        break;
-        //    case "13":
-        //        mes = "DIC";
-        //        break;
-        //    //default:
-        //    //    mes = "";
-        //}
+        if (data[i].fecha == "01-ENE-1900")
+        {
+            data[i].fecha = "";
+        }
         //case para el boton de cargar document
         var chabit = "../images/Recursos/image15.png"
         var cdhabit = "../images/Recursos/image18.png"
 
         var cargadisabled = false;
+        var estilocarga;
         switch (data[i].status) {//Status
             case "PS": //pendiente x subir
                 CargaM = "../images/Recursos/image15.png";
                 cargadisabled = true;
+                estilocarga = "";
                 break;
             case "NR"://Pendiente´x ser aprobados
                 CargaM = "../images/Recursos/image18.png";
                 cargadisabled = false;
+                estilocarga = "pointer-events: none;";
                 break;
             case "IV"://Rechazados
                 CargaM = "../images/Recursos/image15.png";
                 cargadisabled = true;
+                estilocarga = "";
                 break;
             case "CM"://Validados y Aceptados
                 CargaM = "../images/Recursos/image18.png";
                 cargadisabled = false;
+                estilocarga = "pointer-events: none;";
                 break;
         }
 
         //Case para el boton de vista previa
 
         var vistadisabled = false;
+        var estilovp;
+
         switch (data[i].status) {//Status
             case "PS"://Faltan de Subir
                 VisP = "../images/Recursos/image14.png";
                 vistadisabled = false;
+                estilovp = "pointer-events: none;";
                 break;
             case "NR"://Pendientes por ser aprobados
                 VisP = "../images/Recursos/image13.png";
                 vistadisabled = true;
+                estilovp = "";
                 break;
             case "IV"://Rechazados
                 VisP = "../images/Recursos/image14.png";
                 vistadisabled = false;
+                estilovp = "pointer-events: none;";
                 break;
             case "CM"://Validados y Aceptados
                 VisP = "../images/Recursos/image13.png";
                 vistadisabled = true;
+                estilovp = "";
                 break;
         }
 
@@ -302,19 +260,19 @@ function createRows(data) {
             '</td>' +
             '<td>' +
             '<div align="center">' +
-            '<input onclick="obtener(' + data[i].clave + ',' + cargadisabled + ')"  data-target="#myModalCarga" type=image src="' + CargaM + '">' +
+            '<input style="' + estilocarga + '"id="obtener" name="obtener" onclick="obtener(' + data[i].clave + ',' + cargadisabled + ')"  data-target="#myModalCarga" type=image src="' + CargaM + '">' +
             '</div>' +
             '</td>' +
             '<td>' +
             '<div align="center">' +
-            '<input  target="_blank" onclick="vistap(' + data[i].clave + ',' + vistadisabled + ')" type=image src="' + VisP + '">'//<input type=image src="' + VisP +'"> 
+            '<input style="' + estilovp + '" id="vistap" name="vistap" onclick="vistap(' + data[i].clave + ',' + vistadisabled + ')" type=image src="' + VisP + '">'//<input type=image src="' + VisP +'"> 
             +
             '</div>' +
             '</td>' +
             '<td>' +
             '' +
             '<div align="center">' +
-            fechas +
+            data[i].fecha +
             '</div>' +
             '</td>' +
             '<td>' +
@@ -340,6 +298,7 @@ obtener = function (clave, cargadisabled) {
         var clave = clave.id
         document.getElementById("clave").innerHTML = clave;
         $('input[name="clave"]').val(clave);
+        
        
     }
     else {
@@ -350,10 +309,14 @@ obtener = function (clave, cargadisabled) {
 };
 
 vistap = function (clave, vistadisabled) {
+    var botonvistaprev = document.getElementById('vistap');
+
     if (vistadisabled) {
         var clave = clave.id;
         document.getElementById("clave").innerHTML = clave;
         window.open('/CargaDocs/FileDisplay/?treqCode=' + clave, '_blank', 'top=100,left=400,width=600px,height=500px,toolbar=1,resizable=0');
+    }
+    else {
     }
 };
 
