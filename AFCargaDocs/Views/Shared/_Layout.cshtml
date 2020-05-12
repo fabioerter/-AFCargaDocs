@@ -1,44 +1,48 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-</head>
-<body>
-    @*<div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @Html.ActionLink("Nombre de aplicación", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                        <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                        <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                    </ul>
-                </div>
-            </div>
-        </div>*@
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            @*<p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>*@
-        </footer>
-    </div>
+﻿﻿<!DOCTYPE html>
+ <html>
+ <head>
+     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     <meta charset="utf-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+     <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+     @*@Styles.Render("~/Content/css")*@
+     @Scripts.Render("~/bundles/modernizr")
+     <link href="~/fonts/funtes.css" rel="stylesheet" type="text/css" />
+     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+ </head>
+ <body>
+     <div class="header" style="background-color:black;">
+         <div class="header1">
+             <img class="logo" src="~/images/Recursos/LOCKUP_SELLOUDEM.png" />
+             <h1 style="display: inline-block;"></h1>
+         </div>
+     </div>
+     <div class="container body-content">
+         @RenderBody()
+         <hr />
+     </div>
+     @Scripts.Render("~/bundles/jquery")
+     @Scripts.Render("~/bundles/bootstrap")
+     @RenderSection("scripts", required: false)
+     <footer id="app-footer" role="contentinfo">
+         <div class="container">
+             <div class="col-md-12">
+                 @*<div>
+                     <ul class="piped-list">
+                         <li><a href="/">Catálogo de Cursos</a></li>
+                         <li><a target="_blank" href="https://www.instructure.com/policies/acceptable-use">Términos de uso de Instructure</a></li>
+                         <li><a target="_blank" href="https://www.instructure.com/policies/privacy/">Política de privacidad de Instructure</a></li>
+                         <li><a target="_blank" href="https://udem.edu.mx">Universidad de Monterrey</a></li>
+                         <li><a target="_blank" href="http://www3.udem.edu.mx/canvas/Host%20LLL/Aviso%20de%20Privacidad%20Cursos%20en%20l%C3%ADnea%20UDEM%20vf.pdf">Aviso de privacidad UDEM</a></li>
+                     </ul>
+                 </div>*@
+                 <p class="small">
+                     © 2020 DERECHOS RESERVADOS UNIVERSIDAD DE MONTERREY
+                 </p>
+             </div>
+         </div>
+     </footer>
+ </body>
+ </html>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-</body>
-</html>

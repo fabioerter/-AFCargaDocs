@@ -39,6 +39,7 @@ namespace AFCargaDocs.Controllers
                 throw new HttpException(Convert.ToInt32(HttpStatusCode.Unauthorized),
                         "Debes iniciar sesión para ingresar a la aplicación!");
             }
+ 
             byte[] data = Convert.FromBase64String(encodedValues);
             string decodedValues = Encoding.UTF8.GetString(data);
             var parsedValues = HttpUtility.ParseQueryString(decodedValues);
@@ -46,11 +47,13 @@ namespace AFCargaDocs.Controllers
             GlobalVariables.Fndc = parsedValues["fndc"];
             GlobalVariables.Aidy = parsedValues["aidy"];
             GlobalVariables.Aidp = parsedValues["aidp"];
+            GlobalVariables.Aplicacion = parsedValues["p_apfr_code"];
             string token = encodedValues;
             ViewBag.Matricula = GlobalVariables.Matricula;
             ViewBag.fndc = GlobalVariables.Fndc;
             ViewBag.aidy = GlobalVariables.Aidy;
             ViewBag.aidp = GlobalVariables.Aidp;
+            ViewBag.Aplicacion = GlobalVariables.Aplicacion;
             return View();
         }
 

@@ -33,6 +33,14 @@ input {
 .mainiconos {
     width: 60px;
 }
+.logo {
+    align-content: flex-end;
+    height: 114px;
+    width: auto%;
+}
+.logopr {
+    width: 20%;
+}
 
 .custom-file-upload {
     /*border: 1px solid #ccc;*/
@@ -84,6 +92,41 @@ input {
     flex-direction:row;
     justify-content:center;
     align-items:center;
+}
+
+.header1 {
+    background: #302c26;
+    /*float: left;*/
+    width: 100%;
+    margin: 0 auto 1%;
+    color: #FFFFFF;
+    /*tipo de letra*/
+}
+/*.header {
+    height: 90px;
+    width: auto;
+    /*tipo de letra*/
+}*/
+
+header2 {
+    background: #302c26;
+    width: 50%;
+    margin: 0 auto 1%;
+    color: #FFFFFF;
+    /*tipo de letra*/
+}
+
+.headerconte {
+    text-align: right;
+}
+
+.titles {
+    background-color: black;
+    color: white;
+}
+
+.deshabilitado {
+    pointer-events: none;
 }
 
 /*table {
