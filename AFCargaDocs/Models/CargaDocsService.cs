@@ -104,12 +104,6 @@ namespace AFCargaDocs.Models
             {
                 Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
             }
-
-
-
-
-
-
             // insert en tabla 
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {

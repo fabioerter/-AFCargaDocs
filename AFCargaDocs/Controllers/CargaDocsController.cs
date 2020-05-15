@@ -39,7 +39,7 @@ namespace AFCargaDocs.Controllers
                 throw new HttpException(Convert.ToInt32(HttpStatusCode.Unauthorized),
                         "Debes iniciar sesión para ingresar a la aplicación!");
             }
- 
+
             byte[] data = Convert.FromBase64String(encodedValues);
             string decodedValues = Encoding.UTF8.GetString(data);
             var parsedValues = HttpUtility.ParseQueryString(decodedValues);
@@ -81,11 +81,25 @@ namespace AFCargaDocs.Controllers
             AxServicesInterface axServicesInterface = new AxServicesInterface();
             string sessionTicket = axServicesInterface.Login("", "BANPROD", "DOCIDX", "di12345678!",
                                                                 Convert.ToInt32(EAxType.AxFeature_Basic));
-            string result = axServicesInterface.GetApplicationList(sessionTicket, "BANPROD");
+            //axServicesInterface.GetApplicationList(sessionTicket, "BANPROD");
+
+            AxDocumentCreationData newDocument = new AxDocumentCreationData(403, "BANPROD",
+                            "C:\\110010.jpg", EAxFileType.FT_UNKNOWN,
+                            true, true, false, 0);
+
+            AxDocumentIndex newDocumentIndex = new AxDocumentIndex(
+                Convert.ToInt32(GlobalVariables.Matricula),
+                    GlobalVariables.getPdim(GlobalVariables.Matricula),
+                    GlobalVariables.Aidy, GlobalVariables.Aidp,
+                    GlobalVariables.Fndc, "RECRM",
+                    GlobalVariables.Aplicacion,
+                    DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
+            string result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
+                                                                   newDocumentIndex.ToString());
             axServicesInterface.Logout(sessionTicket);
             return result;
         }
-        public JsonResult guardarDocumento(string clave)
+        public String guardarDocumento(string clave)
         {
             HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
             if (clave == null)
@@ -93,8 +107,19 @@ namespace AFCargaDocs.Controllers
                 throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest),
                         "No se puede encontrar su documento, espere un momento e intente nuevamente");
             }
-            return Json(CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
-                GlobalVariables.Aidy, GlobalVariables.Aidp, file), JsonRequestBehavior.AllowGet);
+            string result = "";
+            try
+            {
+                result = JsonConvert.SerializeObject(CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
+                GlobalVariables.Aidy, GlobalVariables.Aidp, file));
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException((int)HttpStatusCode.InternalServerError,
+                                                                        ex.Message);
+            }
+
+            return result;
         }
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
