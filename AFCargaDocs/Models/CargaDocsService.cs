@@ -58,12 +58,17 @@ namespace AFCargaDocs.Models
 
             try
             {
-                byte[] newFileData = request.DownloadData(new Uri(GlobalVariables.Ftpip)+ "/" + file.FileId);
+                byte[] newFileData = request.DownloadData(new Uri(GlobalVariables.Ftpip) + "/" + file.FileId);
                 file.FileContent = Convert.ToBase64String(newFileData);
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{1}", e.Message);
+                throw new HttpException((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+
+            if (file.FileContent == null)
+            {
+                throw new HttpException((int)HttpStatusCode.InternalServerError, "El Documento no esta en nuestro servidor");
             }
 
             return file;
@@ -71,7 +76,7 @@ namespace AFCargaDocs.Models
         public static Document insertDocument(string matricula, string clave, string fndcCode,
                                             string aidyCode, string aidpCode, HttpPostedFile file)
         {
-            
+
             Document document = new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
             byte[] fileContents = new byte[file.ContentLength];
             if (document.status != "PS")
@@ -83,7 +88,7 @@ namespace AFCargaDocs.Models
 
 
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(GlobalVariables.Ftpip + "/"  + id);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(GlobalVariables.Ftpip + "/" + id);
 
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
@@ -104,12 +109,6 @@ namespace AFCargaDocs.Models
             {
                 Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
             }
-
-
-
-
-
-
             // insert en tabla 
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
