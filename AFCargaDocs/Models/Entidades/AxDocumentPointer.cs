@@ -10,7 +10,7 @@ namespace AFCargaDocs.Models.Entidades
     public class AxDocumentPointer
     {
         /// <summary>
-        /// Data source name
+        /// Data source name -- BANDEV
         /// </summary>
         string dsn;
         /// <summary>
@@ -44,7 +44,9 @@ namespace AFCargaDocs.Models.Entidades
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
-            stringBuilder.Append("<AxDocumentPointer type=\"Document\" dsn=\"VBS\" app=\"2\" id=\"16\" page=\"0\" ver=\"0\" />");
+            stringBuilder.Append("<AxDocumentPointer type=\"" + this.type + "\" dsn=\"" + this.dsn +
+                      "\" app=\"2\" id=\"" + this.id + "\" page=\"" + this.page + "\" ver=\"" + 
+                      this.ver + "\" />");
             return stringBuilder.ToString();
         }
     }
