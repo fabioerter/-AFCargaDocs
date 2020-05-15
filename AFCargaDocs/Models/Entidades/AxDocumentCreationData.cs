@@ -95,7 +95,7 @@ namespace AFCargaDocs.Models.Entidades
                     this.IgnoreDupIndex.ToString().ToLower() + "\"" +
                     " ignore_dls = \"" + this.IgnoreDls.ToString().ToLower() +
                     "\" splitimg = \"" + this.Splitimg.ToString().ToLower() +
-                    "\" subpages = \"" + this.Subpages + "\" filetype = \"" + this.FileType + "\"" +
+                    "\" subpages = \"" + this.Subpages + "\" "/*filetype = \"" + this.FileType + "\""*/ +
                     " xmlns:ax = \"http://www.emc.com/ax\" /> ";
         }
     }

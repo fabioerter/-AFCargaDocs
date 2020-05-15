@@ -180,6 +180,7 @@
     <Compile Include="Models\Entidades\AxDocumentIndex.cs" />
     <Compile Include="Models\Entidades\AxDocumentPointer.cs" />
     <Compile Include="Models\Entidades\AxDocumentCreationData.cs" />
+    <Compile Include="Models\Entidades\AxStreamData.cs" />
     <Compile Include="Models\Entidades\DataBase.cs" />
     <Compile Include="Models\Entidades\Document.cs" />
     <Compile Include="Models\Entidades\DocumentList.cs" />
