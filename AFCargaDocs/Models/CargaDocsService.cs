@@ -63,7 +63,7 @@ namespace AFCargaDocs.Models
             }
             catch (Exception e)
             {
-                throw new HttpException((int)HttpStatusCode.InternalServerError, e.Message);
+                throw new HttpException((int)HttpStatusCode.InternalServerError, "No se pudo mostrar el archivo, intente mas tarde.");
             }
 
             if (file.FileContent == null)
