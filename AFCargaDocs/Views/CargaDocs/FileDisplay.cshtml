@@ -3,9 +3,17 @@
 @{
     ViewBag.Title = "DisplayDocWithName";
 }
-<body style="padding-top:0px; padding-bottom:0px">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/fonts/funtes.css" rel="stylesheet" type="text/css" />
 
+</head>
+<body class="bodydoc">
+    <div class="documento">
 
-    <embed type="@Model.FileType" height="800px" width="100%" src="data:@Model.FileType;base64,@Model.FileContent" width="800px" />
-
+        <embed type="@Model.FileType" width="700px" height="550px" src="data:@Model.FileType;base64,@Model.FileContent" />
+</div>
 </body>

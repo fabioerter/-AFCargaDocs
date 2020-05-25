@@ -98,4 +98,20 @@ namespace AFCargaDocs.Models.Entidades.Enum
         /// </summary>
         Report = 1
     }
+    public enum EAxPageUploadAction
+    {
+        /// <summary>
+        /// Insert the uploaded page file before a specified page position
+        /// </summary>
+        InsertBefore,
+        /// <summary>
+        /// Insert the uploaded page file after a specified page position
+        /// </summary>
+        InsertAfter,
+        /// <summary>
+        /// Replace a page at a specified position with the uploaded page
+        /// file
+        /// </summary>
+        Replace
+    }
 }
