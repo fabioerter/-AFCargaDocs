@@ -27,10 +27,10 @@ namespace AFCargaDocs.Controllers
                     ViewBag.Description = error + " : " + message;
                     break;
                 default:
-                    ViewBag.Title = "Se produjo un error inesperado";
+                    ViewBag.Title = "Surgió una excepcion.";
                     if (message == "")
                     {
-                        ViewBag.Description = "Algo salio muy mal";
+                        ViewBag.Description = "Algo salio mal";
                     }
                     else
                     {

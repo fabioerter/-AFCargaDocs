@@ -30,29 +30,25 @@ namespace AFCargaDocs.Models.Entidades
         public static string FtpUser { get => ftpUser; set => ftpUser = value; }
         public static string FtpPassword { get => ftpPassword; set => ftpPassword = value; }
 
-        public static string getPdim( string matricula)
+        public static bool IsAjaxRequest(this HttpRequest request)
         {
-            using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
-            {
-                cnx.Open();
+            if (request == null)
+                throw new ArgumentNullException("request");
+            if (request["X-Requested-With"] == "XMLHttpRequest")
+                return true;
+            if (request.Headers != null)
+                return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            return false;
+        }
 
-                OracleCommand comando = new OracleCommand();
-                comando.Connection = cnx;
-                comando.CommandText = @"F_UDEM_STU_PIDM";
-                comando.CommandType = System.Data.CommandType.StoredProcedure;
-                comando.Parameters.Add(new OracleParameter("salida", OracleDbType.Varchar2)
-                {
-                    Size = 200,
-                    Direction = System.Data.ParameterDirection.ReturnValue
-                });
-                comando.Parameters.Add(new OracleParameter(matricula, OracleDbType.Varchar2)
-                {
-                    Value = GlobalVariables.Matricula,
-                    Size = 9
-                });
-                comando.ExecuteNonQuery();
-                return (comando.Parameters["salida"].Value).ToString();
-            }
+        public static string getPdim(string matricula)
+        {
+            DataBase dataBase = new DataBase();
+
+            dataBase.AddParameter("CMATRICULA", matricula, OracleDbType.Varchar2, 9);
+
+            dataBase.ExecuteFunction("F_UDEM_STU_PIDM", "salida", OracleDbType.Varchar2, 9);
+            return dataBase.getOutParamater("salida");
         }
     }
 }

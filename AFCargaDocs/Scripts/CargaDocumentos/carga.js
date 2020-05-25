@@ -3,21 +3,13 @@
         $('#ModalError').modal('hide');
         var i = $(this).prev('label').clone();
         var file = $('#file-upload')[0].files[0].name;
-        //$(this).prev('#fileName').text(file);
         document.getElementById("fileName").innerHTML = file;
-        //if (file.)
-
-        //$("#SubirArchivo").prop("disabled", false);
-        //$("notFound").css()
-
-
     });
 
     $('#myModalCarga').on('hidden.bs.modal', function () {
         //debugger;
         document.getElementById("fileName").innerHTML = "";
         $('#file-upload').val('')
-        //name.length = "";
         $('#notFound').css("display", "none");
         //window.location.reload();
     });
@@ -28,7 +20,6 @@
     $('#trigger').click(function () {
         $("#dialog").dialog();
     });
-    //lo nuevo
 });
 
 //funciones de jquery, javascript
@@ -99,13 +90,6 @@ function guardar() {
             }
         }
     }
-    //catch (error) {
-    //    $('#notFound').css("display", "block");
-    //    //document.getElementById("#textoAdvertencia").innerHTML = "favor de seleccionar archivo";
-    //    if (error.type == 'TypeError') {
-    //        $("#textoAdvertencia").text("Favor de seleccionar un archivo");
-    //    }
-    //}
     catch (error) {
         $('#notFound').css("display", "block");
         //document.getElementById("#textoAdvertencia").innerHTML = "favor de seleccionar archivo";
@@ -243,7 +227,7 @@ function createRows(data) {
                 break;
         }
 
-        //trabajar con la validacion de los casos
+        //Tabla con la lista de documentos
 
         rows += '<tr name="clave" id="' + data[i].clave + '">' +
             '<td style="width:11%">' +
@@ -289,7 +273,7 @@ function createRows(data) {
 
 
 };
-
+//accion del boton para carga documento
 obtener = function (clave, cargadisabled) {
 
     if (cargadisabled) {
@@ -306,14 +290,14 @@ obtener = function (clave, cargadisabled) {
 
 
 };
-
+//accion del boton vista previa del documento
 vistap = function (clave, vistadisabled) {
     var botonvistaprev = document.getElementById('vistap');
 
     if (vistadisabled) {
         var clave = clave.id;
         document.getElementById("clave").innerHTML = clave;
-        window.open('/CargaDocs/FileDisplay/?treqCode=' + clave, '_blank', 'top=100,left=400,width=600px,height=500px,toolbar=1,resizable=0');
+        window.open('/CargaDocs/FileDisplay/?treqCode=' + clave, '_blank', 'top=50,left=400,width=600px,height=600px,toolbar=1,resizable=0');
     }
     else {
     }

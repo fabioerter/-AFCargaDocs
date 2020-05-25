@@ -57,9 +57,8 @@ input {
 }
 
 
-
 .modal-content {
-   background-color: #f7f7f7
+    background-color: #f7f7f7
 }
 
 .modal-body, modal-content {
@@ -129,28 +128,22 @@ header2 {
     pointer-events: none;
 }
 
-/*table {
+.documento {
+    position: inherit;
+    top: 0;
+    left: 0;
     width: 100%;
-    border: 1px solid #000;
+    height: 100%;
+    text-align: center;
 }
 
-th, td {
-    width: 25%;
-    text-align: left;
-    vertical-align: top;
-    border: 1px solid #000;
-    border-collapse: collapse;
-    padding: 0.3em;
-    caption-side: bottom;
+.bodydoc {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 1px;
+    padding-left: 1px;
+    align-content: center;
 }
 
-caption {
-    padding: 0.3em;
-    color: #fff;
-    background: #000;
-}
 
-th {
-    background: #eee;
-}*/
-
+ 
