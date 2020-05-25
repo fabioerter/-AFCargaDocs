@@ -14,10 +14,6 @@ namespace AFCargaDocs.Models.Entidades
         /// </summary>
         string dsn;
         /// <summary>
-        /// Returns a document reference
-        /// </summary>
-        string GetDocRef;
-        /// <summary>
         /// Document identifier; for a regular document this is
         ///the document ID, for an AppXtender Reports
         ///Mgmt report this is the report ID, and for a batch
@@ -38,14 +34,21 @@ namespace AFCargaDocs.Models.Entidades
         /// </summary>
         int ver;
 
-
+        public AxDocumentPointer(string dsn, int id, int page, EAxDocumentType type, int ver)
+        {
+            this.dsn = dsn;
+            this.id = id;
+            this.page = page;
+            this.type = type;
+            this.ver = ver;
+        }
 
         override public string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
             stringBuilder.Append("<AxDocumentPointer type=\"" + this.type + "\" dsn=\"" + this.dsn +
-                      "\" app=\"2\" id=\"" + this.id + "\" page=\"" + this.page + "\" ver=\"" + 
+                      "\" app=\"403\" id=\"" + this.id + "\" page=\"" + this.page + "\" ver=\"" + 
                       this.ver + "\" />");
             return stringBuilder.ToString();
         }

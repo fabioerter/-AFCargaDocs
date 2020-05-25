@@ -16,11 +16,13 @@ namespace AFCargaDocs.Models.Entidades
         string treqCode;
         string aplicationForm;
         string activityDate;
+        string documentId;
 
-        public AxDocumentIndex(int id, string pdim, string aidYear,
+        public AxDocumentIndex(string documentId, int id, string pdim, string aidYear,
                     string aidPeriod, string aidFond, string treqCode, string aplicationForm,
                     string activityDate)
         {
+            this.DocumentId = documentId;
             this.id = id;
             this.pdim = pdim;
             this.aidYear = aidYear;
@@ -39,13 +41,14 @@ namespace AFCargaDocs.Models.Entidades
         public string AplicationForm { get => aplicationForm; set => aplicationForm = value; }
         public string ActivityDate { get => activityDate; set => activityDate = value; }
         public string TreqCode { get => treqCode; set => treqCode = value; }
+        public string DocumentId { get => documentId; set => documentId = value; }
 
         override public string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("<?xml version = \"1.0\" encoding = \"utf - 16\" ?>");
             stringBuilder.Append(" <ax:QueryItem xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-            stringBuilder.Append(" 	xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" id=\"-1\" ");
+            stringBuilder.Append(" 	xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" id=\"" + this.DocumentId + "\" ");
             stringBuilder.Append(" 	xmlns:ax=\"http://www.emc.com/ax\"> ");
             stringBuilder.Append(" 	<ax:Attributes /> ");
             stringBuilder.Append(" 	<ax:Fields> ");
