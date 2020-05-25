@@ -74,6 +74,9 @@
       <HintPath>..\packages\Jil.2.17.0\lib\net45\Jil.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Mvc, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.Futures.5.0.0\lib\net40\Microsoft.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -180,6 +183,7 @@
     <Compile Include="Models\Entidades\AxDocumentIndex.cs" />
     <Compile Include="Models\Entidades\AxDocumentPointer.cs" />
     <Compile Include="Models\Entidades\AxDocumentCreationData.cs" />
+    <Compile Include="Models\Entidades\AxPageUploadData.cs" />
     <Compile Include="Models\Entidades\AxStreamData.cs" />
     <Compile Include="Models\Entidades\DataBase.cs" />
     <Compile Include="Models\Entidades\Document.cs" />

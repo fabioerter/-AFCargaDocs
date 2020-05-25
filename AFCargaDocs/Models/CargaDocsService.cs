@@ -109,6 +109,40 @@ namespace AFCargaDocs.Models
             {
                 Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
             }
+
+            //DataBase dataBase = new DataBase();
+
+            //dataBase.AddParameter("p_pidm", matricula, OracleDbType.Int16, 8);
+            //dataBase.AddParameter("p_aidy_code", document.aidyCode, OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_aidp_code", document.aidpCode, OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_treq_code", document.clave, OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_trst_code", "NR", OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_trst_date",
+            //    DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+            //    OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_establish_date",
+            //    DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+            //    OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_comment", "Upload by web service", OracleDbType.Varchar2, 9);
+            //dataBase.AddParameter("p_data_origin", null, OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_create_user_id", "cargaDocsWeb", OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_create_date",
+            //    DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+            //    OracleDbType.Varchar2, 20);
+            //dataBase.AddParameter("p_user_id", "cargaDocsWeb", OracleDbType.Varchar2, 20);
+            //dataBase.AddOutParameter("p_rowid_out", OracleDbType.Varchar2, 18);
+
+            //try
+            //{
+            //    _ = dataBase.ExecuteProcedure("KV_APPLICANT_TRK_REQT.P_CREATE");
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new HttpException((int)HttpStatusCode.InternalServerError, ex.Message);
+            //}
+            //return new Document(GlobalVariables.Matricula, document.clave,
+            //                    document.fndcCode, document.aidyCode, document.aidpCode);
+
             // insert en tabla 
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
@@ -175,7 +209,7 @@ namespace AFCargaDocs.Models
                 {
                     Value = DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
                     Size = 20
-                }); ;
+                });
                 comando.Parameters.Add(new OracleParameter("p_user_id", OracleDbType.Varchar2)
                 {
                     Value = "cargaDocsWeb",
@@ -185,7 +219,7 @@ namespace AFCargaDocs.Models
                 {
                     Direction = System.Data.ParameterDirection.Output,
                     Size = 18
-                }); ;
+                });
                 try
                 {
 
@@ -219,7 +253,7 @@ namespace AFCargaDocs.Models
 
             DataBase dataBase = new DataBase();
             StringBuilder query = new StringBuilder();
-            query.Append(" SELECT NVL((SELECT MAX(KZRLDOC_ID) + 1 ");
+            query.Append(" SELECT NVL((SELECT MAX(TO_NUMBER(KZRLDOC_ID)) + 1 ");
             query.Append("             FROM KZRLDOC), 1) ID ");
             query.Append(" FROM DUAL ");
             String id = (dataBase.ExecuteQuery(query.ToString()).Rows[0][0]).ToString();
@@ -230,8 +264,7 @@ namespace AFCargaDocs.Models
             query.Append("                      KZRLDOC_COMMENT, KZRLDOC_ACTIVITY_DATE, KZRLDOC_SURROGATE_ID, KZRLDOC_VERSION, KZRLDOC_USER_ID,");
             query.Append("                      KZRLDOC_VPDI_CODE)");
             query.Append(" VALUES (F_UDEM_STU_PIDM(:matricula),");
-            query.Append("         (NVL((SELECT MAX(KZRLDOC_ID) + 1");
-            query.Append("          FROM KZRLDOC),1)),");
+            query.Append("         (:id),");
             query.Append("         :aidyCode, :aidpCod, :fndcCode,");
             query.Append("         :treqCode, :trstCode,");
             query.Append("         SYSDATE, :fileName, :fileType, :comments,");
@@ -239,6 +272,7 @@ namespace AFCargaDocs.Models
 
             dataBase = new DataBase();
             dataBase.AddFilter("matricula", GlobalVariables.Matricula);
+            dataBase.AddFilter("id", id);
             dataBase.AddFilter("aidyCode", GlobalVariables.Aidy);
             dataBase.AddFilter("aidpCod", GlobalVariables.Aidp);
             dataBase.AddFilter("fndcCode", document.fndcCode);

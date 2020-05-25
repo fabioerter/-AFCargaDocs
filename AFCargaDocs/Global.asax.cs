@@ -1,6 +1,5 @@
 ﻿using AFCargaDocs.Controllers;
 using AFCargaDocs.Models.Entidades;
-using Microsoft.Web.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
