@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -40,6 +41,10 @@ namespace AFCargaDocs.Controllers
             }
 
             return View();
+        }
+        public JsonResult AjaxError(int error = 0, string message = "")
+        {
+            return Json(new {errMsg = message, errNum =  error});
         }
     }
 }
