@@ -20,6 +20,18 @@
     $('#trigger').click(function () {
         $("#dialog").dialog();
     });
+    $('#top').css({
+        'position': 'fixed',
+        'right': '30px',
+        'bottom': '30px',
+    });
+    $("#return").css({
+        "position": "absolute",
+        "right": "30px",
+        "top": "30px",
+    }).on("click", function () {
+        window.history.back();
+    });
 });
 
 //funciones de jquery, javascript
@@ -46,10 +58,10 @@ function guardar() {
 
         if (name.length > 0) {
             var lenght = $('#file-upload')[0].files[0].size;
-            if (lenght / 1000 > 3000) {
+            if (lenght / 1000 > 5000) {
                 //$('#ModalError').modal('show');
                 //return;
-                throw Error("Archivo excede el tamaño máximo permitido.");
+                throw Error("Este archivo excede el tamaño máximo permitido de 5 MB.");
             }
             var fd = new FormData();
             fd.append('file', $('#file-upload')[0].files[0]);
@@ -207,6 +219,7 @@ function createRows(data) {
         switch (data[i].status) {//Status
             case "PS"://Faltan de Subir
                 VisP = "../images/Recursos/image14.png";
+                //if (data[i] = )
                 vistadisabled = false;
                 estilovp = "pointer-events: none;";
                 break;
