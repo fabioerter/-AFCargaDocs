@@ -34,12 +34,14 @@ namespace AFCargaDocs.Controllers
             if (User != null && User.Identity.IsAuthenticated && string.IsNullOrEmpty(encodedValues))
             {
                 Console.WriteLine($"(\"RecuperaAvance\")");
+                throw new HttpException(Convert.ToInt32(HttpStatusCode.Unauthorized),
+                        "Se passo un error en token.");
             }
             if (string.IsNullOrEmpty(encodedValues))
             {
                 Console.WriteLine($"NoLogin");
                 throw new HttpException(Convert.ToInt32(HttpStatusCode.Unauthorized),
-                        "Debes iniciar sesión para ingresar a la aplicación!");
+                        "Debes iniciar sesión para ingresar a la aplicación.");
             }
 
             byte[] data = Convert.FromBase64String(encodedValues);
@@ -99,65 +101,67 @@ namespace AFCargaDocs.Controllers
 
         }
 
-        //public string guardarDocumento(string clave)
-        //{
-        //    AxServicesInterface axServicesInterface = new AxServicesInterface();
-        //    string sessionTicket = axServicesInterface.Login("", "BANPROD", "DOCIDX", "di12345678!",
-        //                                                            Convert.ToInt32(EAxType.AxFeature_Basic));
-        //    string result = null;
-        //    try
-        //    {
-        //        //axServicesInterface.GetApplicationList(sessionTicket, "BANPROD");
-        //        HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
-        //        byte[] fileContents = new byte[file.ContentLength];
-        //        fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
+        public string teste2(String treqCode)
+        {
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", "DOCIDX", "di12345678!",
+                                                                    Convert.ToInt32(EAxType.AxFeature_Basic));
+            string result = null;
+            try
+            {
+                //axServicesInterface.GetApplicationList(sessionTicket, "BANPROD");
+                //HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+                //byte[] fileContents = new byte[file.ContentLength];
+                //fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
 
 
 
-        //        //result = axServicesInterface.UploadImageStream(sessionTicket, "BANPROD", new AxStreamData(
-        //        //    Convert.ToBase64String(fileContents),"",file.FileName).ToString());
+                //result = axServicesInterface.UploadImageStream(sessionTicket, "BANPROD", new AxStreamData(
+                //    Convert.ToBase64String(fileContents),"",file.FileName).ToString());
 
 
 
-        //        AxDocumentCreationData newDocument = new AxDocumentCreationData(403, "BANPROD",
-        //                        "@@/148.238.49.217/1"/*result*/, EAxFileType.FT_UNKNOWN,
-        //                        true, true, false, 0);
+                AxDocumentCreationData newDocument = new AxDocumentCreationData(403, "BANPROD",
+                                "E:/RepositorioAyudasFinancieras/DEVL/1"/*result*/, EAxFileType.FT_UNKNOWN,
+                                true, true, false, 0);
 
-        //        AxDocumentIndex newDocumentIndex = new AxDocumentIndex("0",
-        //            Convert.ToInt32(GlobalVariables.Matricula),
-        //                GlobalVariables.getPdim(GlobalVariables.Matricula),
-        //                GlobalVariables.Aidy, GlobalVariables.Aidp,
-        //                GlobalVariables.Fndc, clave,
-        //                GlobalVariables.Aplicacion,
-        //                DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
+                AxDocumentIndex newDocumentIndex = new AxDocumentIndex("0",
+                    Convert.ToInt32(GlobalVariables.Matricula),
+                        GlobalVariables.getPdim(GlobalVariables.Matricula),
+                        GlobalVariables.Aidy, GlobalVariables.Aidp,
+                        GlobalVariables.Fndc, treqCode,
+                        GlobalVariables.Aplicacion,
+                        DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
 
-        //        //result = axServicesInterface.UploadDocumentPageByRef(sessionTicket,
-        //        //        new AxDocumentPointer("BANPROD", 1, 1, EAxDocumentType.Document, 1).ToString(),
-        //        //        new AxPageUploadData()
-        //        //        {
-        //        //            Act = EAxPageUploadAction.Replace,
-        //        //            Filepath = result,
-        //        //            Filetype = EAxFileType.FT_UNKNOWN,
-        //        //            Pos = 1,
-        //        //            Splitimg = true,
-        //        //            Subpages = 0
-        //        //        }.ToString());
+                //result = axServicesInterface.UploadDocumentPageByRef(sessionTicket,
+                //        new AxDocumentPointer("BANPROD", 1, 1, EAxDocumentType.Document, 1).ToString(),
+                //        new AxPageUploadData()
+                //        {
+                //            Act = EAxPageUploadAction.Replace,
+                //            Filepath = result,
+                //            Filetype = EAxFileType.FT_UNKNOWN,
+                //            Pos = 1,
+                //            Splitimg = true,
+                //            Subpages = 0
+                //        }.ToString());
 
-        //        //result = axServicesInterface.ApplyAutoIndexByAppId(sessionTicket, "BANPROD",
-        //        //    403, newDocumentIndex.ToString(), newDocumentIndex.ToString());
-        //        result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
-        //                                                               newDocumentIndex.ToString());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        axServicesInterface.Logout(sessionTicket);
-        //    }
-        //    return result;
-        //}
+                //result = axServicesInterface.ApplyAutoIndexByAppId(sessionTicket, "BANPROD",
+                //    403, newDocumentIndex.ToString(), newDocumentIndex.ToString());
+                
+
+                result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
+                                                                       newDocumentIndex.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message);
+            }
+            finally
+            {
+                axServicesInterface.Logout(sessionTicket);
+            }
+            return result;
+        }
         public String guardarDocumento(string clave)
         {
             HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
