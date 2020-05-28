@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -41,7 +41,14 @@ namespace AFCargaDocs.Models.Entidades
             query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
             query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
             query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ) ACTIVITY_DATE");
+            query.Append("            ) ACTIVITY_DATE,");
+            query.Append("        NVL((SELECT KVRAREQ_COMMENT");
+            query.Append("             FROM KVRAREQ --En esta tabla se van registrando los requisitos de la solicitud del alumno");
+            query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM('000612680')--P_PIDM --000549681");
+            query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
+            query.Append("            ), 'No hay comentarios') COMMENTS");
             query.Append(" FROM KVRTRFN,");
             query.Append("      KVVTREQ");
             query.Append(" WHERE KVRTRFN_FNDC_CODE = :fndcCode");
@@ -98,6 +105,7 @@ namespace AFCargaDocs.Models.Entidades
                 this.fecha = Convert.ToDateTime(dr[6].ToString())
                             .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
             }
+            this.comment = dr[7].ToString();
         }
 
 
@@ -117,6 +125,10 @@ namespace AFCargaDocs.Models.Entidades
         /// Fecha del archivo
         /// </summary>
         public string fecha { get; set; }
+        /// <summary>
+        /// comentario del archivo
+        /// </summary>
+        public string comment { get; set; }
         [JsonIgnore]
         public string fndcCode { get; set; }
         [JsonIgnore]
