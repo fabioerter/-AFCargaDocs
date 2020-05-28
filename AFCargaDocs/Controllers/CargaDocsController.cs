@@ -20,6 +20,8 @@ using AFCargaDocs.Models.Entidades.Enum;
 using AFCargaDocs.AxServiceInterface;
 using System.IO;
 using Oracle.ManagedDataAccess.Client;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace AFCargaDocs.Controllers
 {
@@ -147,7 +149,7 @@ namespace AFCargaDocs.Controllers
 
                 //result = axServicesInterface.ApplyAutoIndexByAppId(sessionTicket, "BANPROD",
                 //    403, newDocumentIndex.ToString(), newDocumentIndex.ToString());
-                
+
 
                 result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
                                                                        newDocumentIndex.ToString());
@@ -162,7 +164,21 @@ namespace AFCargaDocs.Controllers
             }
             return result;
         }
-        public String guardarDocumento(string clave)
+
+        public string validaCarga(string treqCode)
+        {
+            return new JObject(new JProperty("isOnServer",
+                 CargaDocsService.validaCarga(GlobalVariables.Matricula, treqCode, GlobalVariables.Fndc,
+                 GlobalVariables.Aidy, GlobalVariables.Aidp))).ToString();
+        }
+        public string updateDocumento(string clave)
+        {
+            HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+            return JsonConvert.SerializeObject(
+                CargaDocsService.updateDocument(clave, file, "NR"));
+        }
+
+        public string guardarDocumento(string clave)
         {
             HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
             if (clave == null)
@@ -184,6 +200,7 @@ namespace AFCargaDocs.Controllers
 
             return result;
         }
+
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public ActionResult FileDisplay(string treqCode)

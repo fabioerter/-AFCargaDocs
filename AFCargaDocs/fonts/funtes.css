@@ -39,7 +39,8 @@ input {
     width: auto%;
 }
 .logopr {
-    width: 20%;
+    width: 350px;
+    height: 120px;
 }
 
 .custom-file-upload {

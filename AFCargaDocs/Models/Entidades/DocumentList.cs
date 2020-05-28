@@ -28,49 +28,56 @@ namespace AFCargaDocs.Models.Entidades
         public List<Document> GetDocumentList()
         {
             DataTable dataTable;
-            StringBuilder query = new StringBuilder();
-            query.Append(" SELECT KVRTRFN_TREQ_CODE             REQUISITO,");
-            query.Append("        KVVTREQ_DESC                  DESCRIPCION,");
-            query.Append("        NVL((SELECT KVRAREQ_TRST_CODE");
-            query.Append("             FROM KVRAREQ ");
-            query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula2)");
-            query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ), 'PS')                  STATUS,");
-            query.Append("        (SELECT KVRAREQ_TRST_DATE");
-            query.Append("             FROM KVRAREQ ");
-            query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula1)");
-            query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ) ACTIVITY_DATE");
-            query.Append(" FROM KVRTRFN,");
-            query.Append("      KVVTREQ");
-            query.Append(" WHERE KVRTRFN_AIDY_CODE = :aidyCode");
-            query.Append("   AND KVRTRFN_AIDP_CODE = :aidpCode");
-            query.Append("   AND KVRTRFN_FNDC_CODE = :fndcCode");
-            query.Append("   AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
-            query.Append("   AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
-            query.Append("                                 FROM KVRAREQ ");
-            query.Append("                                 WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
-            query.Append("                                   AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("                                   AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("                                   AND KVRAREQ_TRST_CODE = 'NQ')");
-            query.Append(" ORDER BY KVVTREQ_DESC");
-            query.Append("");
+            StringBuilder sb = new StringBuilder();
 
+            sb.Append(" SELECT KVRTRFN_TREQ_CODE             REQUISITO,");
+            sb.Append("        KVVTREQ_DESC                  DESCRIPCION,");
+            sb.Append("        NVL((SELECT KVRAREQ_TRST_CODE");
+            sb.Append("             FROM KVRAREQ ");
+            sb.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula2)");
+            sb.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            sb.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            sb.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
+            sb.Append("            ), 'PS')                  STATUS,");
+            sb.Append("        (SELECT KVRAREQ_TRST_DATE");
+            sb.Append("             FROM KVRAREQ ");
+            sb.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula1)");
+            sb.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            sb.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            sb.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
+            sb.Append("            ) ACTIVITY_DATE,");
+            sb.Append("            NVL((SELECT KVRAREQ_COMMENT");
+            sb.Append("            FROM KVRAREQ");
+            sb.Append("            WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula3)");
+            sb.Append("              AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            sb.Append("              AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            sb.Append("              AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
+            sb.Append("              ),'No hay comentarios') COMMENTS");
+            sb.Append(" FROM KVRTRFN,");
+            sb.Append("      KVVTREQ");
+            sb.Append(" WHERE KVRTRFN_AIDY_CODE = :aidyCode");
+            sb.Append("   AND KVRTRFN_AIDP_CODE = :aidpCode");
+            sb.Append("   AND KVRTRFN_FNDC_CODE = :fndcCode");
+            sb.Append("   AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
+            sb.Append("   AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
+            sb.Append("                                 FROM KVRAREQ ");
+            sb.Append("                                 WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
+            sb.Append("                                   AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
+            sb.Append("                                   AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
+            sb.Append("                                   AND KVRAREQ_TRST_CODE = 'NQ')");
+            sb.Append(" ORDER BY KVVTREQ_DESC");
             try
             {
                 DataBase dataBase = new DataBase();
                 dataBase.AddFilter("matricula2", matricula);
+                dataBase.AddFilter("matricula3", matricula);
                 dataBase.AddFilter("matricula1", matricula);
                 dataBase.AddFilter("aidyCode", aidyCode);
                 dataBase.AddFilter("aidpCode", aidpCode);
                 dataBase.AddFilter("fndcCode", fndcCode);
                 dataBase.AddFilter("matricula", matricula);
 
-                dataTable = dataBase.ExecuteQuery(query.ToString());
+                dataTable = dataBase.ExecuteQuery(sb.ToString());
             }
             catch (Exception ex)
             {
@@ -97,6 +104,7 @@ namespace AFCargaDocs.Models.Entidades
                         document.fecha = Convert.ToDateTime(dr[3].ToString())
                                     .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
                     }
+                    document.comment = dr[4].ToString();
                     this.documents.Add(document);
                 }
             }
