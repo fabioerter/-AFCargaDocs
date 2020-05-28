@@ -14,6 +14,8 @@ using System.Net.Http;
 using System.Data;
 using System.Text;
 using System.IO;
+using WebGrease.Activities;
+using System.Web.Http.Results;
 
 namespace AFCargaDocs.Models
 {
@@ -73,15 +75,138 @@ namespace AFCargaDocs.Models
 
             return file;
         }
+
+        public static bool validaCarga(string matricula, string treqCode, string fndcCode,
+                                        string aidyCode, string aidpCode)
+        {
+            bool isOnServer = false;
+            Document document = new Document(matricula, treqCode, fndcCode, aidyCode, aidpCode);
+            switch (document.status)
+            {
+                case "PS":
+                    isOnServer = false;
+                    break;
+                case "NR":
+                    if (DateTime.Now.Subtract(DateTime.Parse(document.fecha))
+                        .TotalMilliseconds < 2628000000)
+                    {
+                        isOnServer = true;
+                    }
+                    else
+                    {
+                        throw new HttpException((int)HttpStatusCode.BadRequest,
+                      "No es posible cargar un documento con mas de un mes");
+                    }
+                    break;
+                case "IV":
+                    isOnServer = true;
+                    break;
+                case "CM":
+                    throw new HttpException((int)HttpStatusCode.BadRequest,
+                        "No se pode cargar un documento concluido.");
+                    break;
+            }
+            return isOnServer;
+
+        }
+
+        public static Document updateDocument(string treqCode, HttpPostedFile file,
+                    string trstCode)
+        {
+            if (!validaCarga(GlobalVariables.Matricula, treqCode,
+                GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp))
+            {
+                throw new HttpException((int)HttpStatusCode.BadRequest,
+                    "Documento no esta en nuestro servidor, volva a intentar.");
+            }
+            Document document = new Document(GlobalVariables.Matricula, treqCode,
+                GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
+
+            byte[] fileContents = new byte[file.ContentLength];
+
+            Kzrldoc docIndex = new Kzrldoc(GlobalVariables.Matricula, document.aidyCode,
+                    document.aidpCode, document.fndcCode, document.clave);
+
+            docIndex.TrstCode = trstCode;
+            docIndex.FileName = file.FileName;
+            docIndex.FileType = file.ContentType;
+
+            docIndex.Update();
+
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(
+                GlobalVariables.Ftpip + "/" + docIndex.Id);
+
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+
+            // This example assumes the FTP site uses anonymous logon.
+            request.Credentials = new NetworkCredential(GlobalVariables.FtpUser, GlobalVariables.FtpPassword);
+            request.UseBinary = true;
+            fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
+            // Copy the contents of the file to the request stream.
+
+            request.ContentLength = fileContents.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(fileContents, 0, fileContents.Length);
+            }
+
+            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            {
+                Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+            }
+            DataBase db = new DataBase();
+
+            db.AddParameter("p_pidm", GlobalVariables.getPdim(GlobalVariables.Matricula),
+                OracleDbType.Varchar2, 30);
+            db.AddParameter("p_aidy_code", GlobalVariables.Aidy,
+                OracleDbType.Varchar2, 10);
+            db.AddParameter("p_aidp_code", GlobalVariables.Aidp,
+                OracleDbType.Varchar2, 10);
+            db.AddParameter("p_treq_code", treqCode,
+                OracleDbType.Varchar2, 10);
+            db.AddParameter("p_trst_code", trstCode,
+                OracleDbType.Varchar2, 10);
+            db.AddParameter("p_trst_date",
+                DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+                OracleDbType.Varchar2, 20);
+            db.AddParameter("p_establish_date",
+                DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+                OracleDbType.Varchar2, 20);
+            db.AddParameter("p_comment", null, OracleDbType.Varchar2, 50);
+            db.AddParameter("p_data_origin", null,
+                OracleDbType.Varchar2, 20);
+            db.AddParameter("p_create_user_id", "cargaDocsWeb", OracleDbType.Varchar2, 20);
+            db.AddParameter("p_create_date",
+                DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
+                OracleDbType.Varchar2, 20);
+            db.AddParameter("p_user_id", "cargaDocsWeb", OracleDbType.Varchar2, 20);
+            db.AddParameter("p_rowid", null, OracleDbType.Varchar2, 20);
+
+            try
+            {
+                _ = db.ExecuteProcedure("KV_APPLICANT_TRK_REQT.P_UPDATE");
+            }
+            catch(Exception ex)     
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            return new Document(GlobalVariables.Matricula, treqCode,
+                GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
+        }
+
         public static Document insertDocument(string matricula, string clave, string fndcCode,
-                                            string aidyCode, string aidpCode, HttpPostedFile file)
+                                        string aidyCode, string aidpCode, HttpPostedFile file)
         {
 
             Document document = new Document(matricula, clave, fndcCode, aidyCode, aidpCode);
             byte[] fileContents = new byte[file.ContentLength];
             if (document.status != "PS")
             {
-                throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest), "El Documento ya esta en nuestro servidor");
+                throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest),
+                    "El Documento ya esta en nuestro servidor");
             }
 
             string id = KzrldocInsert(document, file);

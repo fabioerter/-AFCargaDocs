@@ -57,13 +57,37 @@ function guardar() {
         let name = $('#file-upload')[0].files[0].name;
 
         if (name.length > 0) {
+
+            var ruta;
             var lenght = $('#file-upload')[0].files[0].size;
             if (lenght / 1000 > 5000) {
                 //$('#ModalError').modal('show');
                 //return;
                 throw Error("Este archivo excede el tamaño máximo permitido de 5 MB.");
             }
-            var fd = new FormData();
+
+            fd = new FormData();
+            fd.append('treqCode', document.getElementById("clave").innerHTML);
+            $.ajax({
+                url: 'CargaDocs/validaCarga',
+                data: fd,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function (data) {
+                    if (JSON.parse(data).isOnServer) {
+                        ruta = "CargaDocs/updateDocumento"
+                    } else {
+                        ruta = "CargaDocs/guardarDocumento"
+                    }
+
+                },
+                error: function (errormessage) {
+                    name = "";
+                    $('#ModalError').modal('show');
+                }
+            });
+            fd = new FormData();
             fd.append('file', $('#file-upload')[0].files[0]);
             fd.append('clave', document.getElementById("clave").innerHTML);// $('input[id="clave"]').val(clave)
 
@@ -74,11 +98,11 @@ function guardar() {
             $("#modal-btn-si").on("click", function () {
                 $("#mi-modal").modal('hide');
                 $.ajax({
-                    url: 'CargaDocs/guardarDocumento',
+                    url: ruta,
                     data: fd,
                     processData: false,
                     contentType: false,
-                    type: 'POST',
+                    type: "POST",
                     success: function (data) {
                         document.getElementById("fileName").innerHTML = "";
 
@@ -131,7 +155,7 @@ function ObtenerDocumentos() {
             //Fecha: "18/02/2020"
         },
         error: function (errormessage) {
-            alert("fallo");
+            alert(errormessage.mensaje);
         }
     });
 };
@@ -186,8 +210,10 @@ function createRows(data) {
         var chabit = "../images/Recursos/image15.png"
         var cdhabit = "../images/Recursos/image18.png"
 
+        var comment = '';
         var cargadisabled = false;
         var estilocarga;
+
         switch (data[i].status) {//Status
             case "PS": //pendiente x subir
                 CargaM = "../images/Recursos/image15.png";
@@ -195,14 +221,23 @@ function createRows(data) {
                 estilocarga = "";
                 break;
             case "NR"://Pendiente´x ser aprobados
-                CargaM = "../images/Recursos/image18.png";
-                cargadisabled = false;
-                estilocarga = "pointer-events: none;";
+                //menos de un mes se pode cargar el archivo novamiente
+                if ((Date.now() - Date.parse(fechas)) < 2628000000) {
+                    CargaM = "../images/Recursos/image15.png";
+                    cargadisabled = true;
+                    estilocarga = "";
+                }
+                else {
+                    CargaM = "../images/Recursos/image18.png";
+                    cargadisabled = false;
+                    estilocarga = "pointer-events: none;";
+                }
                 break;
             case "IV"://Rechazados
                 CargaM = "../images/Recursos/image15.png";
                 cargadisabled = true;
                 estilocarga = "";
+                comment = 'data-toggle="tooltip" data-placement="left" title="' + data[i].comment + '"';
                 break;
             case "CM"://Validados y Aceptados
                 CargaM = "../images/Recursos/image18.png";
@@ -219,7 +254,7 @@ function createRows(data) {
         switch (data[i].status) {//Status
             case "PS"://Faltan de Subir
                 VisP = "../images/Recursos/image14.png";
-                //if (data[i] = )
+
                 vistadisabled = false;
                 estilovp = "pointer-events: none;";
                 break;
@@ -273,7 +308,7 @@ function createRows(data) {
             '</td>' +
             '<td>' +
             '<div align="center">' +
-            '<img class="mainiconos" src="' + status + '">' +
+            '<img class="mainiconos" src="' + status + '"' + comment + '>' +
             '</div>' +
             '</td>' +
             '</tr>';
