@@ -222,7 +222,7 @@ function createRows(data) {
                 break;
             case "NR"://Pendiente´x ser aprobados
                 //menos de un mes se pode cargar el archivo novamiente
-                if ((Date.now() - Date.parse(fechas)) < 2628000000) {
+                if ((Date.now() - (((Date.parse(fechas))**2)**(1/2))) < 2628000000) {
                     CargaM = "../images/Recursos/image15.png";
                     cargadisabled = true;
                     estilocarga = "";
