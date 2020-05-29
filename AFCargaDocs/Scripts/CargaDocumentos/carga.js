@@ -32,6 +32,8 @@
     }).on("click", function () {
         window.history.back();
     });
+
+
 });
 
 //funciones de jquery, javascript
@@ -222,7 +224,7 @@ function createRows(data) {
                 break;
             case "NR"://Pendiente´x ser aprobados
                 //menos de un mes se pode cargar el archivo novamiente
-                if ((Date.now() - (((Date.parse(fechas))**2)**(1/2))) < 2628000000) {
+                if ((Date.now() - (((Date.parse(fechas)) ** 2) ** (1 / 2))) < 2628000000) {
                     CargaM = "../images/Recursos/image15.png";
                     cargadisabled = true;
                     estilocarga = "";
@@ -321,6 +323,10 @@ function createRows(data) {
 
 
 };
+
+
+
+
 //accion del boton para carga documento
 obtener = function (clave, cargadisabled) {
 
@@ -345,7 +351,7 @@ vistap = function (clave, vistadisabled) {
     if (vistadisabled) {
         var clave = clave.id;
         document.getElementById("clave").innerHTML = clave;
-        window.open('/CargaDocs/FileDisplay/?treqCode=' + clave, '_blank', 'top=50,left=400,width=600px,height=600px,toolbar=1,resizable=0');
+        window.open('/CargaDocs/FileDisplay/?treqCode=' + clave, '_blank', 'top=50,left=400,width=600px,height=650px,toolbar=1,resizable=0');
     }
     else {
     }
