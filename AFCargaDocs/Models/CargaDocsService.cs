@@ -60,12 +60,19 @@ namespace AFCargaDocs.Models
 
             try
             {
+                Stream streamTemp = null;
                 byte[] newFileData = request.DownloadData(new Uri(GlobalVariables.Ftpip) + "/" + file.FileId);
+                //if (file.FileType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                //{
+                //    Converter toPdf = new Converter();
+                //    toPdf.convert(newFileData,Format.DOCX, streamTemp, Format.PDF);
+                //    file.FileContent = GlobalVariables.ConvertToBase64(streamTemp);
+                //}
                 file.FileContent = Convert.ToBase64String(newFileData);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new HttpException((int)HttpStatusCode.InternalServerError, "No se pudo mostrar el archivo, intente mas tarde.");
+                throw new HttpException((int)HttpStatusCode.InternalServerError, ex.Message);
             }
 
             if (file.FileContent == null)

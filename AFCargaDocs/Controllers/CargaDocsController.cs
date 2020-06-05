@@ -106,7 +106,7 @@ namespace AFCargaDocs.Controllers
         public string teste2(String treqCode)
         {
             AxServicesInterface axServicesInterface = new AxServicesInterface();
-            string sessionTicket = axServicesInterface.Login("", "BANPROD", "DOCIDX", "di12345678!",
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", "services.bdmapp", "W#7hdw!68dxZ",//"DOCIDX", "di12345678!",
                                                                     Convert.ToInt32(EAxType.AxFeature_Basic));
             string result = null;
             try
@@ -209,14 +209,16 @@ namespace AFCargaDocs.Controllers
                 GlobalVariables.Aidy, GlobalVariables.Aidp));
         }
 
-        public ActionResult DownLoad()
+        public ActionResult DownLoad(string treqCode)
 
         {
-            byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Images/image11.png"));
+            FileInfoFtp file = CargaDocsService.DisplayFileFromServer(
+                GlobalVariables.Matricula, treqCode, GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
+            byte[] fileBytes = Convert.FromBase64String(file.FileContent);
 
             //File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "filename"+file.Type); 
 
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "test.xlsx");
+            return File(fileBytes, file.FileType, file.FileName);
         }
 
         [System.ComponentModel.ToolboxItem(false)]
@@ -228,7 +230,6 @@ namespace AFCargaDocs.Controllers
                 GlobalVariables.Matricula, "AFCD", GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp));
         }
 
-        [System.ComponentModel.ToolboxItem(false)]
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public void Guardar()

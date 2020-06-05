@@ -9,11 +9,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/fonts/funtes.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/CargaDocumentos/fileDisplay.js"></script>
 
 </head>
 <body class="bodydoc">
     <div class="documento">
 
-        <embed type="@Model.FileType" width="550px" height="400px" src="data:@Model.FileType;base64,@Model.FileContent" />
-</div>
+        <embed type="@Model.FileType" width="550px" height="400px"
+               src="data:@Model.FileType;base64,@Model.FileContent" />
+
+        <a class="btn btn-warning"
+           href="data:@Model.FileType;base64,@Model.FileContent"
+           download="@Model.FileName">Descargar</a>
+
+    </div>
 </body>
