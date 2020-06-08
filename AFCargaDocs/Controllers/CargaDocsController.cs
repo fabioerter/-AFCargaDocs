@@ -67,22 +67,25 @@ namespace AFCargaDocs.Controllers
         {
             DataBase dataBase = new DataBase();
 
-            dataBase.AddParameter("p_pidm",
+            dataBase.AddParameter("p_pidm'",
                 GlobalVariables.getPdim(GlobalVariables.Matricula),
-                OracleDbType.Int16, 8);
+                OracleDbType.Int64, 22);
             dataBase.AddParameter("p_aidy_code",
                 GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 20);
+                OracleDbType.Varchar2, 16);
             dataBase.AddParameter("p_aidp_code",
                 GlobalVariables.Aidp,
-                OracleDbType.Varchar2, 20);
-            dataBase.AddParameter("p_treq_code",
-                clave, OracleDbType.Varchar2, 20);
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_fndc_code",
+                GlobalVariables.Fndc, OracleDbType.Varchar2, 40);
+
+            dataBase.AddOutParameter("p_obdocs_all",
+                 OracleDbType.RefCursor, 20);
 
             return JsonConvert.SerializeObject(
-                dataBase.ExecuteFunction("KV_APPLICANT_TRK_REQT.F_QUERY_ALL",
-                "APPLICANT_TRK_REQT_rc",
-                OracleDbType.RefCursor));
+                dataBase.ExecuteFunction("SZ_BFQ_CARGADOCSSAF.f_obdocs_ps",
+                "salida",
+                OracleDbType.Varchar2, 200));
         }
         public string ObtenerDocumentos()
         {
