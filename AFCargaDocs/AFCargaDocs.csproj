@@ -178,12 +178,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AxDocumentIndexQueryData.cs" />
     <Compile Include="Models\CargaDocsService.cs" />
     <Compile Include="Models\Entidades\AxDocument.cs" />
     <Compile Include="Models\Entidades\AxDocumentIndex.cs" />
     <Compile Include="Models\Entidades\AxDocumentPointer.cs" />
     <Compile Include="Models\Entidades\AxDocumentCreationData.cs" />
+    <Compile Include="Models\Entidades\AxFieldValue.cs" />
     <Compile Include="Models\Entidades\AxPageUploadData.cs" />
+    <Compile Include="Models\Entidades\AxQueryData.cs" />
     <Compile Include="Models\Entidades\AxStreamData.cs" />
     <Compile Include="Models\Entidades\DataBase.cs" />
     <Compile Include="Models\Entidades\Document.cs" />

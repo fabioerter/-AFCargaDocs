@@ -114,4 +114,75 @@ namespace AFCargaDocs.Models.Entidades.Enum
         /// </summary>
         Replace
     }
+    public enum EAXSortOrder
+    {
+        /// <summary>
+        /// Sort in ascending order
+        /// </summary>
+        Ascending,
+        /// <summary>
+        /// Sort in descending order
+        /// </summary>
+        Descending,
+        /// <summary>
+        /// No sort
+        /// </summary>
+        None
+    }
+    public enum EAXDataProvider
+    {
+        /// <summary>
+        /// Data from ApplicationXtender
+        /// </summary>
+        ApplicationXtender,
+        /// <summary>
+        /// Data from Records Manager for ApplicationXtender
+        /// </summary>
+        RecordsManager
+    }
+    public enum EAXQueryType
+    {
+        /// <summary>
+        /// Normal query
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// Cross-application query
+        /// </summary>
+        CAQ,
+        /// <summary>
+        /// AppXtender Reports Mgmt report query
+        /// </summary>
+        Report
+    }
+    /// <summary>
+    /// Query retention type; valid types are
+    /// listed in the QueryRetentionType
+    /// Enumeration section
+    /// </summary>
+    public enum EAXQueryRetentionType
+    {
+        /// <summary>
+        /// Include docs under retention in search
+        /// </summary>
+        AllIncludingRetention,
+        /// <summary>
+        /// Exclude docs under retention in search
+        /// </summary>
+        AllExcludingRetention,
+        /// <summary>
+        /// Only search docs under retention
+        /// </summary>
+        OnlyUnderRetention,
+        /// <summary>
+        /// Only search docs on retention hold
+        /// </summary>
+        OnlyOnRetentionHold,
+        /// <summary>
+        /// Only search docs under retention exclude docs
+        /// on hold
+        /// </summary>
+        OnlyUnderRetentionNotOnHold
+    }
+
 }

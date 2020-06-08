@@ -16,6 +16,8 @@ using System.Text;
 using System.IO;
 using WebGrease.Activities;
 using System.Web.Http.Results;
+using AFCargaDocs.AxServiceInterface;
+using AFCargaDocs.Models.Entidades.Enum;
 
 namespace AFCargaDocs.Models
 {
@@ -120,12 +122,21 @@ namespace AFCargaDocs.Models
         public static Document updateDocument(string treqCode, HttpPostedFile file,
                     string trstCode)
         {
+
+
+
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"services.bdmapp", "W#7hdw!68dxZ",*//*"BSASSBUSR1", "u_pick_it",*/"DOCIDX", "di12345678!",
+                                                        Convert.ToInt32(EAxType.AxFeature_Basic));
+
             if (!validaCarga(GlobalVariables.Matricula, treqCode,
                 GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp))
             {
                 throw new HttpException((int)HttpStatusCode.BadRequest,
                     "Documento no esta en nuestro servidor, volva a intentar.");
             }
+
             Document document = new Document(GlobalVariables.Matricula, treqCode,
                 GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
 
@@ -163,43 +174,66 @@ namespace AFCargaDocs.Models
             {
                 Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
             }
-            DataBase db = new DataBase();
 
-            db.AddParameter("p_pidm", GlobalVariables.getPdim(GlobalVariables.Matricula),
-                OracleDbType.Varchar2, 30);
-            db.AddParameter("p_aidy_code", GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 10);
-            db.AddParameter("p_aidp_code", GlobalVariables.Aidp,
-                OracleDbType.Varchar2, 10);
-            db.AddParameter("p_treq_code", treqCode,
-                OracleDbType.Varchar2, 10);
-            db.AddParameter("p_trst_code", trstCode,
-                OracleDbType.Varchar2, 10);
-            db.AddParameter("p_trst_date",
-                DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
-                OracleDbType.Varchar2, 20);
-            db.AddParameter("p_establish_date",
-                DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
-                OracleDbType.Varchar2, 20);
-            db.AddParameter("p_comment", null, OracleDbType.Varchar2, 50);
-            db.AddParameter("p_data_origin", null,
-                OracleDbType.Varchar2, 20);
-            db.AddParameter("p_create_user_id", "cargaDocsWeb", OracleDbType.Varchar2, 20);
-            db.AddParameter("p_create_date",
-                DateTime.Now.ToString("dd-MMM-yyyy").Replace(".", "").ToUpper(),
-                OracleDbType.Varchar2, 20);
-            db.AddParameter("p_user_id", "cargaDocsWeb", OracleDbType.Varchar2, 20);
-            db.AddParameter("p_rowid", null, OracleDbType.Varchar2, 20);
 
+            string result = null;
             try
             {
-                _ = db.ExecuteProcedure("KV_APPLICANT_TRK_REQT.P_UPDATE");
+                AxQueryData axQueryData = new AxQueryData();
+                axQueryData.Appid = "403";
+                axQueryData.Qtype = EAXQueryType.Normal;
+                axQueryData.addField(1, false, GlobalVariables.Matricula);
+                axQueryData.addField(2, false, GlobalVariables.getPdim(
+                                                GlobalVariables.Matricula));
+                axQueryData.addField(3, false, GlobalVariables.Aidy);
+                axQueryData.addField(4, false, GlobalVariables.Aidp);
+                axQueryData.addField(5, false, treqCode);
+                axQueryData.addField(6, true, "");
+                axQueryData.addField(7, false, GlobalVariables.Fndc);
+                axQueryData.addField(8, false, GlobalVariables.Aplicacion);
+                axQueryData.addField(9, false, GlobalVariables.Matricula);
+                axQueryData.addField(1, false, GlobalVariables.Matricula);
+                axQueryData.addField(1, false, GlobalVariables.Matricula);
+                axQueryData.addField(1, false, GlobalVariables.Matricula);
+                axQueryData.addField(1, false, GlobalVariables.Matricula);
+                axQueryData.addField(1, false, GlobalVariables.Matricula);
+                axQueryData.addField(1, false, GlobalVariables.Matricula);
+
+
+
+                axServicesInterface.QueryDocuments(sessionTicket, "BANPROD",
+                    axQueryData.ToString(), 0, 1, 1, false, false);
+
+                AxDocumentPointer axDocumentPointer = new AxDocumentPointer("BANPROD", 403, 1, EAxDocumentType.Document, 0);
+
+                //axServicesInterface.DeleteDocument(sessionTicket,);
+
+
+                AxDocumentCreationData newDocument = new AxDocumentCreationData(403, "BANPROD",
+                                "//SRVBDMAPPDEVL/RepositorioAyudasFinancieras/TEST/" + docIndex.Id/*result*/, EAxFileType.FT_UNKNOWN,
+                                true, true, false, 0);
+
+                AxDocumentIndex newDocumentIndex = new AxDocumentIndex("-1",
+                        GlobalVariables.Matricula,
+                        GlobalVariables.getPdim(GlobalVariables.Matricula),
+                        GlobalVariables.Aidy, GlobalVariables.Aidp,
+                        GlobalVariables.Fndc, treqCode,
+                        GlobalVariables.Aplicacion,
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
+                                                                       newDocumentIndex.ToString());
             }
-            catch(Exception ex)     
+            catch (Exception ex)
             {
-                throw new HttpException(
-                    (int)HttpStatusCode.InternalServerError, ex.Message);
+                throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message);
             }
+            finally
+            {
+                axServicesInterface.Logout(sessionTicket);
+            }
+
+
             return new Document(GlobalVariables.Matricula, treqCode,
                 GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
         }
@@ -378,9 +412,77 @@ namespace AFCargaDocs.Models
             }
 
         }
+        public static Document teste2(string treqCode)
+        {
+            HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+
+            Document document = new Document(GlobalVariables.Matricula, treqCode,
+                GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
+            byte[] fileContents = new byte[file.ContentLength];
+
+            string id = CargaDocsService.KzrldocInsert(document, file);
 
 
-        private static string KzrldocInsert(Document document, HttpPostedFile file)
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(GlobalVariables.Ftpip + "/" + id);
+
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+
+            // This example assumes the FTP site uses anonymous logon.
+            request.Credentials = new NetworkCredential(GlobalVariables.FtpUser, GlobalVariables.FtpPassword);
+            request.UseBinary = true;
+            fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
+            // Copy the contents of the file to the request stream.
+
+            request.ContentLength = fileContents.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(fileContents, 0, fileContents.Length);
+            }
+
+            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            {
+                Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+            }
+
+
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"services.bdmapp", "W#7hdw!68dxZ",*//*"BSASSBUSR1", "u_pick_it",*/"DOCIDX", "di12345678!",
+                                                                    Convert.ToInt32(EAxType.AxFeature_Basic));
+            string result = null;
+            try
+            {
+
+                AxDocumentCreationData newDocument = new AxDocumentCreationData(403, "BANPROD",
+                                "//SRVBDMAPPDEVL/RepositorioAyudasFinancieras/TEST/" + id/*result*/, EAxFileType.FT_UNKNOWN,
+                                true, true, false, 0);
+
+                AxDocumentIndex newDocumentIndex = new AxDocumentIndex("-1",
+                        GlobalVariables.Matricula,
+                        GlobalVariables.getPdim(GlobalVariables.Matricula),
+                        GlobalVariables.Aidy, GlobalVariables.Aidp,
+                        GlobalVariables.Fndc, treqCode,
+                        GlobalVariables.Aplicacion,
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
+                                                                       newDocumentIndex.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message);
+            }
+            finally
+            {
+                axServicesInterface.Logout(sessionTicket);
+            }
+            return new Document(GlobalVariables.Matricula, treqCode,
+                GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
+        }
+
+
+        public static string KzrldocInsert(Document document, HttpPostedFile file)
         {
 
             DataBase dataBase = new DataBase();
