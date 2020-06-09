@@ -484,39 +484,35 @@ namespace AFCargaDocs.Models
 
         public static string KzrldocInsert(Document document, HttpPostedFile file)
         {
-
             DataBase dataBase = new DataBase();
-            StringBuilder query = new StringBuilder();
-            query.Append(" SELECT NVL((SELECT MAX(TO_NUMBER(KZRLDOC_ID)) + 1 ");
-            query.Append("             FROM KZRLDOC), 1) ID ");
-            query.Append(" FROM DUAL ");
-            String id = (dataBase.ExecuteQuery(query.ToString()).Rows[0][0]).ToString();
+            dataBase.AddParameter("p_kzrldoc_max", "1", OracleDbType.Int32, 8);
+            dataBase.ExecuteFunction("SZ_BFQ_CARGADOCSSAF.f_kzrldoc_max", "ID", OracleDbType.Int32, 20);
+            String id = dataBase.getOutParamater("ID");
 
-            query.Clear();
-            query.Append(" INSERT INTO KZRLDOC (KZRLDOC_PIDM, KZRLDOC_ID, KZRLDOC_AIDY_CODE, KZRLDOC_AIDP_CODE, KZRLDOC_FNDC_CODE,");
-            query.Append("                      KZRLDOC_TREQ_CODE, KZRLDOC_TRST_CODE, KZRLDOC_TRST_DATE, KZRLDOC_FILE_NAME, KZRLDOC_FILE_TYPE,");
-            query.Append("                      KZRLDOC_COMMENT, KZRLDOC_ACTIVITY_DATE, KZRLDOC_SURROGATE_ID, KZRLDOC_VERSION, KZRLDOC_USER_ID,");
-            query.Append("                      KZRLDOC_VPDI_CODE)");
-            query.Append(" VALUES (F_UDEM_STU_PIDM(:matricula),");
-            query.Append("         (:id),");
-            query.Append("         :aidyCode, :aidpCod, :fndcCode,");
-            query.Append("         :treqCode, :trstCode,");
-            query.Append("         SYSDATE, :fileName, :fileType, :comments,");
-            query.Append("         SYSDATE, null, null, 'BANINST1', null) ");
 
             dataBase = new DataBase();
-            dataBase.AddFilter("matricula", GlobalVariables.Matricula);
-            dataBase.AddFilter("id", id);
-            dataBase.AddFilter("aidyCode", GlobalVariables.Aidy);
-            dataBase.AddFilter("aidpCod", GlobalVariables.Aidp);
-            dataBase.AddFilter("fndcCode", document.fndcCode);
-            dataBase.AddFilter("treqCode", document.clave);
-            dataBase.AddFilter("trstCode", document.status);
-            dataBase.AddFilter("fileName", file.FileName);
-            dataBase.AddFilter("fileType", file.ContentType);
-            dataBase.AddFilter("comments", "Posted by WebApp");
-            dataBase.ExecuteQuery(query.ToString());
-            return id;
+            Kzrldoc kzrldoc = new Kzrldoc() { 
+            AidpCode = GlobalVariables.Aidp,
+            AidyCode = GlobalVariables.Aidy,
+            Aplicacion = GlobalVariables.Aplicacion,
+            Comment = "Posted by WebApp",
+            FileName = file.FileName,
+            FileType = file.ContentType,
+            FndcCode = document.fndcCode,
+            Id = Convert.ToInt32(id),
+            Matricula = GlobalVariables.Matricula,
+            TreqCode = document.clave,
+            TrstCode = document.status
+            };
+            try
+            {
+                kzrldoc = kzrldoc.Insert();
+            }catch(Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            return kzrldoc.Id.ToString();
         }
     }
 }

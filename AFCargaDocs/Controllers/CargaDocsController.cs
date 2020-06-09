@@ -23,6 +23,7 @@ using Oracle.ManagedDataAccess.Client;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using System.Xml;
+using System.Data;
 
 namespace AFCargaDocs.Controllers
 {

@@ -1,9 +1,9 @@
 ﻿using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -12,6 +12,8 @@ namespace AFCargaDocs.Models.Entidades
 {
     public class DataBase
     {
+
+        List<OracleParameter> parameterList;
 
         Dictionary<String, String> filters;
         Dictionary<String, String> outParameters;
@@ -24,6 +26,7 @@ namespace AFCargaDocs.Models.Entidades
             outParameters = new Dictionary<string, string>();
             dbTypeList = new Dictionary<string, OracleDbType>();
             sizeList = new Dictionary<string, int>();
+            parameterList = new List<OracleParameter>();
         }
 
         public void AddFilter(String name, String value)
@@ -35,12 +38,31 @@ namespace AFCargaDocs.Models.Entidades
             filters.Add(name, value);
             this.dbTypeList.Add(name, dbType);
             this.sizeList.Add(name, size);
+
+            OracleParameter parameter = new OracleParameter(name, dbType)
+            {
+                Value = value,
+                Size = size
+            };
+            if (value == null)
+            {
+                parameter.Value = DBNull.Value;
+            }
+            parameterList.Add(parameter);
         }
         public void AddOutParameter(String name, OracleDbType dbType, int size)
         {
             this.outParameters.Add(name, "out");
             this.dbTypeList.Add(name, dbType);
             this.sizeList.Add(name, size);
+            OracleParameter parameter = new OracleParameter(name, dbType)
+            {
+                Direction = System.Data.ParameterDirection.Output,
+                Value = DBNull.Value
+            };
+            if (dbTypeList[name] != OracleDbType.RefCursor)
+                                          parameter.Size = size;
+            parameterList.Add(parameter);
         }
 
         public DataTable ExecuteQuery(String query)
@@ -81,65 +103,47 @@ namespace AFCargaDocs.Models.Entidades
 
             }
         }
-        public DataTable ExecuteProcedure(string query)
+        public DataSet ExecuteProcedure(string query)
         {
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
-                DataSet dataSet = new DataSet();
                 OracleCommand cmd = new OracleCommand(query, cnx);
+                DataSet dataSet = new DataSet();
                 cmd.CommandText = query;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
                 using (OracleDataAdapter dataAdapter = new OracleDataAdapter())
                 {
                     try
                     {
                         cnx.Open();
-                        if (outParameters.Count() > 0)
-                        {
-                            foreach (String name in outParameters.Keys)
-                            {
-                                OracleParameter parameter = new OracleParameter(name, dbTypeList[name])
-                                {
-                                    Direction = System.Data.ParameterDirection.Output,
-                                    Size = sizeList[name]
-                                };
-                                cmd.Parameters.Add(parameter);
-                            }
-                        }
-                        if (filters.Count() > 0)
-                        {
-                            foreach (String name in filters.Keys)
-                            {
-                                OracleParameter parameter = new OracleParameter(name, dbTypeList[name])
-                                {
-                                    Value = filters[name],
-                                    Size = sizeList[name]
-                                };
-                                if (filters[name] == null)
-                                {
-                                    parameter.Value = DBNull.Value;
-                                }
-                                cmd.Parameters.Add(parameter);
-                            }
-                        }
 
+                        foreach (OracleParameter parameter in parameterList)
+                        {
+                            cmd.Parameters.Add(parameter);
+                        }
                         dataAdapter.SelectCommand = cmd;
-                        dataAdapter.Fill(dataSet);
-                        DataTable dataTableTemp = new DataTable("outParameters", "");
+
+                        cmd.ExecuteNonQuery();
 
                         if (outParameters.Count() > 0)
                         {
-
+                            dataSet.Tables.Add("parameters");
                             foreach (String name in outParameters.Keys)
                             {
-
-                                dataTableTemp.Columns.Add(name);
-                                dataTableTemp.Rows.Add(cmd.Parameters[name].Value);
+                                if (dbTypeList[name] == OracleDbType.RefCursor)
+                                {
+                                    dataAdapter.AcceptChangesDuringFill = true;
+                                    dataAdapter.Fill(dataSet, name, (OracleRefCursor)(cmd.Parameters[name].Value));
+                                }
+                                else
+                                {
+                                    dataSet.Tables["parameters"].Columns.Add(name);
+                                    dataSet.Tables["parameters"].Rows.Add(cmd.Parameters[name].Value);
+                                }
                             }
 
                         }
-                        dataSet.Tables.Add(dataTableTemp);
-                        this.result = dataTableTemp;
                     }
                     catch (Exception ex)
                     {
@@ -149,20 +153,22 @@ namespace AFCargaDocs.Models.Entidades
                     {
                         cnx.Close();
                     }
-                    return dataSet.Tables["outParameters"];
+                    return dataSet;
                 }
 
             }
         }
 
-        public DataTable ExecuteFunction(string query, string outName, OracleDbType returnType, int? returnSize = null)
+        public DataSet ExecuteFunction(string query, string outName, OracleDbType returnType, int? returnSize = null)
         {
+
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
-                DataSet dataSet = new DataSet();
                 OracleCommand cmd = new OracleCommand(query, cnx);
+                DataSet dataSet = new DataSet();
                 cmd.CommandText = query;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
                 using (OracleDataAdapter dataAdapter = new OracleDataAdapter())
                 {
                     try
@@ -177,54 +183,49 @@ namespace AFCargaDocs.Models.Entidades
 
                         cmd.Parameters.Add(salida);
 
-                        if (outParameters.Count() > 0)
+                        foreach (OracleParameter parameter in parameterList)
                         {
-                            foreach (String name in outParameters.Keys)
-                            {
-                                OracleParameter parameter = new OracleParameter(name, dbTypeList[name])
-                                {
-                                    Direction = System.Data.ParameterDirection.Output,
-                                    Size = sizeList[name]
-                                };
-                                cmd.Parameters.Add(parameter);
-                            }
+                            cmd.Parameters.Add(parameter);
                         }
-                        if (filters.Count() > 0)
-                        {
-                            foreach (String name in filters.Keys)
-                            {
-                                OracleParameter parameter = new OracleParameter(name, dbTypeList[name])
-                                {
-                                    Value = filters[name],
-                                    Size = sizeList[name]
-                                };
-                                if (filters[name] == null)
-                                {
-                                    parameter.Value = DBNull.Value;
-                                }
-                                cmd.Parameters.Add(parameter);
-                            }
-                        }
-
                         dataAdapter.SelectCommand = cmd;
-                        dataAdapter.Fill(dataSet);
-                        DataTable dataTableTemp = new DataTable("outParameters", "");
-                        dataTableTemp.Columns.Add(outName);
-                        dataTableTemp.Rows.Add(cmd.Parameters[outName].Value);
+
+                        cmd.ExecuteNonQuery();
+
+                        dataSet.Tables.Add("parameters");
+
+                        if (returnType == OracleDbType.RefCursor)
+                        {
+                            dataAdapter.AcceptChangesDuringFill = true;
+                            dataAdapter.Fill(dataSet, outName, (OracleRefCursor)(cmd.Parameters[outName].Value));
+                        }
+                        else
+                        {
+                            dataSet.Tables["parameters"].Columns.Add(outName);
+                            dataSet.Tables["parameters"].Rows.Add(cmd.Parameters[outName].Value);
+                        }
+
+
 
                         if (outParameters.Count() > 0)
                         {
 
                             foreach (String name in outParameters.Keys)
                             {
-
-                                dataTableTemp.Columns.Add(name);
-                                dataTableTemp.Rows.Add(cmd.Parameters[name].Value);
+                                if (dbTypeList[name] == OracleDbType.RefCursor)
+                                {
+                                    dataAdapter.AcceptChangesDuringFill = true;
+                                    dataAdapter.Fill(dataSet, name, (OracleRefCursor)(cmd.Parameters[name].Value));
+                                }
+                                else
+                                {
+                                    dataSet.Tables["parameters"].Columns.Add(name);
+                                    dataSet.Tables["parameters"].Rows.Add(cmd.Parameters[name].Value);
+                                }
                             }
 
                         }
-                        dataSet.Tables.Add(dataTableTemp);
-                        this.result = dataTableTemp;
+                        //dataSet.Tables.Add(dataTableTemp);
+                        this.result = dataSet.Tables["parameters"];
                     }
                     catch (Exception ex)
                     {
@@ -234,7 +235,7 @@ namespace AFCargaDocs.Models.Entidades
                     {
                         cnx.Close();
                     }
-                    return dataSet.Tables["outParameters"];
+                    return dataSet;
                 }
 
             }
