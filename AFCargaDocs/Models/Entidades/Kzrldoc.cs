@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,67 +24,54 @@ namespace AFCargaDocs.Models.Entidades
         string fileName;
         string fileType;
         string comment;
+        string aplicacion;
+
+        public Kzrldoc()
+        {
+        }
 
         public Kzrldoc(string matricula, string aidyCode, string aidpCode, string fndcCode, string treqCode)
         {
             DataBase dataBase = new DataBase();
-            StringBuilder sb = new StringBuilder();
 
-            sb.Append("SELECT KZRLDOC_PIDM,");
-            sb.Append("       KZRLDOC_ID,");
-            sb.Append("       KZRLDOC_AIDY_CODE,");
-            sb.Append("       KZRLDOC_AIDP_CODE,");
-            sb.Append("       KZRLDOC_FNDC_CODE,");
-            sb.Append("       KZRLDOC_TREQ_CODE,");
-            sb.Append("       KZRLDOC_TRST_CODE,");
-            sb.Append("       KZRLDOC_TRST_DATE,");
-            sb.Append("       KZRLDOC_FILE_NAME,");
-            sb.Append("       KZRLDOC_FILE_TYPE,");
-            sb.Append("       KZRLDOC_COMMENT");
-            sb.Append(" FROM KZRLDOC");
-            sb.Append(" WHERE KZRLDOC_PIDM = :pdim");
-            sb.Append("  AND KZRLDOC_AIDY_CODE = :aidyCode");
-            sb.Append("  AND KZRLDOC_AIDP_CODE = :aidpCode");
-            sb.Append("  AND KZRLDOC_FNDC_CODE = :fndcCode");
-            sb.Append("  AND KZRLDOC_TREQ_CODE = :treqCode");
+            //In parameters
+            dataBase.AddParameter("p_pidm",
+                GlobalVariables.getPdim(matricula),
+                OracleDbType.Int64, 22);
+            dataBase.AddParameter("p_aidy_code",
+                aidyCode,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidp_code",
+                aidpCode,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_fndc_code",
+                fndcCode, OracleDbType.Varchar2, 40);
+            dataBase.AddParameter("p_treq_code",
+                treqCode,
+                OracleDbType.Varchar2, 32);
 
-            dataBase.AddFilter("pdim", GlobalVariables.getPdim(matricula));
-            dataBase.AddFilter("aidyCode", aidyCode);
-            dataBase.AddFilter("aidpCode", aidpCode);
-            dataBase.AddFilter("fndcCode", fndcCode);
-            dataBase.AddFilter("treqCode", treqCode);
-            DataTable data;
-            try
-            {
-                data = dataBase.ExecuteQuery(sb.ToString());
-            }
-            catch(Exception ex)
-            {
-                throw new HttpException(
-                    (int)HttpStatusCode.InternalServerError, ex.Message);
-            }
+            //Out parameters
+            dataBase.AddOutParameter("p_kzrldoc_tb",
+                OracleDbType.RefCursor, 20);
 
-            if (data.Rows.Count > 1)
-            {
-                throw new HttpException(
-                    (int)HttpStatusCode.InternalServerError,
-                    "Mas de uno documento en KZRLDOC");
-            }
-            else if (data.Rows.Count == 0) throw new HttpException(
-                    (int)HttpStatusCode.InternalServerError,
-                    "Ninguno documento en KZRLDOC"); ;
+            //Call of the function
+            DataTable p_kzrldoc_tb = dataBase.ExecuteFunction("SZ_BFQ_CARGADOCSSAF.f_kzrldoc_tb",
+                "salida",
+                OracleDbType.Varchar2, 200).Tables["p_kzrldoc_tb"];
+            DataRow row = p_kzrldoc_tb.Rows[0];
 
-            this.Matricula = matricula;
-            this.Id = Convert.ToInt32(data.Rows[0][1].ToString());
-            this.AidyCode = data.Rows[0][2].ToString();
-            this.AidpCode = data.Rows[0][3].ToString();
-            this.FndcCode = data.Rows[0][4].ToString();
-            this.TreqCode = data.Rows[0][5].ToString();
-            this.TrstCode = data.Rows[0][6].ToString();
-            this.TrstDate = Convert.ToDateTime(data.Rows[0][7].ToString());
-            this.FileName = data.Rows[0][8].ToString();
-            this.FileType = data.Rows[0][9].ToString();
-            this.Comment = data.Rows[0][10].ToString();
+
+            this.TreqCode = row["KZRLDOC_TREQ_CODE"].ToString();
+            this.AidpCode = row["KZRLDOC_AIDP_CODE"].ToString();
+            this.AidyCode = row["KZRLDOC_AIDY_CODE"].ToString();
+            this.Comment = row["KZRLDOC_COMMENT"].ToString();
+            this.FileName = row["KZRLDOC_FILE_NAME"].ToString();
+            this.FileType = row["KZRLDOC_FILE_TYPE"].ToString();
+            this.FndcCode = row["KZRLDOC_FNDC_CODE"].ToString();
+            this.Id = Convert.ToInt32(row["KZRLDOC_ID"].ToString());
+            this.Matricula = GlobalVariables.Matricula;
+            this.TrstCode = row["KZRLDOC_TRST_CODE"].ToString();
+            this.TrstDate = Convert.ToDateTime(row["KZRLDOC_TRST_DATE"].ToString());
         }
 
         public string Matricula { get => matricula; set => matricula = value; }
@@ -97,48 +85,116 @@ namespace AFCargaDocs.Models.Entidades
         public string FileName { get => fileName; set => fileName = value; }
         public string FileType { get => fileType; set => fileType = value; }
         public string Comment { get => comment; set => comment = value; }
+        public string Aplicacion { get => aplicacion; set => aplicacion = value; }
 
         public Kzrldoc Update()
         {
             DataBase dataBase = new DataBase();
-            StringBuilder sb = new StringBuilder();
 
-            sb.Append("UPDATE KZRLDOC ");
-            sb.Append(" SET KZRLDOC_TRST_CODE     = :trstCode,");
-            sb.Append("    KZRLDOC_TRST_DATE     = sysdate,");
-            sb.Append("    KZRLDOC_FILE_NAME     = :fileName,");
-            sb.Append("    KZRLDOC_FILE_TYPE     = :fileType,");
-            sb.Append("    KZRLDOC_COMMENT       = :commentVar,");
-            sb.Append("    KZRLDOC_ACTIVITY_DATE = sysdate");
-            sb.Append(" WHERE KZRLDOC_PIDM = :pdim");
-            sb.Append("  AND KZRLDOC_AIDY_CODE = :aidyCode");
-            sb.Append("  AND KZRLDOC_AIDP_CODE = :aidpCode");
-            sb.Append("  AND KZRLDOC_FNDC_CODE = :fndcCode");
-            sb.Append("  AND KZRLDOC_TREQ_CODE = :treqCode");
+            //In parameters
+            dataBase.AddParameter("p_pidm",
+                GlobalVariables.getPdim(this.Matricula),
+                OracleDbType.Int64, 22);
+            dataBase.AddParameter("p_id",
+                this.Id.ToString(),
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidy_code",
+                this.AidyCode,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidp_code",
+                this.AidpCode,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_fndc_code",
+                this.FndcCode, 
+                OracleDbType.Varchar2, 40);
+            dataBase.AddParameter("p_apfr_code",
+                this.Aplicacion,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_treq_code",
+                this.TreqCode,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_trst_code",
+                this.TrstCode,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_filename",
+                this.FileName,
+                OracleDbType.Varchar2, 100);
+            dataBase.AddParameter("p_filetype",
+                this.FileType,
+                OracleDbType.Varchar2, 200);
+            dataBase.AddParameter("p_comment",
+                this.Comment,
+                OracleDbType.Varchar2, 200);
+            dataBase.AddParameter("p_trans",
+                "U",
+                OracleDbType.Varchar2, 16);
 
-            dataBase.AddFilter("trstCode", this.trstCode);
-            dataBase.AddFilter("fileName", this.fileName);
-            dataBase.AddFilter("fileType", this.fileType);
-            dataBase.AddFilter("commentVar", this.comment);
+            //Out parameters
+            dataBase.AddOutParameter("p_Message",
+                OracleDbType.Varchar2, 200);
 
-            dataBase.AddFilter("pdim", GlobalVariables.getPdim(this.Matricula));
-            dataBase.AddFilter("aidyCode", this.AidyCode);
-            dataBase.AddFilter("aidpCode", this.AidpCode);
-            dataBase.AddFilter("fndcCode", this.FndcCode);
-            dataBase.AddFilter("treqCode", this.TreqCode);
-
-            try
-            {
-                _ = dataBase.ExecuteQuery(sb.ToString());
-            }
-            catch (Exception ex)
-            {
-                throw new HttpException(
-                    (int)HttpStatusCode.InternalServerError, ex.Message);
-            }
+            //Call of the function
+            DataTable parameters = dataBase.ExecuteProcedure
+                ("SZ_BFA_CARGADOCSSAF.P_TRANS_CARGADOCS").Tables["parameters"];
+            var row = parameters.Rows[0]["p_Message"];
 
             return new Kzrldoc(this.Matricula,this.AidyCode,
                         this.AidpCode,this.FndcCode,this.TreqCode);
+        }
+
+        public Kzrldoc Insert()
+        {
+            DataBase dataBase = new DataBase();
+
+            //In parameters
+            dataBase.AddParameter("p_pidm",
+                GlobalVariables.getPdim(this.Matricula),
+                OracleDbType.Int64, 22);
+            dataBase.AddParameter("p_id",
+                this.Id.ToString(),
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidy_code",
+                this.AidyCode,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidp_code",
+                this.AidpCode,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_fndc_code",
+                this.FndcCode,
+                OracleDbType.Varchar2, 40);
+            dataBase.AddParameter("p_apfr_code",
+                this.Aplicacion,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_treq_code",
+                this.TreqCode,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_trst_code",
+                this.TrstCode,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_filename",
+                this.FileName,
+                OracleDbType.Varchar2, 100);
+            dataBase.AddParameter("p_filetype",
+                this.FileType,
+                OracleDbType.Varchar2, 200);
+            dataBase.AddParameter("p_comment",
+                this.Comment,
+                OracleDbType.Varchar2, 200);
+            dataBase.AddParameter("p_trans",
+                "I",
+                OracleDbType.Varchar2, 16);
+
+            //Out parameters
+            dataBase.AddOutParameter("p_Message",
+                OracleDbType.Varchar2, 200);
+
+            //Call of the function
+            DataTable parameters = dataBase.ExecuteProcedure
+                ("SZ_BFA_CARGADOCSSAF.P_TRANS_CARGADOCS").Tables["parameters"];
+            var row = parameters.Rows[0]["p_Message"];
+
+            return new Kzrldoc(this.Matricula, this.AidyCode,
+                        this.AidpCode, this.FndcCode, this.TreqCode);
         }
     }
 

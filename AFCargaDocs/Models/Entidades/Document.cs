@@ -1,4 +1,5 @@
 ﻿ using Newtonsoft.Json;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,92 +21,66 @@ namespace AFCargaDocs.Models.Entidades
 
         public Document(string matricula, string clave, string fndcCode, string aidyCode, string aidpCode)
         {
-            DataTable dataTable;
-            StringBuilder query = new StringBuilder();
+            DataBase dataBase = new DataBase();
 
-            query.Append(" SELECT KVRTRFN_FNDC_CODE,");
-            query.Append("        KVRTRFN_AIDY_CODE,");
-            query.Append("        KVRTRFN_AIDP_CODE,");
-            query.Append("        KVRTRFN_TREQ_CODE,");
-            query.Append("        KVVTREQ_DESC,");
-            query.Append("        NVL((SELECT KVRAREQ_TRST_CODE");
-            query.Append("             FROM KVRAREQ");
-            query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula)");
-            query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ), 'PS')                  STATUS,");
-            query.Append("        (SELECT KVRAREQ_TRST_DATE");
-            query.Append("             FROM KVRAREQ");
-            query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula1)");
-            query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ) ACTIVITY_DATE,");
-            query.Append("        NVL((SELECT KVRAREQ_COMMENT");
-            query.Append("             FROM KVRAREQ");
-            query.Append("             WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM('000612680')");
-            query.Append("               AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("               AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("               AND KVRAREQ_TREQ_CODE = KVRTRFN_TREQ_CODE");
-            query.Append("            ), 'No hay comentarios') COMMENTS");
-            query.Append(" FROM KVRTRFN,");
-            query.Append("      KVVTREQ");
-            query.Append(" WHERE KVRTRFN_FNDC_CODE = :fndcCode");
-            query.Append("   AND KVRTRFN_AIDY_CODE = :aidyCode");
-            query.Append("   AND KVRTRFN_AIDP_CODE = :aidpCode");
-            query.Append("   AND KVRTRFN_TREQ_CODE = :treqCode");
-            query.Append("   AND KVRTRFN_TREQ_CODE = KVVTREQ_CODE");
-            query.Append("   AND KVRTRFN_TREQ_CODE NOT IN (SELECT KVRAREQ_TREQ_CODE");
-            query.Append("                                 FROM KVRAREQ");
-            query.Append("                                 WHERE KVRAREQ_PIDM = F_UDEM_STU_PIDM(:matricula2)");
-            query.Append("                                   AND KVRAREQ_AIDY_CODE = KVRTRFN_AIDY_CODE");
-            query.Append("                                   AND KVRAREQ_AIDP_CODE = KVRTRFN_AIDP_CODE");
-            query.Append("                                   AND KVRAREQ_TRST_CODE = 'NQ'");
-            query.Append(" )");
-            query.Append("");
+            //In parameters
+            dataBase.AddParameter("p_pidm",
+                GlobalVariables.getPdim(matricula),
+                OracleDbType.Int64, 22);
+            dataBase.AddParameter("p_aidy_code",
+                aidyCode,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidp_code",
+                aidpCode,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_fndc_code",
+                fndcCode, OracleDbType.Varchar2, 40);
+            dataBase.AddParameter("p_treq_code",
+                clave,
+                OracleDbType.Varchar2, 32);
 
-            try
+            //Out parameters
+            dataBase.AddOutParameter("p_obdocs_one",
+                OracleDbType.RefCursor, 20);
+
+            //Call of the function
+            DataTable p_obdocs_one = dataBase.ExecuteFunction("SZ_BFQ_CARGADOCSSAF.f_obdocs_one",
+                "salida",
+                OracleDbType.Varchar2, 200).Tables["p_obdocs_one"];
+        
+            if (p_obdocs_one.Rows.Count == 0)
             {
-                DataBase dataBase = new DataBase();
-                dataBase.AddFilter("matricula", matricula);
-                dataBase.AddFilter("matricula1", matricula);
-                dataBase.AddFilter("fndcCode", fndcCode);
-                dataBase.AddFilter("aidyCode", aidyCode);
-                dataBase.AddFilter("aidpCode", aidpCode);
-                dataBase.AddFilter("treqCode", clave);
-                dataBase.AddFilter("matricula2", matricula);
-
-
-                dataTable = dataBase.ExecuteQuery(query.ToString());
+                throw new HttpException(
+                    (int)(HttpStatusCode.InternalServerError),
+                    "Incapaz de recuperar su documento");
             }
-            catch (Exception ex)
+            if (p_obdocs_one.Rows.Count > 1)
             {
-                throw new HttpException(ex.ToString(), Convert.ToInt32(HttpStatusCode.InternalServerError));
-                //throw new HttpResponseException(HttpStatusCode.BadRequest);
+                throw new HttpException(
+                    (int)(HttpStatusCode.InternalServerError)
+                    ,"To many Rows" );
             }
-            if (dataTable.Rows.Count > 1)
-            {
-                throw new HttpException("To many Rows", Convert.ToInt32(HttpStatusCode.InternalServerError));
-            }
-            DataRow dr = dataTable.Rows[0];
-            this.fndcCode = dr[0].ToString();
-            this.aidyCode = dr[1].ToString();
-            this.aidpCode = dr[2].ToString();
-            this.clave = dr[3].ToString();
-            this.name = dr[4].ToString();
-            this.status = dr[5].ToString();
-            if (dr[6] == System.DBNull.Value)
+
+            DataRow row = p_obdocs_one.Rows[0];
+
+            this.clave = row["KVRTRFN_TREQ_CODE"].ToString();
+            this.status = row["STATUS"].ToString();
+            this.name = row["KVVTREQ_DESC"].ToString();
+            this.fecha = row["ACTIVITY_DATE"].ToString();
+            this.comment = row["COMMENTS"].ToString();
+            this.aidpCode = row["KVRTRFN_AIDP_CODE"].ToString();
+            this.aidyCode = row["KVRTRFN_AIDY_CODE"].ToString();
+            this.fndcCode = row["KVRTRFN_FNDC_CODE"].ToString();
+            if (row["ACTIVITY_DATE"] == System.DBNull.Value)
             {
                 this.fecha = new DateTime(1900, 1, 1)
                             .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
             }
             else
             {
-                this.fecha = Convert.ToDateTime(dr[6].ToString())
+                this.fecha = Convert.ToDateTime(row["ACTIVITY_DATE"].ToString())
                             .ToString("dd-MMM-yyyy").Replace(".", "").ToUpper();
             }
-            this.comment = dr[7].ToString();
         }
 
 
