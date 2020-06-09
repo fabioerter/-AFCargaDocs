@@ -103,65 +103,47 @@ namespace AFCargaDocs.Models.Entidades
 
             }
         }
-        public DataTable ExecuteProcedure(string query)
+        public DataSet ExecuteProcedure(string query)
         {
             using (OracleConnection cnx = new OracleConnection(ConfigurationManager.ConnectionStrings["Banner"].ConnectionString))
             {
-                DataSet dataSet = new DataSet();
                 OracleCommand cmd = new OracleCommand(query, cnx);
+                DataSet dataSet = new DataSet();
                 cmd.CommandText = query;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
                 using (OracleDataAdapter dataAdapter = new OracleDataAdapter())
                 {
                     try
                     {
                         cnx.Open();
-                        if (outParameters.Count() > 0)
+
+                        foreach (OracleParameter parameter in parameterList)
                         {
-                            foreach (String name in outParameters.Keys)
-                            {
-                                OracleParameter parameter = new OracleParameter(name, dbTypeList[name])
-                                {
-                                    Direction = System.Data.ParameterDirection.Output,
-                                    Size = sizeList[name]
-                                };
-                                cmd.Parameters.Add(parameter);
-                            }
+                            cmd.Parameters.Add(parameter);
                         }
-                        if (filters.Count() > 0)
-                        {
-                            foreach (String name in filters.Keys)
-                            {
-                                OracleParameter parameter = new OracleParameter(name, dbTypeList[name])
-                                {
-                                    Value = filters[name],
-                                    Size = sizeList[name]
-                                };
-                                if (filters[name] == null)
-                                {
-                                    parameter.Value = DBNull.Value;
-                                }
-                                cmd.Parameters.Add(parameter);
-                            }
-                        }
-                        //OracleDataReader reader = cmd.ExecuteReader();
                         dataAdapter.SelectCommand = cmd;
 
-                        DataTable dataTableTemp = new DataTable("outParameters", "");
+                        cmd.ExecuteNonQuery();
 
                         if (outParameters.Count() > 0)
                         {
-
+                            dataSet.Tables.Add("parameters");
                             foreach (String name in outParameters.Keys)
                             {
-
-                                dataTableTemp.Columns.Add(name);
-                                dataTableTemp.Rows.Add(cmd.Parameters[name].Value);
+                                if (dbTypeList[name] == OracleDbType.RefCursor)
+                                {
+                                    dataAdapter.AcceptChangesDuringFill = true;
+                                    dataAdapter.Fill(dataSet, name, (OracleRefCursor)(cmd.Parameters[name].Value));
+                                }
+                                else
+                                {
+                                    dataSet.Tables["parameters"].Columns.Add(name);
+                                    dataSet.Tables["parameters"].Rows.Add(cmd.Parameters[name].Value);
+                                }
                             }
 
                         }
-                        dataSet.Tables.Add(dataTableTemp);
-                        this.result = dataTableTemp;
                     }
                     catch (Exception ex)
                     {
@@ -171,7 +153,7 @@ namespace AFCargaDocs.Models.Entidades
                     {
                         cnx.Close();
                     }
-                    return dataSet.Tables["outParameters"];
+                    return dataSet;
                 }
 
             }
@@ -209,6 +191,8 @@ namespace AFCargaDocs.Models.Entidades
 
                         cmd.ExecuteNonQuery();
 
+                        dataSet.Tables.Add("parameters");
+
                         if (returnType == OracleDbType.RefCursor)
                         {
                             dataAdapter.AcceptChangesDuringFill = true;
@@ -216,8 +200,8 @@ namespace AFCargaDocs.Models.Entidades
                         }
                         else
                         {
-                            dataSet.Tables.Add(outName).Columns.Add(outName);
-                            dataSet.Tables[outName].Rows.Add(cmd.Parameters[outName].Value);
+                            dataSet.Tables["parameters"].Columns.Add(outName);
+                            dataSet.Tables["parameters"].Rows.Add(cmd.Parameters[outName].Value);
                         }
 
 
@@ -234,13 +218,14 @@ namespace AFCargaDocs.Models.Entidades
                                 }
                                 else
                                 {
-                                    dataSet.Tables.Add(name).Rows.Add(cmd.Parameters[name].Value);
+                                    dataSet.Tables["parameters"].Columns.Add(name);
+                                    dataSet.Tables["parameters"].Rows.Add(cmd.Parameters[name].Value);
                                 }
                             }
 
                         }
                         //dataSet.Tables.Add(dataTableTemp);
-                        this.result = dataSet.Tables[outName];
+                        this.result = dataSet.Tables["parameters"];
                     }
                     catch (Exception ex)
                     {

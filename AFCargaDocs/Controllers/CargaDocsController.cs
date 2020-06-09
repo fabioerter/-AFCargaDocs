@@ -22,6 +22,7 @@ using System.IO;
 using Oracle.ManagedDataAccess.Client;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace AFCargaDocs.Controllers
 {
@@ -67,9 +68,13 @@ namespace AFCargaDocs.Controllers
         {
             DataBase dataBase = new DataBase();
 
-            dataBase.AddParameter("p_pidm'",
+            //In parameters
+            dataBase.AddParameter("p_pidm",
                 GlobalVariables.getPdim(GlobalVariables.Matricula),
                 OracleDbType.Int64, 22);
+            dataBase.AddParameter("p_id",
+                GlobalVariables.Matricula,
+                OracleDbType.Varchar2, 16);
             dataBase.AddParameter("p_aidy_code",
                 GlobalVariables.Aidy,
                 OracleDbType.Varchar2, 16);
@@ -78,14 +83,36 @@ namespace AFCargaDocs.Controllers
                 OracleDbType.Varchar2, 32);
             dataBase.AddParameter("p_fndc_code",
                 GlobalVariables.Fndc, OracleDbType.Varchar2, 40);
+            dataBase.AddParameter("p_treq_code",
+                clave,
+                OracleDbType.Varchar2, 32);
+            dataBase.AddParameter("p_aidy_code",
+                GlobalVariables.Aidy,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidy_code",
+                GlobalVariables.Aidy,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidy_code",
+                GlobalVariables.Aidy,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidy_code",
+                GlobalVariables.Aidy,
+                OracleDbType.Varchar2, 16);
+            dataBase.AddParameter("p_aidy_code",
+                GlobalVariables.Aidy,
+                OracleDbType.Varchar2, 16);
 
-            dataBase.AddOutParameter("p_obdocs_all",
-                 OracleDbType.RefCursor, 20);
+            //Out parameters
+            dataBase.AddOutParameter("p_Message",
+                OracleDbType.Varchar2, 200);
 
-            return JsonConvert.SerializeObject(
-                dataBase.ExecuteFunction("SZ_BFQ_CARGADOCSSAF.f_obdocs_ps",
-                "salida",
-                OracleDbType.Varchar2, 200));
+            //Call of the function
+            DataTable p_Message = dataBase.ExecuteProcedure
+                ("SZ_BFQ_CARGADOCSSAF.P_TRANS_CARGADOCS").Tables["p_Message"];
+            DataRow row = p_Message.Rows[0];
+
+
+            return "";
         }
         public string ObtenerDocumentos()
         {
