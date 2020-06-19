@@ -1,9 +1,13 @@
-﻿using AFCargaDocs.Models.Entidades.Enum;
+﻿using AFCargaDocs.AxServiceInterface;
+using AFCargaDocs.Models.Entidades.AxXML;
+using AFCargaDocs.Models.Entidades.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web;
+using System.Xml;
 
 namespace AFCargaDocs.Models.Entidades
 {
@@ -95,6 +99,115 @@ namespace AFCargaDocs.Models.Entidades
             stringBuilder.Append("	ignore_dls=\"" + this.IgnoreDls + "\" splitimg=\""+this.Splitimg+"\" subpages=\""+this.Subpages +"\" filetype=\""+this.Filetype+"\"");
             stringBuilder.Append("	xmlns:ax=\"http://www.emc.com/ax\" />");
             return stringBuilder.ToString();
+        }
+        public static AxRow SearchDocument(string treqCode)
+        {
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"OTGMGR", "u_pick_it",*//*"BSASSBUSR1", "u_pick_it",*/ "DOCIDX", "di12345678!",
+                                                        Convert.ToInt32(EAxType.AxFeature_FullTextSearch));
+
+            AxDocumentIndexQueryData newDocument = new AxDocumentIndexQueryData();
+
+            newDocument.addField(1, false, GlobalVariables.Matricula);
+            newDocument.addField(2, false, GlobalVariables.getPdim(
+                                            GlobalVariables.Matricula));
+            newDocument.addField(3, false, GlobalVariables.Aidy);
+            newDocument.addField(4, false, GlobalVariables.Aidp);
+            newDocument.addField(5, false, treqCode);
+            newDocument.addField(6, false, "");
+            newDocument.addField(7, false, GlobalVariables.Fndc);
+            newDocument.addField(8, false, GlobalVariables.Aplicacion);
+            newDocument.addField(9, false, "");
+            newDocument.addField(10, false, "");
+
+            string result = "";
+            try
+            {
+                result = axServicesInterface.QueryApplicationIndexesByAppId(
+                    sessionTicket, "BANPROD", 403, false, true, newDocument.ToString(), 0, 1, 20);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            finally
+            {
+                axServicesInterface.Logout(sessionTicket);
+            }
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(result);
+            string teste = xml.GetElementsByTagName("ax:Row")[0].ChildNodes[0].LastChild.Attributes[1].Value;
+            string teste22 = xml.GetElementsByTagName(
+                    "ax:Rows")[0].InnerXml.
+                    Replace("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "").
+                    Replace("xsi:", "");
+            AxRow row =
+                Serialization<AxRow>
+                .DeserializeFromXmlFile(teste22);
+            return row;
+        }
+        public static void DeleteDocument(string treqCode)
+        {
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"OTGMGR", "u_pick_it",*//*"BSASSBUSR1", "u_pick_it",*/ "DOCIDX", "di12345678!",
+                                                        Convert.ToInt32(EAxType.AxFeature_FullTextSearch));
+
+            AxDocumentIndexQueryData newDocument = new AxDocumentIndexQueryData();
+
+            newDocument.addField(1, false, GlobalVariables.Matricula);
+            newDocument.addField(2, false, GlobalVariables.getPdim(
+                                            GlobalVariables.Matricula));
+            newDocument.addField(3, false, GlobalVariables.Aidy);
+            newDocument.addField(4, false, GlobalVariables.Aidp);
+            newDocument.addField(5, false, treqCode);
+            newDocument.addField(6, false, "");
+            newDocument.addField(7, false, GlobalVariables.Fndc);
+            newDocument.addField(8, false, GlobalVariables.Aplicacion);
+            newDocument.addField(9, false, "");
+            newDocument.addField(10, false, "");
+
+            string result = "";
+            try
+            {
+                result = axServicesInterface.QueryApplicationIndexesByAppId(
+                    sessionTicket, "BANPROD", 403, false, true, newDocument.ToString(), 0, 1, 20);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(result);
+            string teste = xml.GetElementsByTagName("ax:Row")[0].ChildNodes[0].LastChild.Attributes[1].Value;
+            string teste22 = xml.GetElementsByTagName(
+                    "ax:Rows")[0].InnerXml.
+                    Replace("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "").
+                    Replace("xsi:", "");
+            AxRow row =
+                Serialization<AxRow>
+                .DeserializeFromXmlFile(teste22);
+            try
+            {
+
+
+                axServicesInterface.OpenDocumentByRef(sessionTicket, row.attributes[2].value, false, false, "");
+                axServicesInterface.LockDocumentByRef(sessionTicket, row.attributes[2].value);
+                result = axServicesInterface.DeleteDocumentByRef(sessionTicket, row.attributes[2].value);
+
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            finally
+            {
+                axServicesInterface.CloseDocumentByRef(sessionTicket, row.attributes[2].value, false, "");
+                axServicesInterface.Logout(sessionTicket);
+            }
+
         }
     }
 }

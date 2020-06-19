@@ -11,6 +11,10 @@ namespace AFCargaDocs.Models.Entidades
 {
     public class FileInfoFtp
     {
+        public FileInfoFtp()
+        {
+        }
+
         public FileInfoFtp(string treqCode)
         {
             StringBuilder query = new StringBuilder();

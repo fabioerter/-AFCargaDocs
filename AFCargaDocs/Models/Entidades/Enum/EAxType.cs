@@ -114,4 +114,136 @@ namespace AFCargaDocs.Models.Entidades.Enum
         /// </summary>
         Replace
     }
+    public enum EAXSortOrder
+    {
+        /// <summary>
+        /// Sort in ascending order
+        /// </summary>
+        Ascending,
+        /// <summary>
+        /// Sort in descending order
+        /// </summary>
+        Descending,
+        /// <summary>
+        /// No sort
+        /// </summary>
+        None
+    }
+    public enum EAXDataProvider
+    {
+        /// <summary>
+        /// Data from ApplicationXtender
+        /// </summary>
+        ApplicationXtender,
+        /// <summary>
+        /// Data from Records Manager for ApplicationXtender
+        /// </summary>
+        RecordsManager
+    }
+    public enum EAXQueryType
+    {
+        /// <summary>
+        /// Normal query
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// Cross-application query
+        /// </summary>
+        CAQ,
+        /// <summary>
+        /// AppXtender Reports Mgmt report query
+        /// </summary>
+        Report
+    }
+    /// <summary>
+    /// Query retention type; valid types are
+    /// listed in the QueryRetentionType
+    /// Enumeration section
+    /// </summary>
+    public enum EAXQueryRetentionType
+    {
+        /// <summary>
+        /// Include docs under retention in search
+        /// </summary>
+        AllIncludingRetention,
+        /// <summary>
+        /// Exclude docs under retention in search
+        /// </summary>
+        AllExcludingRetention,
+        /// <summary>
+        /// Only search docs under retention
+        /// </summary>
+        OnlyUnderRetention,
+        /// <summary>
+        /// Only search docs on retention hold
+        /// </summary>
+        OnlyOnRetentionHold,
+        /// <summary>
+        /// Only search docs under retention exclude docs
+        /// on hold
+        /// </summary>
+        OnlyUnderRetentionNotOnHold
+    }
+
+    //public enum AxImageExportFormatData
+    //{
+    //    /// <summary>
+    //    /// Indicates whether to use the native archive
+    //    ///format for export
+    //    /// </summary>
+    //    ArchiveFormat,
+    //    /// <summary>
+    //    /// Black and white images; possible values are:
+    //    /// • BMP
+    //    /// • TIFF
+    //    /// • TIFF_Compressed
+    //    /// </summary>
+    //    BlackWhiteImages,
+    //    /// <summary>
+    //    /// 4- or 8-bit color images; possible values are:
+    //    /// • BMP
+    //    /// • BMP_Compressed
+    //    /// • GIF
+    //    /// • TIFF
+    //    /// • TIFF_Compressed
+    //    /// </summary>
+    //    ColorImages4or8Bit,
+    //    /// <summary>
+    //    /// Indicates whether to export text pages as
+    //    /// images or as text files
+    //    /// </summary>
+    //    ExportTextAsImage,
+    //    /// <summary>
+    //    /// JPEG quality factor
+    //    /// </summary>
+    //    JpegCompression,
+    //    /// <summary>
+    //    /// Indicates whether to use multi-page image
+    //    /// files for export
+    //    /// </summary>
+    //    MultiPage,
+    //    /// <summary>
+    //    /// True color image; possible values are:
+    //    /// • BMP
+    //    /// • GIF
+    //    /// • JPEG
+    //    /// • TIFF
+    //    /// • TIFF_Compressed
+    //    /// </summary>
+    //    TrueColorImages,
+
+    //}
+    public enum AxFormTypes
+    {
+        None,
+        Image,
+        Text
+    }
+    public enum AxImageExportFormatData
+    {
+        PDF,
+        TIFF,
+        XPS,
+        IMAGE
+    }
 }

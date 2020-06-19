@@ -22,7 +22,9 @@ using System.IO;
 using Oracle.ManagedDataAccess.Client;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
+using System.Xml;
 using System.Data;
+using AFCargaDocs.Models.Entidades.AxXML;
 
 namespace AFCargaDocs.Controllers
 {
@@ -63,56 +65,130 @@ namespace AFCargaDocs.Controllers
             ViewBag.Aplicacion = GlobalVariables.Aplicacion;
             return View();
         }
+        public string teste2(string treqCode)
+        {
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"OTGMGR", "u_pick_it",*//*"BSASSBUSR1", "u_pick_it",*/ "DOCIDX", "di12345678!",
+                                                        Convert.ToInt32(EAxType.AxFeature_FullTextSearch));
+            AxDocumentIndexQueryData axQueryData = new AxDocumentIndexQueryData();
+            axQueryData.addField(1, false, GlobalVariables.Matricula);
+            axQueryData.addField(2, false, GlobalVariables.getPdim(
+                                            GlobalVariables.Matricula));
+            string result = "";
 
+            try
+            {
+                result = axServicesInterface.QueryDocuments(sessionTicket, "BANPROD",
+                                        axQueryData.ToString(), 0, 1, 1, false, false);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            finally
+            {
+                axServicesInterface.Logout(sessionTicket);
+            }
+            return result;
+
+        }
         public string teste(string clave)
         {
-            DataBase dataBase = new DataBase();
-
-            //In parameters
-            dataBase.AddParameter("p_pidm",
-                GlobalVariables.getPdim(GlobalVariables.Matricula),
-                OracleDbType.Int64, 22);
-            dataBase.AddParameter("p_id",
-                GlobalVariables.Matricula,
-                OracleDbType.Varchar2, 16);
-            dataBase.AddParameter("p_aidy_code",
-                GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 16);
-            dataBase.AddParameter("p_aidp_code",
-                GlobalVariables.Aidp,
-                OracleDbType.Varchar2, 32);
-            dataBase.AddParameter("p_fndc_code",
-                GlobalVariables.Fndc, OracleDbType.Varchar2, 40);
-            dataBase.AddParameter("p_treq_code",
-                clave,
-                OracleDbType.Varchar2, 32);
-            dataBase.AddParameter("p_aidy_code",
-                GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 16);
-            dataBase.AddParameter("p_aidy_code",
-                GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 16);
-            dataBase.AddParameter("p_aidy_code",
-                GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 16);
-            dataBase.AddParameter("p_aidy_code",
-                GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 16);
-            dataBase.AddParameter("p_aidy_code",
-                GlobalVariables.Aidy,
-                OracleDbType.Varchar2, 16);
-
-            //Out parameters
-            dataBase.AddOutParameter("p_Message",
-                OracleDbType.Varchar2, 200);
-
-            //Call of the function
-            DataTable p_Message = dataBase.ExecuteProcedure
-                ("SZ_BFQ_CARGADOCSSAF.P_TRANS_CARGADOCS").Tables["p_Message"];
-            DataRow row = p_Message.Rows[0];
 
 
-            return "";
+            AxServicesInterface axServicesInterface = new AxServicesInterface();
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"OTGMGR", "u_pick_it",*//*"BSASSBUSR1", "u_pick_it",*/ "DOCIDX", "di12345678!",
+                                                        Convert.ToInt32(EAxType.AxFeature_FullTextSearch));
+
+            AxDocumentIndexQueryData newDocument = new AxDocumentIndexQueryData();
+
+            newDocument.addField(1, false, GlobalVariables.Matricula);
+            newDocument.addField(2, false, GlobalVariables.getPdim(
+                                            GlobalVariables.Matricula));
+            newDocument.addField(3, false, GlobalVariables.Aidy);
+            newDocument.addField(4, false, GlobalVariables.Aidp);
+            newDocument.addField(5, false, clave);
+            newDocument.addField(6, false, "");
+            newDocument.addField(7, false, GlobalVariables.Fndc);
+            newDocument.addField(8, false, GlobalVariables.Aplicacion);
+            newDocument.addField(9, false, "");
+            newDocument.addField(10, false, "");
+
+            string result = "";
+            try
+            {
+                result = axServicesInterface.QueryApplicationIndexesByAppId(
+                    sessionTicket, "BANPROD", 403, false, true, newDocument.ToString(), 0, 1, 20);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(result);
+            //string teste = xml.GetElementsByTagName("ax:Row")[0].ChildNodes[0].LastChild.Attributes[1].Value;
+            string teste22 = xml.GetElementsByTagName(
+                    "ax:Rows")[0].InnerXml.
+                    Replace("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "").
+                    Replace("xsi:", "");
+            AxRow row =
+                Serialization<AxRow>
+                .DeserializeFromXmlFile(teste22);
+            try
+            {
+
+                string exportId = axServicesInterface.ExportDocumentPagesByRef(sessionTicket, row.attributes[2].value,
+                    new AxDocumentExportData()
+                    {
+                        Format = AxImageExportFormatData.TIFF,
+                        Formtype = AxFormTypes.None,
+                        HideAnnotations = true,
+                        SinglePDFFile = false
+                    }.ToString());
+                result = axServicesInterface.GetExportDocumentPagesResult(sessionTicket, GlobalVariables.DataSource, exportId, false);
+
+                AxStringArray stringArray = Serialization<AxStringArray>.DeserializeFromXmlFile(result);
+                while (stringArray.itemString == null)
+                {
+                    string arrayTemp = axServicesInterface.GetExportDocumentPagesResult(
+                               sessionTicket, GlobalVariables.DataSource, exportId, false);
+                    stringArray = Serialization<AxStringArray>.DeserializeFromXmlFile(arrayTemp);
+                    System.Threading.Thread.Sleep(50);
+
+                }
+
+                AxImageStreamData data = new AxImageStreamData()
+                {
+                    Encryption = false,
+                    Maxbytes = 5000000,
+                    Startbyte = 0
+                };
+
+                AxStreamResult axStreamResult = Serialization<AxStreamResult>.
+                    DeserializeFromXmlFile(axServicesInterface.DownloadImageStream(
+                    sessionTicket, GlobalVariables.DataSource,
+                    stringArray.itemString[0], data.ToString()));
+                result = axStreamResult.ImageBytes;
+                //axServicesInterface.LockDocumentByRef(sessionTicket, row.attributes[2].value);
+                //result = axServicesInterface.DeleteDocumentByRef(sessionTicket, row.attributes[2].value);
+
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            finally
+            {
+                axServicesInterface.CloseDocumentByRef(sessionTicket, row.attributes[2].value, false, "");
+                axServicesInterface.Logout(sessionTicket);
+            }
+
+
+
+            return result;
         }
         public string ObtenerDocumentos()
         {
@@ -133,66 +209,73 @@ namespace AFCargaDocs.Controllers
 
         }
 
-        public string teste2(String treqCode)
+        public string guardarDocumento(string clave)
         {
-            AxServicesInterface axServicesInterface = new AxServicesInterface();
-            string sessionTicket = axServicesInterface.Login("", "BANPROD", "services.bdmapp", "W#7hdw!68dxZ",//"DOCIDX", "di12345678!",
-                                                                    Convert.ToInt32(EAxType.AxFeature_Basic));
-            string result = null;
-            try
-            {
-                //axServicesInterface.GetApplicationList(sessionTicket, "BANPROD");
-                //HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
-                //byte[] fileContents = new byte[file.ContentLength];
-                //fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
+            return JsonConvert.SerializeObject(CargaDocsService.GuardarDocumento(clave));
+            //HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+
+            //Document document = new Document(GlobalVariables.Matricula, treqCode,
+            //    GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
+            //byte[] fileContents = new byte[file.ContentLength];
+
+            //string id = CargaDocsService.KzrldocInsert(document, file);
 
 
+            //// Get the object used to communicate with the server.
+            //FtpWebRequest request = (FtpWebRequest)WebRequest.Create(GlobalVariables.Ftpip + "/" + id);
 
-                //result = axServicesInterface.UploadImageStream(sessionTicket, "BANPROD", new AxStreamData(
-                //    Convert.ToBase64String(fileContents),"",file.FileName).ToString());
+            //request.Method = WebRequestMethods.Ftp.UploadFile;
 
+            //// This example assumes the FTP site uses anonymous logon.
+            //request.Credentials = new NetworkCredential(GlobalVariables.FtpUser, GlobalVariables.FtpPassword);
+            //request.UseBinary = true;
+            //fileContents = new BinaryReader(file.InputStream).ReadBytes(file.ContentLength);
+            //// Copy the contents of the file to the request stream.
 
+            //request.ContentLength = fileContents.Length;
 
-                AxDocumentCreationData newDocument = new AxDocumentCreationData(403, "BANPROD",
-                                "E:/RepositorioAyudasFinancieras/DEVL/1"/*result*/, EAxFileType.FT_UNKNOWN,
-                                true, true, false, 0);
+            //using (Stream requestStream = request.GetRequestStream())
+            //{
+            //    requestStream.Write(fileContents, 0, fileContents.Length);
+            //}
 
-                AxDocumentIndex newDocumentIndex = new AxDocumentIndex("0",
-                    Convert.ToInt32(GlobalVariables.Matricula),
-                        GlobalVariables.getPdim(GlobalVariables.Matricula),
-                        GlobalVariables.Aidy, GlobalVariables.Aidp,
-                        GlobalVariables.Fndc, treqCode,
-                        GlobalVariables.Aplicacion,
-                        DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
-
-                //result = axServicesInterface.UploadDocumentPageByRef(sessionTicket,
-                //        new AxDocumentPointer("BANPROD", 1, 1, EAxDocumentType.Document, 1).ToString(),
-                //        new AxPageUploadData()
-                //        {
-                //            Act = EAxPageUploadAction.Replace,
-                //            Filepath = result,
-                //            Filetype = EAxFileType.FT_UNKNOWN,
-                //            Pos = 1,
-                //            Splitimg = true,
-                //            Subpages = 0
-                //        }.ToString());
-
-                //result = axServicesInterface.ApplyAutoIndexByAppId(sessionTicket, "BANPROD",
-                //    403, newDocumentIndex.ToString(), newDocumentIndex.ToString());
+            //using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            //{
+            //    Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+            //}
 
 
-                result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
-                                                                       newDocumentIndex.ToString());
-            }
-            catch (Exception ex)
-            {
-                throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message);
-            }
-            finally
-            {
-                axServicesInterface.Logout(sessionTicket);
-            }
-            return result;
+            //AxServicesInterface axServicesInterface = new AxServicesInterface();
+            //string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"services.bdmapp", "W#7hdw!68dxZ",*//*"BSASSBUSR1", "u_pick_it",*/"DOCIDX", "di12345678!",
+            //                                                        Convert.ToInt32(EAxType.AxFeature_Basic));
+            //string result = null;
+            //try
+            //{
+
+            //    AxDocumentCreationData newDocument = new AxDocumentCreationData(403, "BANPROD",
+            //                    path/*result*/, EAxFileType.FT_UNKNOWN,
+            //                    true, true, false, 0);
+
+            //    AxDocumentIndex newDocumentIndex = new AxDocumentIndex("-1",
+            //            GlobalVariables.Matricula,
+            //            GlobalVariables.getPdim(GlobalVariables.Matricula),
+            //            GlobalVariables.Aidy, GlobalVariables.Aidp,
+            //            GlobalVariables.Fndc, treqCode,
+            //            GlobalVariables.Aplicacion,
+            //            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            //    result = axServicesInterface.CreateNewDocument(sessionTicket, newDocument.ToString(),
+            //                                                           newDocumentIndex.ToString());
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message);
+            //}
+            //finally
+            //{
+            //    axServicesInterface.Logout(sessionTicket);
+            //}
+            //return result;
         }
 
         public string validaCarga(string treqCode)
@@ -208,28 +291,28 @@ namespace AFCargaDocs.Controllers
                 CargaDocsService.updateDocument(clave, file, "NR"));
         }
 
-        public string guardarDocumento(string clave)
-        {
-            HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
-            if (clave == null)
-            {
-                throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest),
-                        "No se puede encontrar su documento, espere un momento e intente nuevamente");
-            }
-            string result = "";
-            try
-            {
-                result = JsonConvert.SerializeObject(CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
-                GlobalVariables.Aidy, GlobalVariables.Aidp, file));
-            }
-            catch (Exception ex)
-            {
-                throw new HttpException((int)HttpStatusCode.InternalServerError,
-                                                                        ex.Message);
-            }
+        //public string guardarDocumento(string clave)
+        //{
+        //    HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+        //    if (clave == null)
+        //    {
+        //        throw new HttpException(Convert.ToInt32(HttpStatusCode.BadRequest),
+        //                "No se puede encontrar su documento, espere un momento e intente nuevamente");
+        //    }
+        //    string result = "";
+        //    try
+        //    {
+        //        result = JsonConvert.SerializeObject(CargaDocsService.insertDocument(GlobalVariables.Matricula, clave, GlobalVariables.Fndc,
+        //        GlobalVariables.Aidy, GlobalVariables.Aidp, file));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new HttpException((int)HttpStatusCode.InternalServerError,
+        //                                                                ex.Message);
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
@@ -239,18 +322,6 @@ namespace AFCargaDocs.Controllers
                 GlobalVariables.Aidy, GlobalVariables.Aidp));
         }
 
-        public ActionResult DownLoad(string treqCode)
-
-        {
-            FileInfoFtp file = CargaDocsService.DisplayFileFromServer(
-                GlobalVariables.Matricula, treqCode, GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
-            byte[] fileBytes = Convert.FromBase64String(file.FileContent);
-
-            //File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "filename"+file.Type); 
-
-            return File(fileBytes, file.FileType, file.FileName);
-        }
-
         [System.ComponentModel.ToolboxItem(false)]
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
@@ -258,40 +329,6 @@ namespace AFCargaDocs.Controllers
         {
             return JsonConvert.SerializeObject(CargaDocsService.ObtenerDatosDocumento(
                 GlobalVariables.Matricula, "AFCD", GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp));
-        }
-
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public void Guardar()
-        {
-
-
-            HttpContext Contexto = System.Web.HttpContext.Current;
-            string claveDoc = Contexto.Request.Form.ToString().Substring(6);
-
-
-
-            HttpFileCollection ColeccionArchivos = Contexto.Request.Files;// Context.Request.Files;
-            string NombreArchivo = "";
-            for (int ArchivoActual = 0; ArchivoActual < ColeccionArchivos.Count; ArchivoActual++)
-            {
-                NombreArchivo = ColeccionArchivos[ArchivoActual].FileName;
-                string DatosArchivo = System.IO.Path.GetFileName(ColeccionArchivos[ArchivoActual].FileName);
-                string CarpetaParaGuardar = Server.MapPath("Archivos") + "\\" + DatosArchivo;
-                ColeccionArchivos[ArchivoActual].SaveAs(CarpetaParaGuardar);
-                Contexto.Response.ContentType = "application/json";
-                Contexto.Response.Write("{\"success\":true,\"msg\":\"" + NombreArchivo + "\"}");
-                Contexto.Response.End();
-
-            }
-
-        }
-        [HttpPost]
-        public ActionResult Guardar2()
-        {
-            string dato = "algo";
-
-            return View(dato);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace AFCargaDocs.Models.Entidades
 {
     public class AxDocumentIndex
     {
-        int id;
+        string id;
         string pdim;
         string aidYear;
         string aidPeriod;
@@ -18,7 +18,7 @@ namespace AFCargaDocs.Models.Entidades
         string activityDate;
         string documentId;
 
-        public AxDocumentIndex(string documentId, int id, string pdim, string aidYear,
+        public AxDocumentIndex(string documentId, string id, string pdim, string aidYear,
                     string aidPeriod, string aidFond, string treqCode, string aplicationForm,
                     string activityDate)
         {
@@ -33,7 +33,7 @@ namespace AFCargaDocs.Models.Entidades
             this.activityDate = activityDate;
         }
 
-        public int Id { get => id; set => id = value; }
+        public string Id { get => id; set => id = value; }
         public string Pdim { get => pdim; set => pdim = value; }
         public string AidYear { get => aidYear; set => aidYear = value; }
         public string AidPeriod { get => aidPeriod; set => aidPeriod = value; }
@@ -60,7 +60,7 @@ namespace AFCargaDocs.Models.Entidades
             stringBuilder.Append(" 		<ax:Field id=\"6\" value=\"\" isNull=\"true\" /> ");
             stringBuilder.Append(" 		<ax:Field id=\"7\" value=\"" + this.AidFond + "\" isNull=\"false\" /> ");
             stringBuilder.Append(" 		<ax:Field id=\"8\" value=\"" + this.AplicationForm + "\" isNull=\"false\" /> ");
-            stringBuilder.Append(" 		<ax:Field id=\"9\" value=\"\" isNull=\"true\" /> ");
+            stringBuilder.Append(" 		<ax:Field id=\"9\" value=\"" + this.ActivityDate + "\" isNull=\"true\" /> ");
             stringBuilder.Append(" 		<ax:Field id=\"10\" value=\"\" isNull=\"true\" /> ");
             stringBuilder.Append(" 	</ax:Fields> ");
             stringBuilder.Append(" </ax:QueryItem> ");
