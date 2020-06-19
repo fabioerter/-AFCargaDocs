@@ -67,32 +67,30 @@ namespace AFCargaDocs.Models
             newDocument.addField(8, false, GlobalVariables.Aplicacion);
             newDocument.addField(9, false, "");
             newDocument.addField(10, false, "");
+
             string documents;
+            AxRow row = new AxRow();
+            AxStreamResult axStreamResult = new AxStreamResult();
+
             try
             {
                 documents = axServicesInterface.QueryApplicationIndexesByAppId(
                     sessionTicket, "BANPROD", 403, false, true, newDocument.ToString(), 0, 1, 20);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpException(
-                    (int)HttpStatusCode.InternalServerError, ex.Message);
-            }
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(documents);
-            //string teste = xml.GetElementsByTagName("ax:Row")[0].ChildNodes[0].LastChild.Attributes[1].Value;
-            string xmlString = xml.GetElementsByTagName(
-                    "ax:Rows")[0].InnerXml.
-                    Replace("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "").
-                    Replace("xsi:", "");
-            AxRow row =
-                Serialization<AxRow>
-                .DeserializeFromXmlFile(xmlString);
+
+                XmlDocument xml = new XmlDocument();
+                xml.LoadXml(documents);
+                //string teste = xml.GetElementsByTagName("ax:Row")[0].ChildNodes[0].LastChild.Attributes[1].Value;
+                string xmlString = xml.GetElementsByTagName(
+                        "ax:Rows")[0].InnerXml.
+                        Replace("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "").
+                        Replace("xsi:", "");
+                row =
+                    Serialization<AxRow>
+                    .DeserializeFromXmlFile(xmlString);
 
 
-            AxStreamResult axStreamResult = new AxStreamResult();
-            try
-            {
+                
+
 
                 string exportId = axServicesInterface.ExportDocumentPagesByRef(sessionTicket, row.attributes[2].value,
                     new AxDocumentExportData()
@@ -251,8 +249,7 @@ namespace AFCargaDocs.Models
 
             AxServicesInterface axServicesInterface = new AxServicesInterface();
 
-            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"services.bdmapp", "W#7hdw!68dxZ",*//*"BSASSBUSR1", "u_pick_it",*/"DOCIDX", "di12345678!",
-                                                        Convert.ToInt32(EAxType.AxFeature_Basic));
+
 
             if (!validaCarga(GlobalVariables.Matricula, treqCode,
                 GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp))
@@ -268,7 +265,7 @@ namespace AFCargaDocs.Models
             {
                 throw new HttpException(
                     (int)HttpStatusCode.InternalServerError
-                    ,"Su documento no esta en Xtender (" + ex.Message + ")");
+                    , "Su documento no esta en Xtender (" + ex.Message + ")");
             }
 
             Document document = new Document(GlobalVariables.Matricula, treqCode,
@@ -305,7 +302,8 @@ namespace AFCargaDocs.Models
             {
                 Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
             }
-
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"services.bdmapp", "W#7hdw!68dxZ",*//*"BSASSBUSR1", "u_pick_it",*/"DOCIDX", "di12345678!",
+                                                        Convert.ToInt32(EAxType.AxFeature_Basic));
 
             string result = null;
             try
