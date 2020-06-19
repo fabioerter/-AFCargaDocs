@@ -24,6 +24,7 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using System.Xml;
 using System.Data;
+using AFCargaDocs.Models.Entidades.AxXML;
 
 namespace AFCargaDocs.Controllers
 {
@@ -92,35 +93,87 @@ namespace AFCargaDocs.Controllers
             return result;
 
         }
-        public string teste(string treqCode)
+        public string teste(string clave)
         {
+
+
             AxServicesInterface axServicesInterface = new AxServicesInterface();
-            string sessionTicket = axServicesInterface.Login("", "BANPROD", "OTGMGR", "u_pick_it",/*"BSASSBUSR1", "u_pick_it",*/ /*"DOCIDX", "di12345678!",*/
+            string sessionTicket = axServicesInterface.Login("", "BANPROD", /*"OTGMGR", "u_pick_it",*//*"BSASSBUSR1", "u_pick_it",*/ "DOCIDX", "di12345678!",
                                                         Convert.ToInt32(EAxType.AxFeature_FullTextSearch));
-            AxQueryData axQueryData = new AxQueryData();
-            axQueryData.Appid = "403";
-            axQueryData.Qtype = EAXQueryType.Normal;
-            axQueryData.Provider = EAXDataProvider.ApplicationXtender;
-            axQueryData.Id = "1";
-            axQueryData.Qrtype = EAXQueryRetentionType.AllIncludingRetention;
-            axQueryData.Docid_sortorder = EAXSortOrder.None;
-            axQueryData.Sortorder = EAXSortOrder.None;
-            axQueryData.addField(1, false, GlobalVariables.Matricula);
-            axQueryData.addField(2, false, GlobalVariables.getPdim(
+
+            AxDocumentIndexQueryData newDocument = new AxDocumentIndexQueryData();
+
+            newDocument.addField(1, false, GlobalVariables.Matricula);
+            newDocument.addField(2, false, GlobalVariables.getPdim(
                                             GlobalVariables.Matricula));
-            //axQueryData.addField(3, false, GlobalVariables.Aidy);
-            //axQueryData.addField(4, false, GlobalVariables.Aidp);
-            //axQueryData.addField(5, false, treqCode);
-            //axQueryData.addField(6, false, "");
-            //axQueryData.addField(7, false, GlobalVariables.Fndc);
-            //axQueryData.addField(8, false, GlobalVariables.Aplicacion);
-            //axQueryData.addField(9, false, "");
-            //axQueryData.addField(10, false, "");
+            newDocument.addField(3, false, GlobalVariables.Aidy);
+            newDocument.addField(4, false, GlobalVariables.Aidp);
+            newDocument.addField(5, false, clave);
+            newDocument.addField(6, false, "");
+            newDocument.addField(7, false, GlobalVariables.Fndc);
+            newDocument.addField(8, false, GlobalVariables.Aplicacion);
+            newDocument.addField(9, false, "");
+            newDocument.addField(10, false, "");
+
             string result = "";
             try
             {
-                result = axServicesInterface.QueryDocuments(sessionTicket, "BANPROD",
-                                        axQueryData.ToString(), 0, 1, 1, false, false);
+                result = axServicesInterface.QueryApplicationIndexesByAppId(
+                    sessionTicket, "BANPROD", 403, false, true, newDocument.ToString(), 0, 1, 20);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(
+                    (int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(result);
+            //string teste = xml.GetElementsByTagName("ax:Row")[0].ChildNodes[0].LastChild.Attributes[1].Value;
+            string teste22 = xml.GetElementsByTagName(
+                    "ax:Rows")[0].InnerXml.
+                    Replace("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "").
+                    Replace("xsi:", "");
+            AxRow row =
+                Serialization<AxRow>
+                .DeserializeFromXmlFile(teste22);
+            try
+            {
+
+                string exportId = axServicesInterface.ExportDocumentPagesByRef(sessionTicket, row.attributes[2].value,
+                    new AxDocumentExportData()
+                    {
+                        Format = AxImageExportFormatData.TIFF,
+                        Formtype = AxFormTypes.None,
+                        HideAnnotations = true,
+                        SinglePDFFile = false
+                    }.ToString());
+                result = axServicesInterface.GetExportDocumentPagesResult(sessionTicket, GlobalVariables.DataSource, exportId, false);
+
+                AxStringArray stringArray = Serialization<AxStringArray>.DeserializeFromXmlFile(result);
+                while (stringArray.itemString == null)
+                {
+                    string arrayTemp = axServicesInterface.GetExportDocumentPagesResult(
+                               sessionTicket, GlobalVariables.DataSource, exportId, false);
+                    stringArray = Serialization<AxStringArray>.DeserializeFromXmlFile(arrayTemp);
+                    System.Threading.Thread.Sleep(50);
+
+                }
+
+                AxImageStreamData data = new AxImageStreamData()
+                {
+                    Encryption = false,
+                    Maxbytes = 5000000,
+                    Startbyte = 0
+                };
+
+                AxStreamResult axStreamResult = Serialization<AxStreamResult>.
+                    DeserializeFromXmlFile(axServicesInterface.DownloadImageStream(
+                    sessionTicket, GlobalVariables.DataSource,
+                    stringArray.itemString[0], data.ToString()));
+                result = axStreamResult.ImageBytes;
+                //axServicesInterface.LockDocumentByRef(sessionTicket, row.attributes[2].value);
+                //result = axServicesInterface.DeleteDocumentByRef(sessionTicket, row.attributes[2].value);
+
             }
             catch (Exception ex)
             {
@@ -129,31 +182,13 @@ namespace AFCargaDocs.Controllers
             }
             finally
             {
+                axServicesInterface.CloseDocumentByRef(sessionTicket, row.attributes[2].value, false, "");
                 axServicesInterface.Logout(sessionTicket);
             }
 
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(result);
-            doc.GetElementsByTagName("");
+
+
             return result;
-            //DataBase dataBase = new DataBase();
-
-            //dataBase.AddParameter("p_pidm",
-            //    GlobalVariables.getPdim(GlobalVariables.Matricula),
-            //    OracleDbType.Int16, 8);
-            //dataBase.AddParameter("p_aidy_code",
-            //    GlobalVariables.Aidy,
-            //    OracleDbType.Varchar2, 20);
-            //dataBase.AddParameter("p_aidp_code",
-            //    GlobalVariables.Aidp,
-            //    OracleDbType.Varchar2, 20);
-            //dataBase.AddParameter("p_treq_code",
-            //    clave, OracleDbType.Varchar2, 20);
-
-            //return JsonConvert.SerializeObject(
-            //    dataBase.ExecuteFunction("KV_APPLICANT_TRK_REQT.F_QUERY_ALL",
-            //    "APPLICANT_TRK_REQT_rc",
-            //    OracleDbType.RefCursor));
         }
         public string ObtenerDocumentos()
         {
@@ -176,7 +211,7 @@ namespace AFCargaDocs.Controllers
 
         public string guardarDocumento(string clave)
         {
-            return JsonConvert.SerializeObject(CargaDocsService.teste2(clave));
+            return JsonConvert.SerializeObject(CargaDocsService.GuardarDocumento(clave));
             //HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
 
             //Document document = new Document(GlobalVariables.Matricula, treqCode,
@@ -287,18 +322,6 @@ namespace AFCargaDocs.Controllers
                 GlobalVariables.Aidy, GlobalVariables.Aidp));
         }
 
-        public ActionResult DownLoad(string treqCode)
-
-        {
-            FileInfoFtp file = CargaDocsService.DisplayFileFromServer(
-                GlobalVariables.Matricula, treqCode, GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp);
-            byte[] fileBytes = Convert.FromBase64String(file.FileContent);
-
-            //File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "filename"+file.Type); 
-
-            return File(fileBytes, file.FileType, file.FileName);
-        }
-
         [System.ComponentModel.ToolboxItem(false)]
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
@@ -306,40 +329,6 @@ namespace AFCargaDocs.Controllers
         {
             return JsonConvert.SerializeObject(CargaDocsService.ObtenerDatosDocumento(
                 GlobalVariables.Matricula, "AFCD", GlobalVariables.Fndc, GlobalVariables.Aidy, GlobalVariables.Aidp));
-        }
-
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public void Guardar()
-        {
-
-
-            HttpContext Contexto = System.Web.HttpContext.Current;
-            string claveDoc = Contexto.Request.Form.ToString().Substring(6);
-
-
-
-            HttpFileCollection ColeccionArchivos = Contexto.Request.Files;// Context.Request.Files;
-            string NombreArchivo = "";
-            for (int ArchivoActual = 0; ArchivoActual < ColeccionArchivos.Count; ArchivoActual++)
-            {
-                NombreArchivo = ColeccionArchivos[ArchivoActual].FileName;
-                string DatosArchivo = System.IO.Path.GetFileName(ColeccionArchivos[ArchivoActual].FileName);
-                string CarpetaParaGuardar = Server.MapPath("Archivos") + "\\" + DatosArchivo;
-                ColeccionArchivos[ArchivoActual].SaveAs(CarpetaParaGuardar);
-                Contexto.Response.ContentType = "application/json";
-                Contexto.Response.Write("{\"success\":true,\"msg\":\"" + NombreArchivo + "\"}");
-                Contexto.Response.End();
-
-            }
-
-        }
-        [HttpPost]
-        public ActionResult Guardar2()
-        {
-            string dato = "algo";
-
-            return View(dato);
         }
     }
 }

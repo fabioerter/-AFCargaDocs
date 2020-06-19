@@ -96,7 +96,7 @@ function guardar() {
             var mensaje = "quieres?"//$("#mi-modal").modal('show');
             //parte de mensaje ana
             $("#mi-modal").modal('show');
-
+            $("#modal-btn-si").off("click");
             $("#modal-btn-si").on("click", function () {
                 $("#mi-modal").modal('hide');
                 $.ajax({
@@ -118,6 +118,7 @@ function guardar() {
                         $('#ModalError').modal('show');
                     }
                 });
+                
             });
 
             $("#modal-btn-no").on("click", function () {

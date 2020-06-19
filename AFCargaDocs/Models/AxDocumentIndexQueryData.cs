@@ -31,7 +31,7 @@ namespace AFCargaDocs.Models
 
             sb.Append("<?xml version=\"1.0\" encoding=\"utf - 16\"?> ");
             sb.Append(" <ax:AxIndexQueryData xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            sb.Append(" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"");
+            sb.Append(" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
             sb.Append(" xmlns:ax=\"http://www.emc.com/ax\"   >");
             sb.Append("            <ax:Fields>");
 
@@ -41,7 +41,7 @@ namespace AFCargaDocs.Models
             }
 
             sb.Append("        </ax:Fields> ");
-            sb.Append(" </ax:AxDocumentIndexQueryData>");
+            sb.Append(" </ax:AxIndexQueryData>");
             return sb.ToString();
         }
     }

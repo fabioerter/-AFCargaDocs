@@ -13,14 +13,27 @@
 
 </head>
 <body class="bodydoc">
-    <div class="documento">
+    <div class="documento" >
+        @if (@Model.FileType ==
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+            @Model.FileType == "image/gif" ||
+            @Model.FileType == "image/jpeg" ||
+            @Model.FileType == "image/png")
+        {
+        <h3 style="padding-top: 20%;margin-bottom: 20%;">
+            "El archivo se encuentra subido exitosamente pero en este momento no es posible
+            su visualización, pero si lo deseas puedes descargarlo."
+        </h3>
 
-        <embed type="@Model.FileType" width="550px" height="400px"
-               src="data:@Model.FileType;base64,@Model.FileContent" />
-
+        }
+        else
+        {
+            <embed type="@Model.FileType" width="550px" height="400px"
+                   src="data:@Model.FileType;base64,@Model.FileContent" />
+        }
         <a class="btn btn-warning"
            href="data:@Model.FileType;base64,@Model.FileContent"
-           download="@Model.FileName">Descargar</a>
+           download="@Model.FileName" >Descargar</a>
 
     </div>
 </body>

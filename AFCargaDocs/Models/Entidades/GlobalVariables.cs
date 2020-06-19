@@ -19,7 +19,7 @@ namespace AFCargaDocs.Models.Entidades
         private static string ftpip = "ftp://148.238.49.217/";
         private static string ftpUser = "ftpDevlAyudaFN";
         private static string ftpPassword = "Rep0AyudaFnD3vl$";
-
+        private static string dataSource = "BANPROD";
 
 
         public static string Matricula { get => matricula; set => matricula = value; }
@@ -30,6 +30,7 @@ namespace AFCargaDocs.Models.Entidades
         public static string Ftpip { get => ftpip; set => ftpip = value; }
         public static string FtpUser { get => ftpUser; set => ftpUser = value; }
         public static string FtpPassword { get => ftpPassword; set => ftpPassword = value; }
+        public static string DataSource { get => dataSource; set => dataSource = value; }
 
         public static bool IsAjaxRequest(this HttpRequest request)
         {

@@ -185,4 +185,65 @@ namespace AFCargaDocs.Models.Entidades.Enum
         OnlyUnderRetentionNotOnHold
     }
 
+    //public enum AxImageExportFormatData
+    //{
+    //    /// <summary>
+    //    /// Indicates whether to use the native archive
+    //    ///format for export
+    //    /// </summary>
+    //    ArchiveFormat,
+    //    /// <summary>
+    //    /// Black and white images; possible values are:
+    //    /// • BMP
+    //    /// • TIFF
+    //    /// • TIFF_Compressed
+    //    /// </summary>
+    //    BlackWhiteImages,
+    //    /// <summary>
+    //    /// 4- or 8-bit color images; possible values are:
+    //    /// • BMP
+    //    /// • BMP_Compressed
+    //    /// • GIF
+    //    /// • TIFF
+    //    /// • TIFF_Compressed
+    //    /// </summary>
+    //    ColorImages4or8Bit,
+    //    /// <summary>
+    //    /// Indicates whether to export text pages as
+    //    /// images or as text files
+    //    /// </summary>
+    //    ExportTextAsImage,
+    //    /// <summary>
+    //    /// JPEG quality factor
+    //    /// </summary>
+    //    JpegCompression,
+    //    /// <summary>
+    //    /// Indicates whether to use multi-page image
+    //    /// files for export
+    //    /// </summary>
+    //    MultiPage,
+    //    /// <summary>
+    //    /// True color image; possible values are:
+    //    /// • BMP
+    //    /// • GIF
+    //    /// • JPEG
+    //    /// • TIFF
+    //    /// • TIFF_Compressed
+    //    /// </summary>
+    //    TrueColorImages,
+
+    //}
+    public enum AxFormTypes
+    {
+        None,
+        Image,
+        Text
+    }
+    public enum AxImageExportFormatData
+    {
+        PDF,
+        TIFF,
+        XPS,
+        IMAGE
+    }
 }
