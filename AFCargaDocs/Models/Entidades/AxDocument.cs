@@ -168,16 +168,12 @@ namespace AFCargaDocs.Models.Entidades
             newDocument.addField(10, false, "");
 
             string result = "";
+            AxRow row = new AxRow();
             try
             {
                 result = axServicesInterface.QueryApplicationIndexesByAppId(
                     sessionTicket, "BANPROD", 403, false, true, newDocument.ToString(), 0, 1, 20);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpException(
-                    (int)HttpStatusCode.InternalServerError, ex.Message);
-            }
+
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(result);
             string teste = xml.GetElementsByTagName("ax:Row")[0].ChildNodes[0].LastChild.Attributes[1].Value;
@@ -185,11 +181,10 @@ namespace AFCargaDocs.Models.Entidades
                     "ax:Rows")[0].InnerXml.
                     Replace("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "").
                     Replace("xsi:", "");
-            AxRow row =
+            row =
                 Serialization<AxRow>
                 .DeserializeFromXmlFile(teste22);
-            try
-            {
+
 
 
                 axServicesInterface.OpenDocumentByRef(sessionTicket, row.attributes[2].value, false, false, "");
