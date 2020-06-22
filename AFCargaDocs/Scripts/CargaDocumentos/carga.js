@@ -158,7 +158,7 @@ function ObtenerDocumentos() {
             //Fecha: "18/02/2020"
         },
         error: function (errormessage) {
-            alert(errormessage.mensaje);
+            alert(errormessage.responseJSON.message);
         }
     });
 };

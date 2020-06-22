@@ -232,7 +232,7 @@ namespace AFCargaDocs.Models
                     }
                     break;
                 case "IV":
-                    isOnServer = true;
+                    isOnServer = false;
                     break;
                 case "CM":
                     throw new HttpException((int)HttpStatusCode.BadRequest,
@@ -265,7 +265,7 @@ namespace AFCargaDocs.Models
             {
                 throw new HttpException(
                     (int)HttpStatusCode.InternalServerError
-                    , "Su documento no esta en Xtender (" + ex.Message + ")");
+                    , ex.Message);
             }
 
             Document document = new Document(GlobalVariables.Matricula, treqCode,
